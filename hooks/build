@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Script for building a deployable docker image
+# This can run automatically on pushes to github branches, or manually by simply executing the script
+# See the docs for automated docker builds: https://docs.docker.com/docker-cloud/builds/advanced/
+
+# The $IMAGE_NAME var is injected into the build so the tag is correct.
+
+echo "Build hook running"
+export BRANCH=${TRAVIS_BRANCH:-`git symbolic-ref --short HEAD`}
+export DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"`
+export COMMIT=${TRAVIS_COMMIT:-`git rev-parse --short HEAD`}
+docker build --build-arg BUILD_DATE=$DATE \
+             --build-arg VCS_REF=$COMMIT \
+             --build-arg BRANCH=$BRANCH \
+             --no-cache \
+             -t ${IMAGE_NAME} .

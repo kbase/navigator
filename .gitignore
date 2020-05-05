@@ -1,0 +1,23 @@
+node_modules
+
+# JS and CSS bundle/build output
+src/static/build/*
+
+# Environment variables
+.env
+
+# Caches and temp dirs
+/build/
+/dist/
+*.pyc
+.mypy_cache/
+.cache/
+tmp/*
+coverage_report/
+.coverage
+__pycache__/
+.DS_Store
+coverage/
+
+# Editors
+.vscode/

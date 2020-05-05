@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: dev/Dockerfile-python
+      args:
+        DEVELOPMENT: 1
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DEVELOPMENT=1
+      - KBASE_ENDPOINT=http://localhost:5011/services
+      - WORKERS=2
+    ports:
+      - "127.0.0.1:5000:5000"
+    volumes:
+      - ${PWD}:/app
+
+  # Proxy requests from localhost:5011 to ci.kbase.us
+  # (for getting around CORS restrictions)
+  ci_proxy:
+    image: nginx:alpine
+    ports:
+      - "127.0.0.1:5011:5011"
+    volumes:
+      - ./dev/nginx-default.conf:/etc/nginx/conf.d/default.conf
