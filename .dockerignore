@@ -1,0 +1,13 @@
+node_modules
+
+# Environment variables
+.env
+
+# Caches and temp dirs
+*.pyc
+.mypy_cache/
+.cache/
+tmp/*
+coverage_report/
+.coverage
+__pycache__/

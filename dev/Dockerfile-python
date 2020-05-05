@@ -1,0 +1,18 @@
+# Python Dockerfile for local development
+FROM python:3.7-alpine
+
+# Install pip dependencies
+ARG DEVELOPMENT
+WORKDIR /app/
+COPY requirements.txt dev-requirements.txt /app/
+# apk dependencies below are needed for installing gevent
+RUN apk --update add --virtual build-dependencies python-dev build-base && \
+    pip install --upgrade pip && \
+    pip install --upgrade --no-cache-dir -r requirements.txt && \
+    if [ "$DEVELOPMENT" ]; then pip install --no-cache-dir -r dev-requirements.txt; fi && \
+    apk del build-dependencies
+
+ENV PYTHONPATH=/app
+# Use entr for auto-reloading on code changes
+RUN apk --update add entr
+CMD find /app -name \*.py -o -name \*.html | entr -r python /app/src/server.py
