@@ -18,11 +18,15 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
     - name: Install dependencies
       run: yarn install
 
-    # Runs a set of commands using the runners shell
+    # Actually do the testing
     - name: Run test
       run: |
         yarn test
+
+    - name: Send to coveralls.io
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
