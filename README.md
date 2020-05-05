@@ -49,3 +49,4 @@ To build locally, first increment the semantic version in `scripts/local-build.s
 These environment variables can be set:
 
 - `URL_PREFIX` - path prefix for all links and asset urls (css, js, images) that get generated in the app. Used when behind an nginx proxy.
+
