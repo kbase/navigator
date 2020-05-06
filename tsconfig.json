@@ -22,7 +22,7 @@
     "sourceMap": true
   },
   "include": [
-    "src/client/**/*"
+    "src/client/**/*", "test/unit/utils/readableDate.spec.ts"
   ],
   "exclude": [
     "**/*.spec.ts", "node_modules"

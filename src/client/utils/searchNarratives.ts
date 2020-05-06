@@ -1,5 +1,5 @@
-import { getToken } from '../utils/auth';
-import { Doc } from '../utils/narrativeData';
+import { getToken } from './auth';
+import { Doc } from './narrativeData';
 
 // Constants
 const SEARCH_FIELDS = ['narrative_title', 'creator', 'data_objects'];

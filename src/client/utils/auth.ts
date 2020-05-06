@@ -1,12 +1,17 @@
 import { getCookie } from './cookies';
 
-// Might return undefined
-export function getToken() {
+/**
+ * If the token isn't found, returns ''.
+ */
+export function getToken() : string {
   let token;
   try {
     token = getCookie('kbase_session');
   } catch (e) {
     token = window._env.token;
+  }
+  if (!token) {
+    token = '';
   }
   return token;
 }
