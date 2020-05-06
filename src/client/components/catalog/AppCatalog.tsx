@@ -6,7 +6,7 @@ import {
   DetailsResult,
 } from '../../utils/fetchApps';
 import { sortBy } from '../../utils/sortBy';
-import { formatSnakeCase } from '../../utils/formatSnakeCase';
+import { formatSnakeCase } from '../../utils/stringUtils';
 
 // Components
 import { SearchInput } from '../generic/SearchInput';

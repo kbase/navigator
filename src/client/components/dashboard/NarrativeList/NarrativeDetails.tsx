@@ -4,11 +4,8 @@ import React, { Component } from 'react';
 import { MiniTabs } from '../../generic/MiniTabs';
 
 // Utils
-import {
-  readableEpochDate,
-  readableISODate,
-} from '../../../utils/readableDate';
-import { getWSTypeName } from '../../../utils/getWSTypeName';
+import { readableDate } from '../../../utils/readableDate';
+import { getWSTypeName } from '../../../utils/stringUtils';
 import { Cell, Doc } from '../../../utils/narrativeData';
 
 interface Props {
@@ -62,7 +59,7 @@ export class NarrativeDetails extends Component<Props, State> {
     return (
       <div className="mb3">
         {descriptionList('Author', data.creator)}
-        {descriptionList('Created on', readableISODate(data.creation_date))}
+        {descriptionList('Created on', readableDate(data.creation_date))}
         {descriptionList('Total cells', data.total_cells)}
         {descriptionList('Data objects', data.data_objects.length)}
         {descriptionList('Visibility', data.is_public ? 'Public' : 'Private')}
