@@ -3,7 +3,6 @@ import { readableDate } from '../../../src/client/utils/readableDate';
 const happyCases = [
     ['2020-05-01T20:56:05+0000', '5/1/2020'],
     ['0', '1/1/2000'],
-    [0, '12/31/1969'],
     [1588695489876, '5/5/2020']
 ];
 
