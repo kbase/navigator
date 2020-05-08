@@ -122,7 +122,6 @@ export class NarrativeList extends Component<Props, State> {
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
       .then((resp: SearchResults) => {
-        console.log(resp);
         if (resp && resp.hits) {
           const total = resp.count;
           const items = resp.hits.map(hit => hit.doc);
@@ -148,12 +147,15 @@ export class NarrativeList extends Component<Props, State> {
 
   render() {
     return (
-      <div>
-        <div className="flex justify-between">
+      <div className="bg-light-gray w-100">
+        <div
+          className="flex justify-between bb b--black-30"
+          style={{ alignItems: 'stretch' }}
+        >
           {/* Tab sections */}
           <div className="pt2">
             <TabHeader
-              tabs={['My narratives', 'Shared with me', 'Tutorials', 'Public']}
+              tabs={['My Narratives', 'Shared With Me', 'Tutorials', 'Public']}
               onSelectTab={this.handleTabChange.bind(this)}
               selectedIdx={0}
             />
@@ -169,7 +171,7 @@ export class NarrativeList extends Component<Props, State> {
           </a>
         </div>
 
-        <div className="ba b--black-20">
+        <div>
           {/* Search, sort, filter */}
           <Filters
             onSetSearch={this.handleSearch.bind(this)}

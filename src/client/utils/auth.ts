@@ -37,5 +37,5 @@ export function getUsername(callBack: (username: string | null) => void) {
       sessionStorage.setItem('kbase_username', username);
       callBack(username);
     })
-    .catch(reason => console.log(reason));
+    .catch(reason => console.error(reason));
 }

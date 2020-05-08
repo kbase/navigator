@@ -91,19 +91,19 @@ export class NarrativeDetails extends Component<Props, State> {
     }
     return (
       <div
-        className="w-60 h-100 bg-white pv2 ph3"
+        className="w-60 bg-white pv2 ph3 bt bb br b--black-20"
         style={{
-          top: window._env.legacyNav ? '4.5rem' : '0.75rem',
+          top: window._env.legacyNav ? '4rem' : '0.75rem',
           position: 'sticky',
         }}
       >
         <div className="flex justify-between mb3">
-          <h4 className="ma0 pa0 pt2 f4">
+          <div className="ma0 pa0 pt2 f4">
             <a className="blue pointer no-underline dim" href={narrativeHref}>
               {activeItem.narrative_title || 'Untitled'}
               <i className="fa fa-external-link-alt ml2 black-20"></i>
             </a>
-          </h4>
+          </div>
         </div>
 
         {/*

@@ -82,6 +82,6 @@ export class TabHeader extends Component<Props, State> {
 
 // Active and inactive tab styles using Tachyons classes
 const tabClasses = {
-  active: 'dib pv3 ph3 br--top br2 bt bl br b bg-light-gray b--black-20',
-  inactive: 'dib pv3 pointer br--top br2 dim ph3 b--black-10 black-80',
+  active: 'dib pv3 ph3 bb bw1 b--green',
+  inactive: 'dib pv3 pointer dim ph3',
 };

@@ -17,7 +17,7 @@ export class Dashboard extends Component<Props, {}> {
 
   render() {
     return (
-      <section className="mt4 mw8 center">
+      <section>
         <NarrativeList />
       </section>
     );
