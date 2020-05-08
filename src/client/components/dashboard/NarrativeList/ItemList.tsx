@@ -49,10 +49,7 @@ export class ItemList extends Component<Props, State> {
     const upa = `${item.access_group}/${item.obj_id}/${item.version}`;
     // Action to select an item to view details
     return (
-      <div
-        onClick={() => this.handleClickItem(idx)}
-        key={upa}
-      >
+      <div onClick={() => this.handleClickItem(idx)} key={upa}>
         <div className={css.outer}>
           <div className={css.inner}>
             <div className="ma0 mb2 pa0 f5">

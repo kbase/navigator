@@ -148,7 +148,10 @@ export class NarrativeList extends Component<Props, State> {
   render() {
     return (
       <div className="bg-light-gray w-100">
-        <div className="flex justify-between bb b--black-30" style={{alignItems: 'stretch'}}>
+        <div
+          className="flex justify-between bb b--black-30"
+          style={{ alignItems: 'stretch' }}
+        >
           {/* Tab sections */}
           <div className="pt2">
             <TabHeader
