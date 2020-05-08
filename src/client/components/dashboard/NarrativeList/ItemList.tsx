@@ -37,7 +37,11 @@ export class ItemList extends Component<Props, State> {
     this.selectItem(idx);
   }
 
-  // view for a single narrative item
+  /**
+   * Creates a view for a single Narrative item.
+   * @param {Doc} item - the Narrative to show.
+   * @param {number} idx - the index of the narrative being shown. Used to communicate to the onSelectItem prop.
+   */
   itemView = (item: Doc, idx: number) => {
     // I need this until I figure out what's in item
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
@@ -48,17 +52,17 @@ export class ItemList extends Component<Props, State> {
       <div
         onClick={() => this.handleClickItem(idx)}
         key={upa}
-        className="br b--black-20"
       >
         <div className={css.outer}>
           <div className={css.inner}>
-            <h4 className="ma0 mb2 pa0 f5">
+            <div className="ma0 mb2 pa0 f5">
               {item.narrative_title || 'Untitled'}
-            </h4>
-            <p className="ma0 pa0 f6">
+            </div>
+            <p className="ma0 pa0 f7">
               Updated {timeago.format(item.timestamp)} by {item.creator}
             </p>
           </div>
+          <div className="center bb b--black-20"></div>
         </div>
       </div>
     );
@@ -110,7 +114,7 @@ export class ItemList extends Component<Props, State> {
       }
     }
     return (
-      <div className="w-40">
+      <div className="w-40 ba b--black-20">
         {items.map((item, idx) => this.itemView(item, idx))}
         {this.hasMoreButton()}
       </div>
@@ -122,10 +126,10 @@ export class ItemList extends Component<Props, State> {
 const itemClasses = {
   active: {
     inner: 'pv3 pr3',
-    outer: 'ph3 bb b--black-20 bg-light-blue',
+    outer: 'ph3 bg-light-blue',
   },
   inactive: {
     inner: 'pv3 pr3',
-    outer: 'ph3 bb b--black-20 dim black-70 pointer',
+    outer: 'ph3 dim black-70 pointer bg-white',
   },
 };

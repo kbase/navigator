@@ -97,29 +97,31 @@ class Page extends Component<Props, {}> {
 
   render() {
     return (
-      <Router history={history}>
-        <Route path="/dashboard">
-          <Dashboard history={this.nestedHistory} />
-        </Route>
-        <Route path="/search">
-          <Todo text="Search" />
-        </Route>
-        <Route path="/orgs">
-          <Todo text="Orgs" />
-        </Route>
-        <Route path="/catalog.*">
-          <Catalog history={this.nestedHistory} />
-        </Route>
-        <Route path="/notifications">
-          <Todo text="Notifications" />
-        </Route>
-        <Route path="/account">
-          <Todo text="Account" />
-        </Route>
-        <Route path={/.*/}>
-          <NotFoundPage />
-        </Route>
-      </Router>
+      <div className="ph4 bg-light-gray">
+        <Router history={history}>
+          <Route path="/dashboard">
+            <Dashboard history={this.nestedHistory} />
+          </Route>
+          <Route path="/search">
+            <Todo text="Search" />
+          </Route>
+          <Route path="/orgs">
+            <Todo text="Orgs" />
+          </Route>
+          <Route path="/catalog.*">
+            <Catalog history={this.nestedHistory} />
+          </Route>
+          <Route path="/notifications">
+            <Todo text="Notifications" />
+          </Route>
+          <Route path="/account">
+            <Todo text="Account" />
+          </Route>
+          <Route path={/.*/}>
+            <NotFoundPage />
+          </Route>
+        </Router>
+      </div>
     );
   }
 }

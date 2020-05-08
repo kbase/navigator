@@ -15,7 +15,7 @@ const exp = {
   module: {
     rules: [
       {
-        test: /\.tsx$/i,
+        test: /\.tsx?$/i,
         exclude: /node_modules/,
         use: {loader: 'ts-loader'}
       },
@@ -26,7 +26,7 @@ const exp = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.js', '.jsx', '.css'],
+    extensions: ['.tsx', '.ts', '.js', '.jsx', '.css'],
   },
   plugins: [
     new CompressionPlugin(),
