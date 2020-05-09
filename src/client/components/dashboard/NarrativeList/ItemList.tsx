@@ -123,7 +123,7 @@ export class ItemList extends Component<Props, State> {
 const itemClasses = {
   active: {
     inner: 'pv3 pr3',
-    outer: 'ph3 bg-light-blue',
+    outer: 'ph3 bg-lightest-blue',
   },
   inactive: {
     inner: 'pv3 pr3',

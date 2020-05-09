@@ -4,6 +4,7 @@ interface Props {
   selectedIdx: number;
   tabs: string[];
   onSelectTab?: (idx: number, name: string) => void;
+  className?: string;
 }
 
 interface State {
@@ -54,8 +55,12 @@ export class TabHeader extends Component<Props, State> {
   render() {
     const { tabs } = this.props;
     const { selectedIdx } = this.state;
+    let outerClass = "pt2";
+    if (this.props.className) {
+      outerClass += ` ${this.props.className}`;
+    }
     return (
-      <div className="pt2">
+      <div className={outerClass}>
         <ul
           className="list pa0 ma0 flex items-center"
           style={{ position: 'relative', top: '1px' }}
