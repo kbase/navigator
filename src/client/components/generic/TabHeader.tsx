@@ -55,7 +55,7 @@ export class TabHeader extends Component<Props, State> {
   render() {
     const { tabs } = this.props;
     const { selectedIdx } = this.state;
-    let outerClass = "pt2";
+    let outerClass = 'pt2';
     if (this.props.className) {
       outerClass += ` ${this.props.className}`;
     }

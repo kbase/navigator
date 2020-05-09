@@ -75,9 +75,11 @@ export class NarrativeDetails extends Component<Props, State> {
         {detailsHeaderItem('Visibility', data.is_public ? 'Public' : 'Private')}
         {detailsHeaderItem('Created on', readableDate(data.creation_date))}
         {detailsHeaderItem('Data objects', String(data.data_objects.length))}
-        {data.is_public || !sharedWith.length ? '' : detailsHeaderItem('Shared with', sharedWith.join(', '))}
+        {data.is_public || !sharedWith.length
+          ? ''
+          : detailsHeaderItem('Shared with', sharedWith.join(', '))}
       </div>
-    )
+    );
   }
 
   render() {
@@ -91,7 +93,7 @@ export class NarrativeDetails extends Component<Props, State> {
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
     let content: JSX.Element | string = '';
     // Choose which content to show based on selected tab
-    switch(selectedTabIdx) {
+    switch (selectedTabIdx) {
       case 1:
         content = cellPreview(activeItem);
         break;
@@ -115,9 +117,7 @@ export class NarrativeDetails extends Component<Props, State> {
             </a>
           </div>
         </div>
-        <div>
-          {this.detailsHeader(activeItem)}
-        </div>
+        <div>{this.detailsHeader(activeItem)}</div>
 
         {/*
           <div className='flex mb3'>
@@ -158,9 +158,8 @@ function detailsHeaderItem(key: string, value: string) {
     <div className="w-third pv1">
       {key}: <span className="b">{value}</span>
     </div>
-  )
+  );
 }
-
 
 function cellPreviewReducer(all: Array<Cell>, each: Cell): Array<Cell> {
   const prev = all[all.length - 1];
