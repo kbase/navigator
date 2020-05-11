@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 // Components
-import { MiniTabs } from '../../generic/MiniTabs';
 import SubTabs from '../../generic/SubTabs';
 
 // Utils
@@ -9,6 +8,7 @@ import { readableDate } from '../../../utils/readableDate';
 import { getWSTypeName } from '../../../utils/stringUtils';
 import { Cell, Doc } from '../../../utils/narrativeData';
 import { Runtime } from '../../../utils/runtime';
+import ControlMenu from './ControlMenu';
 
 interface Props {
   activeItem: Doc;
@@ -45,12 +45,12 @@ export class NarrativeDetails extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      // Index of the selected tab within MiniTabs
+      // Index of the selected tab within SubTabs
       selectedTabIdx: this.props.selectedTabIdx || 0,
     };
   }
 
-  // Handle the onSelect callback from MiniTabs
+  // Handle the onSelect callback from SubTabs
   handleOnTabSelect(idx: number) {
     this.setState({ selectedTabIdx: idx });
   }
@@ -109,12 +109,15 @@ export class NarrativeDetails extends Component<Props, State> {
           position: 'sticky',
         }}
       >
-        <div className="flex justify-between mb3">
-          <div className="ma0 pa0 pt2 f4">
+        <div className="flex justify-between mb3 ma0 pa0 pt2">
+          <div className="f4">
             <a className="blue pointer no-underline dim" href={narrativeHref}>
               {activeItem.narrative_title || 'Untitled'}
               <i className="fa fa-external-link-alt ml2 black-20"></i>
             </a>
+          </div>
+          <div className="ml-auto">
+            <ControlMenu narrative={this.props.activeItem} />
           </div>
         </div>
         <div>{this.detailsHeader(activeItem)}</div>
