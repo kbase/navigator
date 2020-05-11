@@ -7,6 +7,7 @@ const DEBOUNCE = 250;
 interface Props {
   onSetVal: (value: string) => void;
   loading: boolean;
+  placeholder?: string;
 }
 
 interface State {
@@ -63,7 +64,7 @@ export class SearchInput extends Component<Props, State> {
           className="w5-l pa2 br2 ba b--solid b--black-20"
           type="text"
           id={this.inputID}
-          placeholder="Search"
+          placeholder={this.props.placeholder || 'Search'}
           onInput={this.handleInput.bind(this)}
           style={{ paddingLeft: '2rem' }}
         />

@@ -2,11 +2,13 @@ import React, { Component } from 'react';
 
 // Components
 import { MiniTabs } from '../../generic/MiniTabs';
+import SubTabs from '../../generic/SubTabs';
 
 // Utils
 import { readableDate } from '../../../utils/readableDate';
 import { getWSTypeName } from '../../../utils/stringUtils';
 import { Cell, Doc } from '../../../utils/narrativeData';
+import { Runtime } from '../../../utils/runtime';
 
 interface Props {
   activeItem: Doc;
@@ -36,6 +38,8 @@ interface DataObjects {
 //   sharedWith: Array<string>;
 // }
 
+const runtime = new Runtime();
+
 // Narrative details side panel in the narrative listing.
 export class NarrativeDetails extends Component<Props, State> {
   constructor(props: Props) {
@@ -50,22 +54,30 @@ export class NarrativeDetails extends Component<Props, State> {
   handleOnTabSelect(idx: number) {
     this.setState({ selectedTabIdx: idx });
   }
-  // Basic details, such as author, dates, etc.
-  // Receives the narrative data from elasticsearch results for a single entry.
-  basicDetailsView(data: Doc) {
+
+  /**
+   * Shows some basic details, specifically:
+   *  - author (user id of owner)
+   *  - total cells
+   *  - visibility (public or private)
+   *  - created date
+   *  - data objects
+   * @param data
+   */
+  detailsHeader(data: Doc) {
     const sharedWith = data.shared_users.filter(
-      (user: string) => user !== window._env.username
+      (user: string) => user !== runtime.username()
     );
     return (
-      <div className="mb3">
-        {descriptionList('Author', data.creator)}
-        {descriptionList('Created on', readableDate(data.creation_date))}
-        {descriptionList('Total cells', data.total_cells)}
-        {descriptionList('Data objects', data.data_objects.length)}
-        {descriptionList('Visibility', data.is_public ? 'Public' : 'Private')}
+      <div className="flex flex-wrap f6 pb3">
+        {detailsHeaderItem('Author', data.creator)}
+        {detailsHeaderItem('Total cells', String(data.total_cells))}
+        {detailsHeaderItem('Visibility', data.is_public ? 'Public' : 'Private')}
+        {detailsHeaderItem('Created on', readableDate(data.creation_date))}
+        {detailsHeaderItem('Data objects', String(data.data_objects.length))}
         {data.is_public || !sharedWith.length
           ? ''
-          : descriptionList('Shared with', sharedWith.join(', '))}
+          : detailsHeaderItem('Shared with', sharedWith.join(', '))}
       </div>
     );
   }
@@ -81,13 +93,13 @@ export class NarrativeDetails extends Component<Props, State> {
     const narrativeHref = window._env.narrative + '/narrative/' + wsid;
     let content: JSX.Element | string = '';
     // Choose which content to show based on selected tab
-    if (selectedTabIdx === 0) {
-      // Show overview
-      content = this.basicDetailsView(activeItem);
-    } else if (selectedTabIdx === 1) {
-      content = dataView(activeItem);
-    } else if (selectedTabIdx === 2) {
-      content = cellPreview(activeItem);
+    switch (selectedTabIdx) {
+      case 1:
+        content = cellPreview(activeItem);
+        break;
+      default:
+        content = dataView(activeItem);
+        break;
     }
     return (
       <div
@@ -105,6 +117,7 @@ export class NarrativeDetails extends Component<Props, State> {
             </a>
           </div>
         </div>
+        <div>{this.detailsHeader(activeItem)}</div>
 
         {/*
           <div className='flex mb3'>
@@ -128,10 +141,10 @@ export class NarrativeDetails extends Component<Props, State> {
           </a>
           </div>
         */}
-        <MiniTabs
-          tabs={['Overview', 'Data', 'Preview']}
-          onSelect={this.handleOnTabSelect.bind(this)}
-          activeIdx={selectedTabIdx}
+        <SubTabs
+          tabs={['Data', 'Preview']}
+          onSelectTab={this.handleOnTabSelect.bind(this)}
+          selectedIdx={selectedTabIdx}
           className="mb3"
         />
         {content}
@@ -140,14 +153,11 @@ export class NarrativeDetails extends Component<Props, State> {
   }
 }
 
-// Dictionary term and definition for overview section
-// function dl(key, val) {
-function descriptionList(key: string, val: string | number): JSX.Element {
+function detailsHeaderItem(key: string, value: string) {
   return (
-    <dl className="ma0 flex justify-between bb b--black-20 pv2">
-      <dt className="dib b">{key}</dt>
-      <dd className="dib ml0 grau tr black-70">{val}</dd>
-    </dl>
+    <div className="w-third pv1">
+      {key}: <span className="b">{value}</span>
+    </div>
   );
 }
 

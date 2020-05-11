@@ -163,7 +163,7 @@ export class NarrativeList extends Component<Props, State> {
 
           {/* New narrative button */}
           <a
-            className="pointer dim dib pa2 white br2 b bg-dark-green dib no-underline"
+            className="pointer dim dib pa2 white br2 bg-dark-green dib no-underline"
             style={{ marginTop: '1rem', height: '2.25rem' }}
             href={NEW_NARR_URL}
           >

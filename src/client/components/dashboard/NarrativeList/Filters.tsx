@@ -58,10 +58,11 @@ export class Filters extends Component<Props, State> {
     return (
       <div className="bg-light-gray flex justify-between">
         {/* Left-aligned actions (eg. search) */}
-        <div className="pa3">
+        <div className="pv3">
           <SearchInput
             loading={Boolean(this.props.loading)}
             onSetVal={this.handleSearch.bind(this)}
+            placeholder="Search Narratives"
           />
         </div>
 
