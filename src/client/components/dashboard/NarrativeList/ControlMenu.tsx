@@ -25,7 +25,7 @@ const menuItems: Array<MenuItem> = [
   {
     title: 'Copy this Narrative',
     icon: 'fa fa-copy',
-    clickFn: testFunction
+    clickFn: testFunction,
   },
   {
     title: 'Rename',
