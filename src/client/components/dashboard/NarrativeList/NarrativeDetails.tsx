@@ -9,6 +9,7 @@ import { getWSTypeName } from '../../../utils/stringUtils';
 import { Cell, Doc } from '../../../utils/narrativeData';
 import { Runtime } from '../../../utils/runtime';
 import ControlMenu from './ControlMenu';
+import DataView from './DataView';
 
 interface Props {
   activeItem: Doc;
@@ -17,12 +18,6 @@ interface Props {
 
 interface State {
   selectedTabIdx: number;
-}
-
-interface DataObjects {
-  readableType: string;
-  obj_type: string;
-  name: string;
 }
 
 // interface DetailedData {
@@ -98,7 +93,7 @@ export class NarrativeDetails extends Component<Props, State> {
         content = cellPreview(activeItem);
         break;
       default:
-        content = dataView(activeItem);
+        content = <DataView dataObjects={activeItem.data_objects} />; //dataView(activeItem);
         break;
     }
     return (
@@ -286,49 +281,5 @@ function viewFullNarrativeLink(data: Doc) {
         View the full narrative
       </a>
     </p>
-  );
-}
-
-// Overview of data objects in the narrative
-function dataView(data: Doc) {
-  const rows = data.data_objects
-    .slice(0, 50)
-    .map(obj => {
-      obj.readableType = getWSTypeName(obj.obj_type);
-      return obj;
-    })
-    .sort((a, b) => a.readableType.localeCompare(b.readableType))
-    .map(obj => dataViewRow(obj));
-  return (
-    <div>
-      <p className="black-60">
-        {data.data_objects.length} total objects in the narrative:
-      </p>
-      <div className="dt dt--fixed">{rows}</div>
-      {viewFullNarrativeLink(data)}
-    </div>
-  );
-}
-
-// View for each row in the data listing for the narrative
-function dataViewRow(obj: DataObjects) {
-  const key = obj.name + obj.obj_type;
-  const leftWidth = 40; // percentage
-  return (
-    <div key={key} className="dt-row">
-      <span
-        className="dib mr2 dtc b pa2 truncate"
-        style={{ width: leftWidth + '%' }}
-      >
-        <i className="fa fa-database dib mr2 green"></i>
-        {obj.readableType}
-      </span>
-      <span
-        className="dib dtc pa2 black-60 truncate"
-        style={{ width: 100 - leftWidth + '%' }}
-      >
-        {obj.name}
-      </span>
-    </div>
   );
 }
