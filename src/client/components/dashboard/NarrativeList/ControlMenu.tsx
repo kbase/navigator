@@ -19,12 +19,17 @@ interface MenuItem {
 const menuItems: Array<MenuItem> = [
   {
     title: 'Manage Sharing',
-    icon: 'fa fa',
+    icon: 'fa fa-share-alt',
     clickFn: testFunction,
   },
   {
+    title: 'Copy this Narrative',
+    icon: 'fa fa-copy',
+    clickFn: testFunction
+  },
+  {
     title: 'Rename',
-    icon: 'fa fa',
+    icon: 'fa fa-paragraph',
     clickFn: testFunction,
   },
   {
@@ -34,7 +39,7 @@ const menuItems: Array<MenuItem> = [
   },
   {
     title: 'Delete',
-    icon: 'fa',
+    icon: 'fa fa-trash-o',
     clickFn: testFunction,
   },
 ];
@@ -85,7 +90,7 @@ export default class ControlMenu extends Component<Props, State> {
         ></span>
         {this.state.showMenu ? (
           <div
-            className="pa2 ba b--black-30 bg-white db fr absolute"
+            className="ba b--black-30 bg-white db fr absolute"
             style={{ top: '3em', right: '1em' }}
           >
             {menuItems.map((item, idx) => this.menuItem(item, idx))}
@@ -110,8 +115,8 @@ export default class ControlMenu extends Component<Props, State> {
           this.hideMenu();
         }}
       >
-        <span className={`${item.icon} pa1 blue`} />
-        <span className="ml1">{item.title}</span>
+        <span className={`${item.icon} w-10 blue`} />
+        <span className="ml2">{item.title}</span>
       </div>
     );
   }

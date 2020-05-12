@@ -112,8 +112,8 @@ export class NarrativeDetails extends Component<Props, State> {
         <div className="flex justify-between mb3 ma0 pa0 pt2">
           <div className="f4">
             <a className="blue pointer no-underline dim" href={narrativeHref}>
-              {activeItem.narrative_title || 'Untitled'}
-              <i className="fa fa-external-link-alt ml2 black-20"></i>
+              <span className="fa fa-external-link"></span>
+              <span className="ml2">{activeItem.narrative_title || 'Untitled'}</span>
             </a>
           </div>
           <div className="ml-auto">
