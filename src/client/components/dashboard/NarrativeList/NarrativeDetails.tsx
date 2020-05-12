@@ -20,7 +20,6 @@ interface State {
   selectedTabIdx: number;
 }
 
-
 // interface DetailedData {
 //   access_group: string | number;
 //   cells: Array<Cell>;
@@ -284,4 +283,3 @@ function viewFullNarrativeLink(data: Doc) {
     </p>
   );
 }
-
