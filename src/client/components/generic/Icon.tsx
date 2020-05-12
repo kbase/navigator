@@ -5,11 +5,13 @@ import React from 'react';
  */
 
 interface TypeProps {
-
+    objType: string;
 }
 
 interface CellProps {
-
+    cellType: string;
+    appId?: string;
+    appTag?: string;
 }
 
 export function TypeIcon(props: TypeProps) {

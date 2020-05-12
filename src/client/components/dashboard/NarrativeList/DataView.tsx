@@ -6,13 +6,6 @@ interface Props {
     dataObjects: Array<DataObject>
 }
 
-// interface DataObject {
-//     readableType: string;
-//     obj_type: string;
-//     name: string;
-// }
-
-
 export default function DataView(props: Props) {
     const rows = props.dataObjects
         .slice(0, 50)
@@ -25,7 +18,7 @@ export default function DataView(props: Props) {
     return (
         <div>
             <p className="black-60">
-                {props.dataObjects.length} total objects in the Narrative:
+                {props.dataObjects.length} total objects in the Narrative
             </p>
             <div className="dt dt--fixed">{rows}</div>
         </div>
