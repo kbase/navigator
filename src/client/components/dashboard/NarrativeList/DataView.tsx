@@ -16,9 +16,7 @@ export default function DataView(props: Props) {
     })
     .sort((a, b) => a.readableType.localeCompare(b.readableType))
     .map(obj => dataViewRow(obj));
-  return (
-    <div className="pt3">{rows}</div>
-  );
+  return <div className="pt3">{rows}</div>;
 
   // View for each row in the data listing for the narrative
   function dataViewRow(obj: DataObject) {

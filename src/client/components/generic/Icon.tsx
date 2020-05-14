@@ -20,10 +20,13 @@ export function TypeIcon(props: TypeProps) {
   const iconInfo = iconProvider.typeIcon(props.objType);
   return (
     <span className="fa-stack fa-lg">
-      <span className="fa fa-circle fa-stack-2x" style={{color: iconInfo.color}} />
+      <span
+        className="fa fa-circle fa-stack-2x"
+        style={{ color: iconInfo.color }}
+      />
       <span className={`fa fa-inverse fa-stack-1x ${iconInfo.icon}`} />
     </span>
-  )
+  );
 }
 
 export function CellIcon(props: CellProps) {}
