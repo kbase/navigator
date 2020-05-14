@@ -1,6 +1,7 @@
 import React from 'react';
 import { DataObject } from '../../../utils/narrativeData';
 import { getWSTypeName } from '../../../utils/stringUtils';
+import { TypeIcon } from '../../generic/Icon';
 
 interface Props {
   dataObjects: Array<DataObject>;
@@ -16,12 +17,7 @@ export default function DataView(props: Props) {
     .sort((a, b) => a.readableType.localeCompare(b.readableType))
     .map(obj => dataViewRow(obj));
   return (
-    <div>
-      <p className="black-60">
-        {props.dataObjects.length} total objects in the Narrative
-      </p>
-      <div className="dt dt--fixed">{rows}</div>
-    </div>
+    <div className="pt3">{rows}</div>
   );
 
   // View for each row in the data listing for the narrative
@@ -29,20 +25,14 @@ export default function DataView(props: Props) {
     const key = obj.name + obj.obj_type;
     const leftWidth = 40; // percentage
     return (
-      <div key={key} className="dt-row">
-        <span
-          className="dib mr2 dtc b pa2 truncate"
-          style={{ width: leftWidth + '%' }}
-        >
-          <i className="fa fa-database dib mr2 green"></i>
-          {obj.readableType}
-        </span>
-        <span
-          className="dib dtc pa2 black-60 truncate"
-          style={{ width: 100 - leftWidth + '%' }}
-        >
-          {obj.name}
-        </span>
+      <div key={key} className="flex flex-row flex-nowrap pv1 pl2">
+        <div>
+          <TypeIcon objType={obj.obj_type} />
+        </div>
+        <div className="ml4">
+          <div className="">{obj.name}</div>
+          <div className="black-80 f6 mt1">{obj.readableType}</div>
+        </div>
       </div>
     );
   }
