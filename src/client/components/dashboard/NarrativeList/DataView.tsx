@@ -1,6 +1,7 @@
 import React from 'react';
 import { DataObject } from '../../../utils/narrativeData';
 import { getWSTypeName } from '../../../utils/stringUtils';
+import { TypeIcon } from '../../generic/Icon';
 
 interface Props {
   dataObjects: Array<DataObject>;
@@ -34,7 +35,8 @@ export default function DataView(props: Props) {
           className="dib mr2 dtc b pa2 truncate"
           style={{ width: leftWidth + '%' }}
         >
-          <i className="fa fa-database dib mr2 green"></i>
+            <TypeIcon objType={obj.obj_type} />
+          {/* <i className="fa fa-database dib mr2 green"></i> */}
           {obj.readableType}
         </span>
         <span

@@ -1,4 +1,5 @@
 import React from 'react';
+import IconProvider, { IconInfo } from '../../api/iconProvider';
 
 /**
  * Generates various KBase Narrative icons from input props.
@@ -14,6 +15,15 @@ interface CellProps {
   appTag?: string;
 }
 
-export function TypeIcon(props: TypeProps) {}
+export function TypeIcon(props: TypeProps) {
+  const iconProvider = IconProvider.Instance;
+  const iconInfo = iconProvider.typeIcon(props.objType);
+  return (
+    <span className="fa-stack">
+      <span className="fa fa-circle fa-stack-2x" style={{color: iconInfo.color}} />
+      <span className={`fa fa-inverse fa-stack-1x ${iconInfo.icon}`} />
+    </span>
+  )
+}
 
 export function CellIcon(props: CellProps) {}
