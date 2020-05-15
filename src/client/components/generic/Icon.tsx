@@ -44,40 +44,50 @@ export function TypeIcon(props: TypeProps) {
 
 interface AppIconState {
   isLoading: boolean;
-  iconInfo?: IconInfo
+  iconInfo?: IconInfo;
 }
 
 export class AppCellIcon extends Component<AppIconProps, AppIconState> {
   constructor(props: AppIconProps, state: AppIconState) {
     super(props);
     this.state = {
-      isLoading: true
+      isLoading: true,
     };
   }
 
   async componentDidMount() {
     const iconProvider = IconProvider.Instance;
-    const iconInfo = await iconProvider.appIcon(this.props.appId, this.props.appTag as AppTag);
+    const iconInfo = await iconProvider.appIcon(
+      this.props.appId,
+      this.props.appTag as AppTag
+    );
     this.setState({
       isLoading: false,
-      iconInfo: iconInfo
+      iconInfo: iconInfo,
     });
   }
 
   render() {
-    const iconInfo = this.state.iconInfo ? this.state.iconInfo : { isImage: false, icon: 'fa fa-spinner', color: 'silver'};
+    const iconInfo = this.state.iconInfo
+      ? this.state.iconInfo
+      : { isImage: false, icon: 'fa fa-spinner', color: 'silver' };
 
     if (iconInfo.isImage) {
       return (
         <span>
-          <img src={iconInfo.url} style={{maxWidth: '2.5em', maxHeight: '2.5em', margin: 0}} />
+          <img
+            src={iconInfo.url}
+            style={{ maxWidth: '2.5em', maxHeight: '2.5em', margin: 0 }}
+          />
         </span>
       );
-    }
-    else {
+    } else {
       return (
         <span className="fa-stack fa-lg">
-          <span className="fa fa-square fa-stack-2x" style={{color: iconInfo.color}} />
+          <span
+            className="fa fa-square fa-stack-2x"
+            style={{ color: iconInfo.color }}
+          />
           <span className={`fa fa-inverse fa-stack-1x ${iconInfo.icon}`} />
         </span>
       );
@@ -96,7 +106,7 @@ export function CellIcon(cellType: string) {
 
 export function DefaultIcon(props: DefaultIconProps) {
   let icon = 'fa-code';
-  switch(props.cellType) {
+  switch (props.cellType) {
     case 'code':
       icon = CellIcons.code_cell;
       break;
@@ -115,8 +125,8 @@ export function DefaultIcon(props: DefaultIconProps) {
   }
   return (
     <span className="fa-stack fa-lg">
-      <span className="fa fa-square fa-stack-2x" style={{ color: 'silver'}}/>
+      <span className="fa fa-square fa-stack-2x" style={{ color: 'silver' }} />
       <span className={`fa fa-inverse fa-stack-1x ${icon}`} />
     </span>
-  )
+  );
 }

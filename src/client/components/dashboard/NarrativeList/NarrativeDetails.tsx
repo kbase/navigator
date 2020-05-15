@@ -92,7 +92,7 @@ export class NarrativeDetails extends Component<Props, State> {
     // Choose which content to show based on selected tab
     switch (selectedTabIdx) {
       case 1:
-        content = <Preview narrative={activeItem} />
+        content = <Preview narrative={activeItem} />;
         break;
       default:
         content = <DataView dataObjects={activeItem.data_objects} />;
