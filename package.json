@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@kbase/base-css": "0.0.2",
+    "@kbase/narrative-utils": "^0.0.5",
     "history": "^4.10.1",
     "react": "16.11.0",
     "react-dom": "16.11.0",

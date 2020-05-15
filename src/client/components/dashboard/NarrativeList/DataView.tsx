@@ -17,7 +17,9 @@ export default function DataView(props: Props) {
     .sort((a, b) => a.readableType.localeCompare(b.readableType))
     .map(obj => dataViewRow(obj));
   return (
-    <div className="pt3">{rows}</div>
+    <div className="pt3">
+      {rows.length ? rows : 'This Narrative has no data.'}
+    </div>
   );
 
   // View for each row in the data listing for the narrative

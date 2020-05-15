@@ -468,6 +468,14 @@
   resolved "https://registry.yarnpkg.com/@kbase/base-css/-/base-css-0.0.2.tgz#066ae2eb223fcfc6ef78691bf450ea89aa12ebe5"
   integrity sha512-o2mX70l/YRHOuTJG04mlOBdb5QHatzXvEQc0jG+mpLmR6X+ykI5afPYfzWyUGO8hPt0nY+SabOP8XkDvRdYlFw==
 
+"@kbase/narrative-utils@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@kbase/narrative-utils/-/narrative-utils-0.0.5.tgz#9741407d6c8e1351f823624704e0d4e5235e2037"
+  integrity sha512-Stot2sFxYLzL4ISSp6XmU3vQQ56SwuqjwIeuv4ePs5IEmj9AAkOGbpWZxwZImj17rSBHkoHymQmTqJinci058A==
+  dependencies:
+    bluebird "^3.5.3"
+    moment "^2.24.0"
+
 "@sinonjs/commons@^1.7.0":
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.7.2.tgz#505f55c74e0272b43f6c52d81946bed7058fc0e2"
@@ -1131,6 +1139,11 @@ binary-extensions@^1.0.0:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.13.1.tgz#598afe54755b2868a5330d2aff9d4ebb53209b65"
   integrity sha512-Un7MIEDdUC5gNpcGDV97op1Ywk748MpHcFTHoYs6qnj1Z3j7I53VG3nwZhKzoBZmbdRNnb6WRdFlwl7tSDuZGw==
+
+bluebird@^3.5.3:
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
+  integrity sha512-XpNj6GDQzdfW+r2Wnn7xiSAd7TM3jzkxGXBGTtWKuSXv1xUV+azxAm8jdWZN06QTQk+2N2XB9jRDkvbmQmcRtg==
 
 bluebird@^3.5.5:
   version "3.7.1"
@@ -3973,6 +3986,11 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   integrity sha1-MAV0OOrGz3+MR2fzhkjWaX11yQM=
   dependencies:
     minimist "0.0.8"
+
+moment@^2.24.0:
+  version "2.25.3"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.25.3.tgz#252ff41319cf41e47761a1a88cab30edfe9808c0"
+  integrity sha512-PuYv0PHxZvzc15Sp8ybUCoQ+xpyPWvjOuK72a5ovzp2LI32rJXOiIfyoFoYvG3s6EwwrdkMyWuRiEHSZRLJNdg==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
