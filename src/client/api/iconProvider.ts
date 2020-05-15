@@ -1,4 +1,5 @@
 import iconData from './icons.json';
+import { KBaseServiceClient } from '@kbase/narrative-utils';
 
 export interface IconInfo {
     icon?: string;
@@ -14,7 +15,7 @@ interface LoadedIconData {
     color_mapping: {[key: string]: string}
 }
 
-enum AppTag {
+export enum AppTag {
     release = 'release',
     beta = 'beta',
     dev = 'dev'
@@ -54,7 +55,7 @@ export default class IconProvider {
         };
         this.defaultApp = {
             icon: ICON_DATA.defaults.app,
-            color: ICON_DATA.colors[0],
+            color: "#683AB7",
             isImage: false
         };
         this.defaultType = {
@@ -91,13 +92,32 @@ export default class IconProvider {
         return this.typeIconInfos[lcObjType] ? this.typeIconInfos[lcObjType] : this.defaultType;
     }
 
-    public appIcon(appId: string, appTag: AppTag): IconInfo {
+    public async appIcon(appId: string, appTag: AppTag): Promise<IconInfo> {
         if (!(appTag in this.appIconCache)) {
             return this.defaultApp;
         }
         if (!this.appIconCache[appTag][appId]) {
-            // go fetch it
-            return this.defaultApp;
+            const client = new KBaseServiceClient({
+                module: 'NarrativeMethodStore',
+                url: window._env.kbase_endpoint + '/narrative_method_store/rpc'
+            });
+            try {
+                let methodInfo = await client.call('get_method_brief_info', [{ids: [appId], tag: appTag}]);
+                let icon = methodInfo[0].icon.url;
+                if (!icon) {
+                    this.appIconCache[appTag][appId] = this.defaultApp;
+                }
+                else {
+                    this.appIconCache[appTag][appId] = {
+                        isImage: true,
+                        url: `${window._env.kbase_endpoint}/narrative_method_store/${icon}`,
+                        color: 'silver'
+                    };
+                }
+            }
+            catch {
+                this.appIconCache[appTag][appId] = this.defaultApp;
+            }
         }
         return this.appIconCache[appTag][appId];
     }

@@ -10,6 +10,7 @@ import { Cell, Doc } from '../../../utils/narrativeData';
 import { Runtime } from '../../../utils/runtime';
 import ControlMenu from './ControlMenu';
 import DataView from './DataView';
+import Preview from './Preview';
 
 interface Props {
   activeItem: Doc;
@@ -79,6 +80,7 @@ export class NarrativeDetails extends Component<Props, State> {
 
   render() {
     const { activeItem } = this.props;
+    console.log(activeItem);
     if (!activeItem) {
       return <div></div>;
     }
@@ -90,10 +92,10 @@ export class NarrativeDetails extends Component<Props, State> {
     // Choose which content to show based on selected tab
     switch (selectedTabIdx) {
       case 1:
-        content = cellPreview(activeItem);
+        content = <Preview narrative={activeItem} />
         break;
       default:
-        content = <DataView dataObjects={activeItem.data_objects} />; //dataView(activeItem);
+        content = <DataView dataObjects={activeItem.data_objects} />;
         break;
     }
     return (
@@ -158,128 +160,5 @@ function detailsHeaderItem(key: string, value: string) {
     <div className="w-third pv1">
       {key}: <span className="b">{value}</span>
     </div>
-  );
-}
-
-function cellPreviewReducer(all: Array<Cell>, each: Cell): Array<Cell> {
-  const prev = all[all.length - 1];
-  if (each.cell_type === 'widget' || !each.cell_type.trim().length) {
-    // Filter out widgets for now
-    // Also, filter out blank cell types
-    return all;
-  } else if (
-    prev &&
-    each.cell_type === prev.cell_type &&
-    each.desc === prev.desc
-  ) {
-    // If a previous cell has the same content, increase the previous quantity and don't append
-    prev.count = prev.count || 1;
-    prev.count += 1;
-  } else {
-    // Append a new cell
-    if (!each.desc.trim().length) {
-      // Show some text for empty cells
-      each.desc = '(empty)';
-    } else {
-      // Only take the first 4 lines
-      let desc = each.desc
-        .split('\n')
-        .slice(0, 3)
-        .join('\n');
-      // Append ellipsis if we've shortened it
-      if (desc.length < each.desc.length) {
-        desc += '...';
-      }
-      each.desc = desc;
-    }
-    all.push(each);
-  }
-  return all;
-}
-
-// Preview of all notebook cells in the narrative
-function cellPreview(data: Doc) {
-  const leftWidth = 18;
-  const maxLength = 16;
-  // TODO move this into its own component class
-  const truncated = data.cells
-    .reduce(cellPreviewReducer, [])
-    .slice(0, maxLength);
-  const rows = truncated.map((cell, idx) => {
-    const faClass = cellIcons[cell.cell_type];
-    return (
-      <div
-        key={idx}
-        className="dt-row mb2"
-        style={{ justifyContent: 'space-evenly' }}
-      >
-        <span className="dtc pv2 pr2" style={{ width: leftWidth + '%' }}>
-          <i
-            style={{ width: '1.5rem' }}
-            className={(faClass || '') + ' dib mr2 light-blue tc'}
-          ></i>
-          <span className="b mr1">
-            {cellNames[cell.cell_type] || cell.cell_type || ''}
-          </span>
-          <span className="black-60 f6">
-            {cell.count ? ' ×' + cell.count : ''}
-          </span>
-        </span>
-        <span
-          className="dtc pa2 truncate black-70"
-          style={{ width: 100 - leftWidth + '%' }}
-        >
-          {cell.desc}
-        </span>
-      </div>
-    );
-  });
-  return (
-    <div>
-      <p className="black-60">
-        {data.cells.length} total cells in the narrative:
-      </p>
-      <div className="dt dt--fixed">{rows}</div>
-      {viewFullNarrativeLink(data)}
-    </div>
-  );
-}
-
-// Font-awesome class names for each narrative cell type
-const cellIcons: { [key: string]: string } = {
-  code_cell: 'fa fa-code',
-  kbase_app: 'fa fa-cube',
-  markdown: 'fa fa-paragraph',
-  widget: 'fa fa-wrench',
-  data: 'fa fa-database',
-};
-
-// Font-awesome class names for each narrative cell type
-enum CellIcons {
-  code_cell = 'fa fa-code',
-  kbase_app = 'fa fa-cube',
-  markdown = 'fa fa-paragraph',
-  widget = 'fa fa-wrench',
-  data = 'fa fa-database',
-}
-
-// Human readable names for each cell type.
-const cellNames: { [key: string]: string } = {
-  code_cell: 'Code',
-  markdown: 'Text',
-  kbase_app: 'App',
-  widget: 'Widget',
-  data: 'Data',
-};
-
-function viewFullNarrativeLink(data: Doc) {
-  const wsid = data.access_group;
-  const narrativeHref = window._env.narrative + '/narrative/' + wsid;
-  return (
-    <p>
-      <a className="no-underline" href={narrativeHref}>
-        View the full narrative
-      </a>
-    </p>
   );
 }
