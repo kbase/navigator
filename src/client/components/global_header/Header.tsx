@@ -152,6 +152,10 @@ export class Header extends Component<Props, State> {
   }
 
   render() {
+    let envBadge = null;
+    if (this.state.env !== 'NARRATIVE') {
+      envBadge = <EnvBadge env={this.state.env} envIcon={this.state.envIcon} />;
+    }
     return (
       <div>
         <h1 className="roboto-header">{this.props.title}</h1>
@@ -159,32 +163,7 @@ export class Header extends Component<Props, State> {
           className="flex top-0 right-0 absolute h-100"
           style={{ marginRight: '4px' }}
         >
-          <div
-            className="tc"
-            style={{
-              border: '1px silver solid',
-              padding: '3px',
-              margin: '2px',
-              height: '58px',
-              minWidth: '34px',
-              alignSelf: 'center',
-              marginRight: '24px',
-            }}
-          >
-            <div
-              style={{
-                fontSize: '14px',
-                fontWeight: 'bold',
-                paddingBottom: '4px',
-              }}
-            >
-              {this.state.env}
-            </div>
-            <i
-              className={this.state.envIcon}
-              style={{ color: '#2196F3', fontSize: '28px' }}
-            ></i>
-          </div>
+          { envBadge }
           <AccountDropdown
             username={this.state.username}
             realname={this.state.realname}
@@ -196,4 +175,39 @@ export class Header extends Component<Props, State> {
       </div>
     );
   }
+}
+
+interface EnvBadgeProps {
+  env?: string,
+  envIcon?: string
+}
+
+const EnvBadge: React.SFC<EnvBadgeProps> = (props) => {
+    return (
+      <div
+        className="tc"
+        style={{
+          border: '1px silver solid',
+          padding: '3px',
+          margin: '2px',
+          height: '58px',
+          minWidth: '34px',
+          alignSelf: 'center',
+          marginRight: '24px',
+        }}>
+        <div
+          style={{
+            fontSize: '14px',
+            fontWeight: 'bold',
+            paddingBottom: '4px',
+          }}
+        >
+          {props.env}
+        </div>
+        <i
+          className={props.envIcon}
+          style={{ color: '#2196F3', fontSize: '28px' }}
+        ></i>
+      </div>
+    );
 }
