@@ -74,7 +74,7 @@ export default class ControlMenu extends Component<Props, State> {
   }
 
   menuClicked() {
-    this.setState({ showMenu: !this.state.showMenu });
+    this.setState(prevState => ({ showMenu: !prevState.showMenu }));
   }
 
   hideMenu() {

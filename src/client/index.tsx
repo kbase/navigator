@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import Config from '../client/config';
 
 // Imports for page-specific components
 import { Router, Route } from '../client/components/generic/Router';
