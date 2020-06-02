@@ -1,0 +1,15 @@
+{
+    "service_routes": {
+        "auth": "/auth/api/V2",
+        "narrative_method_store": "/narrative_method_store",
+        "catalog": "/catalog",
+        "workspace": "/ws",
+        "search": "/searchapi2/rpc",
+        "service_wizard": "/service_wizard",
+        "user_profile": "/user_profile"
+    },
+    "view_routes": {
+        "narrative": "/narrative",
+        "login": "/#login"
+    }
+}

@@ -1,5 +1,5 @@
 import { KBaseServiceClient } from '@kbase/narrative-utils';
-import { getToken } from './auth';
+import Runtime from '../utils/runtime';
 
 /**
  * Interfaces that represent Narrative data returned from the search service.
@@ -51,8 +51,8 @@ export interface Doc {
 export function fetchNarrative(upa: string) {
   const client = new KBaseServiceClient({
     module: 'Workspace',
-    url: window._env.kbase_endpoint + '/ws',
-    authToken: getToken()
+    url: Runtime.getConfig().service_routes.workspace,
+    authToken: Runtime.token()
   });
   return client.call('get_objects2', [{'objects': [{'ref': upa}]}]);
 }

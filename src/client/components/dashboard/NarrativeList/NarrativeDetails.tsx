@@ -7,7 +7,7 @@ import SubTabs from '../../generic/SubTabs';
 import { readableDate } from '../../../utils/readableDate';
 import { getWSTypeName } from '../../../utils/stringUtils';
 import { Cell, Doc } from '../../../utils/narrativeData';
-import { Runtime } from '../../../utils/runtime';
+import Runtime from '../../../utils/runtime';
 import ControlMenu from './ControlMenu';
 import DataView from './DataView';
 import Preview from './Preview';
@@ -20,21 +20,6 @@ interface Props {
 interface State {
   selectedTabIdx: number;
 }
-
-// interface DetailedData {
-//   access_group: string | number;
-//   cells: Array<Cell>;
-//   narrative_title: string;
-//   shared_users: Array<string>;
-//   creator: string;
-//   creation_date: number;
-//   total_cells: number;
-//   data_objects: Array<DataObjects>;
-//   is_public: boolean;
-//   sharedWith: Array<string>;
-// }
-
-const runtime = new Runtime();
 
 // Narrative details side panel in the narrative listing.
 export class NarrativeDetails extends Component<Props, State> {
@@ -62,7 +47,7 @@ export class NarrativeDetails extends Component<Props, State> {
    */
   detailsHeader(data: Doc) {
     const sharedWith = data.shared_users.filter(
-      (user: string) => user !== runtime.username()
+      (user: string) => user !== Runtime.username()
     );
     return (
       <div className="flex flex-wrap f6 pb3">
@@ -80,14 +65,15 @@ export class NarrativeDetails extends Component<Props, State> {
 
   render() {
     const { activeItem } = this.props;
-    console.log(activeItem);
     if (!activeItem) {
       return <div></div>;
     }
 
     const { selectedTabIdx } = this.state;
     const wsid = activeItem.access_group;
-    const narrativeHref = window._env.narrative + '/narrative/' + wsid;
+    const narrativeHref = `${
+      Runtime.getConfig().view_routes.narrative
+    }/${wsid}`;
     let content: JSX.Element | string = '';
     // Choose which content to show based on selected tab
     switch (selectedTabIdx) {

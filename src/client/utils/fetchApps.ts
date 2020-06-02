@@ -1,3 +1,5 @@
+import Runtime from '../utils/runtime';
+
 // Return type of fetchApps; aggregated data about every app
 // Details is an array of app info, while runs is an object where the keys are app IDs
 export interface CombinedResult {
@@ -36,8 +38,8 @@ export interface DetailsResult {
 // For some reason, list_favorite_counts returns the module name as lowercased >x
 // So to have a canonical app id, we need module_name/app_id where module_name is always lowercased
 export async function fetchApps(tag = 'release') {
-  const catalogUrl = window._env.kbase_endpoint + '/catalog';
-  const nmsUrl = window._env.kbase_endpoint + '/narrative_method_store/rpc';
+  const catalogUrl = Runtime.getConfig().service_routes.catalog;
+  const nmsUrl = Runtime.getConfig().service_routes.narrative_method_store + '/rpc';
   const runs = fetch(catalogUrl, {
     method: 'POST',
     body: JSON.stringify({

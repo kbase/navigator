@@ -73,8 +73,8 @@ export default class ControlMenu extends Component<Props, State> {
     }
   }
 
-  showMenu() {
-    this.setState({ showMenu: true });
+  menuClicked() {
+    this.setState(prevState => ({ showMenu: !prevState.showMenu }));
   }
 
   hideMenu() {
@@ -86,7 +86,7 @@ export default class ControlMenu extends Component<Props, State> {
       <div className="cursor tr">
         <span
           className="black-20 dim fa fa-2x fa-cog"
-          onClick={e => this.showMenu()}
+          onClick={e => this.menuClicked()}
         ></span>
         {this.state.showMenu ? (
           <div

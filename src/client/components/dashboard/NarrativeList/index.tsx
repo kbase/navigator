@@ -8,6 +8,7 @@ import { NarrativeDetails } from './NarrativeDetails';
 import { Doc } from '../../../utils/narrativeData';
 
 // Utils
+import Runtime from '../../../utils/runtime';
 import {
   searchNarratives,
   SearchParams,
@@ -17,7 +18,7 @@ import { getUsername } from '../../../utils/auth';
 
 // Page length of search results
 const PAGE_SIZE = 20;
-const NEW_NARR_URL = window._env.narrative + '/#narrativemanager/new';
+const NEW_NARR_URL = Runtime.getConfig().host_root + '/#narrativemanager/new';
 
 interface State {
   // Whether we are loading data from the server

@@ -6,6 +6,8 @@ export { }
 declare global {
   interface Window {
     _env: {
+      host_root: string;
+      service_root: string;
       basepath: string;
       urlPrefix: string;
       username?: string | null;

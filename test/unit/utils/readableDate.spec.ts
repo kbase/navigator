@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import { readableDate } from '../../../src/client/utils/readableDate';
 
 const happyCases = [

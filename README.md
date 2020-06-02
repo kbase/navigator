@@ -51,4 +51,5 @@ To build locally, first increment the semantic version in `scripts/local-build.s
 These environment variables can be set:
 
 - `URL_PREFIX` - path prefix for all links and asset urls (css, js, images) that get generated in the app. Used when behind an nginx proxy.
-
+- `KBASE_ENDPOINT` - prefix to all KBase service endpoints - usually something like `https://kbase.us/services` for production.
+- `KBASE_ROOT` - prefix to all UI asset URLs - `https://narrative.kbase.us` in production.

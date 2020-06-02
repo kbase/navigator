@@ -10,15 +10,18 @@ RUN yarn run build && rm -rf node_modules
 
 # Set up python
 FROM python:3.7-alpine
-COPY --from=0 /app/src /app/src
+# FROM kbase/kb_python:python3
+COPY --from=0 /app /app
 COPY requirements.txt /app
 WORKDIR /app
 
-# apk dependencies below are needed for building sanic/uvloop
+RUN apk add --no-cache openssl
+
 RUN apk --update add --virtual build-dependencies python-dev build-base && \
     pip install --upgrade pip && \
     pip install --upgrade --no-cache-dir -r requirements.txt && \
     apk del build-dependencies
 
 ENV PYTHONPATH=/app
+
 CMD ["python", "/app/src/server.py"]

@@ -1,5 +1,6 @@
 import { getToken } from './auth';
 import { Doc } from './narrativeData';
+import Runtime from '../utils/runtime';
 
 // Constants
 const SEARCH_FIELDS = ['narrative_title', 'creator', 'data_objects'];
@@ -141,7 +142,7 @@ export function makeRequest({
     let token = getToken();
     Object.assign(headers, { Authorization: token });
   }
-  return fetch(window._env.kbase_endpoint + '/searchapi2/rpc', {
+  return fetch(Runtime.getConfig().service_routes.search, {
     method: 'POST',
     headers,
     body: JSON.stringify({ method: 'search_objects', params }),

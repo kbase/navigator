@@ -4,6 +4,8 @@
   window._env = {
     urlPrefix: '{{url_prefix}}',
     kbase_endpoint: '{{app.config.KBASE_ENDPOINT}}',
+    host_root: '{{app.config.KBASE_UI_ROOT}}',
+    service_root: '{{app.config.KBASE_ENDPOINT}}',
     narrative: '{{app.config.KBASE_UI_ROOT}}',
     auth_required: {{"true" if auth_required else "false"}},
   };
