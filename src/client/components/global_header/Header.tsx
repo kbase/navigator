@@ -21,14 +21,14 @@ interface Props {
   title: string;
 }
 
-const HEADER_ICONS: {[key: string]: string} = {
+const HEADER_ICONS: { [key: string]: string } = {
   ci: 'fa-flask',
   next: 'fa-bullseye',
   'narrative-dev': 'fa-thumbs-up',
   'narrative-refactor': 'fa-thumbs-up',
   narrative: '',
   appdev: 'fa-wrench',
-}
+};
 
 export class Header extends Component<Props, State> {
   constructor(props: Props) {
@@ -76,7 +76,7 @@ export class Header extends Component<Props, State> {
     let prefix: string = '';
     let icon: string[] = ['fa', 'fa-2x'];
     let env: string = 'ci';
-    let matches = Runtime.getConfig().host_root.match('\/\/([^\.]+)\.kbase.us');
+    let matches = Runtime.getConfig().host_root.match('//([^.]+).kbase.us');
     if (matches !== null) {
       env = matches[1];
     }
@@ -84,8 +84,7 @@ export class Header extends Component<Props, State> {
     if (env in HEADER_ICONS) {
       icon.push(HEADER_ICONS[env]);
       prefix = env.toUpperCase();
-    }
-    else {
+    } else {
       icon.push(HEADER_ICONS.ci);
     }
     this.setState({ env: prefix, envIcon: icon.join(' ') });
@@ -144,7 +143,8 @@ export class Header extends Component<Props, State> {
         // Remove the cookie
         removeCookie('kbase_session');
         // Redirect to the legacy signed-out page
-        window.location.href = Runtime.getConfig().host_root + '/#auth2/signedout';
+        window.location.href =
+          Runtime.getConfig().host_root + '/#auth2/signedout';
       })
       .catch(err => {
         console.error('Error signing out: ' + err);

@@ -71,7 +71,9 @@ export class NarrativeDetails extends Component<Props, State> {
 
     const { selectedTabIdx } = this.state;
     const wsid = activeItem.access_group;
-    const narrativeHref = `${Runtime.getConfig().view_routes.narrative}/${wsid}`;
+    const narrativeHref = `${
+      Runtime.getConfig().view_routes.narrative
+    }/${wsid}`;
     let content: JSX.Element | string = '';
     // Choose which content to show based on selected tab
     switch (selectedTabIdx) {

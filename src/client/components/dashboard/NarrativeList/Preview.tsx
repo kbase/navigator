@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import { Doc, fetchNarrative } from '../../../utils/narrativeData';
-import {
-  TypeIcon,
-  AppCellIcon,
-  DefaultIcon,
-} from '../../generic/Icon';
+import { TypeIcon, AppCellIcon, DefaultIcon } from '../../generic/Icon';
 import Runtime from '../../../utils/runtime';
 
 interface Props {
@@ -132,7 +128,9 @@ export default class Preview extends Component<Props, State> {
   }
 
   viewFullNarrativeLink(wsid: number) {
-    const narrativeHref = `${Runtime.getConfig().view_routes.narrative}/${wsid}`;
+    const narrativeHref = `${
+      Runtime.getConfig().view_routes.narrative
+    }/${wsid}`;
     return (
       <p>
         <a className="no-underline" href={narrativeHref}>
