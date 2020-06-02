@@ -163,7 +163,7 @@ export class Header extends Component<Props, State> {
           className="flex top-0 right-0 absolute h-100"
           style={{ marginRight: '4px' }}
         >
-          { envBadge }
+          {envBadge}
           <AccountDropdown
             username={this.state.username}
             realname={this.state.realname}
@@ -178,36 +178,37 @@ export class Header extends Component<Props, State> {
 }
 
 interface EnvBadgeProps {
-  env?: string,
-  envIcon?: string
+  env?: string;
+  envIcon?: string;
 }
 
-const EnvBadge: React.SFC<EnvBadgeProps> = (props) => {
-    return (
+const EnvBadge: React.SFC<EnvBadgeProps> = props => {
+  return (
+    <div
+      className="tc"
+      style={{
+        border: '1px silver solid',
+        padding: '3px',
+        margin: '2px',
+        height: '58px',
+        minWidth: '34px',
+        alignSelf: 'center',
+        marginRight: '24px',
+      }}
+    >
       <div
-        className="tc"
         style={{
-          border: '1px silver solid',
-          padding: '3px',
-          margin: '2px',
-          height: '58px',
-          minWidth: '34px',
-          alignSelf: 'center',
-          marginRight: '24px',
-        }}>
-        <div
-          style={{
-            fontSize: '14px',
-            fontWeight: 'bold',
-            paddingBottom: '4px',
-          }}
-        >
-          {props.env}
-        </div>
-        <i
-          className={props.envIcon}
-          style={{ color: '#2196F3', fontSize: '28px' }}
-        ></i>
+          fontSize: '14px',
+          fontWeight: 'bold',
+          paddingBottom: '4px',
+        }}
+      >
+        {props.env}
       </div>
-    );
-}
+      <i
+        className={props.envIcon}
+        style={{ color: '#2196F3', fontSize: '28px' }}
+      ></i>
+    </div>
+  );
+};
