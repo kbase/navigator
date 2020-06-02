@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Runtime from '../../utils/runtime';
 
 import {
   fetchApps,
@@ -289,8 +290,8 @@ function rowView(result: SDKApp) {
     </span>
   );
   if (result.icon && result.icon.url) {
-    const nmsUrl = window._env.kbase_endpoint + '/narrative_method_store/';
-    appIcon = <img src={nmsUrl + result.icon.url} />;
+    const nmsUrl = Runtime.getConfig().service_routes.narrative_method_store;
+    appIcon = <img src={`${nmsUrl}/${result.icon.url}`} />;
   }
   // Truncate the description to 180 chars
   let desc = result.desc;

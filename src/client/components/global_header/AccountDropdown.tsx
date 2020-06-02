@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-
-import { getToken } from '../../utils/auth';
-import { removeCookie } from '../../utils/cookies';
+import Runtime from '../../utils/runtime';
 
 interface State {
   dropdownHidden: boolean;
@@ -106,7 +104,7 @@ export class AccountDropdown extends Component<Props, State> {
       <a
         className="db no-underline br2 account-dropdown-signin"
         data-button="signin"
-        href={window._env.narrative + '/#login'}
+        href={Runtime.getConfig().host_root + '/#login'}
       >
         <div
           className="fa fa-sign-in"

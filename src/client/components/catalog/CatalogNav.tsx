@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { History, UnregisterCallback } from 'history';
+import Runtime from '../../utils/runtime';
 
 // Components
 
@@ -73,7 +74,7 @@ export class CatalogNav extends Component<Props, State> {
     const cls = itemClasses[active ? 'active' : 'inactive'];
     return (
       <a
-        href={window._env.basepath + ROUTES[idx].paths[0]}
+        href={Runtime.getConfig().host_root + '/' + ROUTES[idx].paths[0]}
         key={name}
         className={cls}
         onClick={ev => this.handleClickItem(ev, idx)}

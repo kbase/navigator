@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-
+import Runtime from '../../utils/runtime';
 import { removeCookie } from '../../utils/cookies';
 import { AccountDropdown } from './AccountDropdown';
 import { fetchProfileAPI } from '../../utils/userInfo';
+
 import { getUsername, getToken } from '../../utils/auth';
 
 interface State {
@@ -18,6 +19,15 @@ interface State {
 
 interface Props {
   title: string;
+}
+
+const HEADER_ICONS: {[key: string]: string} = {
+  ci: 'fa-flask',
+  next: 'fa-bullseye',
+  'narrative-dev': 'fa-thumbs-up',
+  'narrative-refactor': 'fa-thumbs-up',
+  narrative: '',
+  appdev: 'fa-wrench',
 }
 
 export class Header extends Component<Props, State> {
@@ -64,24 +74,21 @@ export class Header extends Component<Props, State> {
 
   setUrl_prefix() {
     let prefix: string = '';
-    let icon: string = '';
-    switch (window._env.urlPrefix) {
-      case '':
-      case 'https://ci.kbase.us':
-        prefix = 'CI';
-        icon = 'fa fa-2x fa-flask';
-        this.setState({ env: prefix, envIcon: icon });
-        break;
-      case 'https://appdev.kbase.us':
-        prefix = 'APPDEV';
-        icon = 'fa fa-2x fa-wrench';
-        this.setState({ env: prefix, envIcon: icon });
-        break;
-      default:
-        prefix = 'CI';
-        icon = 'fa fa-2x fa-flask';
+    let icon: string[] = ['fa', 'fa-2x'];
+    let env: string = 'ci';
+    let matches = Runtime.getConfig().host_root.match('\/\/([^\.]+)\.kbase.us');
+    if (matches !== null) {
+      env = matches[1];
     }
-    this.setState({ env: prefix, envIcon: icon });
+
+    if (env in HEADER_ICONS) {
+      icon.push(HEADER_ICONS[env]);
+      prefix = env.toUpperCase();
+    }
+    else {
+      icon.push(HEADER_ICONS.ci);
+    }
+    this.setState({ env: prefix, envIcon: icon.join(' ') });
   }
 
   async getUserInfo(username: string) {
@@ -108,7 +115,7 @@ export class Header extends Component<Props, State> {
   // Set gravatarURL
   gravatarSrc() {
     if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
-      return window._env.urlPrefix + 'static/images/nouserpic.png';
+      return Runtime.getConfig().host_root + '/static/images/nouserpic.png';
     } else if (this.state.gravatarHash) {
       return (
         'https://www.gravatar.com/avatar/' +
@@ -129,7 +136,7 @@ export class Header extends Component<Props, State> {
     const headers = {
       Authorization: token,
     };
-    fetch(window._env.kbase_endpoint + '/auth/logout', {
+    fetch(Runtime.getConfig().service_routes.auth + '/logout', {
       method: 'POST',
       headers,
     })
@@ -137,7 +144,7 @@ export class Header extends Component<Props, State> {
         // Remove the cookie
         removeCookie('kbase_session');
         // Redirect to the legacy signed-out page
-        window.location.href = window._env.narrative + '/#auth2/signedout';
+        window.location.href = Runtime.getConfig().host_root + '/#auth2/signedout';
       })
       .catch(err => {
         console.error('Error signing out: ' + err);

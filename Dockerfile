@@ -2,6 +2,7 @@
 FROM node:10-alpine
 COPY ./webpack.config.js ./tsconfig.json ./package.json yarn.lock /app/
 COPY src /app/src
+COPY conf /app/conf
 WORKDIR /app
 
 # Install npm dependencies and build static css/js
@@ -10,15 +11,41 @@ RUN yarn run build && rm -rf node_modules
 
 # Set up python
 FROM python:3.7-alpine
-COPY --from=0 /app/src /app/src
+# FROM kbase/kb_python:python3
+COPY --from=0 /app /app
 COPY requirements.txt /app
 WORKDIR /app
 
 # apk dependencies below are needed for building sanic/uvloop
+# RUN pip install --upgrade pip && \
+#     pip install --upgrade --no-cache-dir -r requirements.txt
+
+# RUN apt-get --update && \
+#     apt-get install --virtual
+RUN apk add --no-cache openssl
+
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+
 RUN apk --update add --virtual build-dependencies python-dev build-base && \
     pip install --upgrade pip && \
     pip install --upgrade --no-cache-dir -r requirements.txt && \
     apk del build-dependencies
 
+
+
 ENV PYTHONPATH=/app
-CMD ["python", "/app/src/server.py"]
+ENTRYPOINT [ "dockerize" ]
+CMD [ "--template", \
+      "/app/conf/deploy.json.templ:/app/src/static/config.json", \
+      "python", \
+      "/app/src/server.py" ]
+
+# CMD [
+#       "/kb/module/deployment/conf/.templates/deploy.cfg.templ:/kb/module/deploy.cfg" \
+#       "make start" ]
+# CMD [ "--template", \
+#       "/app/conf/.templates/deploy.cfg.templ:/app/"
+#       "python", "/app/src/server.py"]

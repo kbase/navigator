@@ -1,4 +1,7 @@
 import { getCookie } from './cookies';
+import Config from '../config';
+
+const CONFIG = Config.Instance;
 
 /**
  * If the token isn't found, returns ''.
@@ -27,7 +30,7 @@ export function getUsername(callBack: (username: string | null) => void) {
     callBack(sessionStorage.getItem('kbase_username'));
   }
   const headers = { Authorization: token };
-  fetch(window._env.kbase_endpoint + '/auth/api/V2/token', {
+  fetch(CONFIG.service_routes.auth + '/token', {
     method: 'GET',
     headers,
   })

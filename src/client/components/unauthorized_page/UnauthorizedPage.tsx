@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import Runtime from '../../utils/runtime';
 
-const SIGNIN_LINK = window._env.narrative + '/#login';
+const SIGNIN_LINK = Runtime.getConfig().host_root + '/#login';
 
 // Parent page component for the dashboard page
 export class Unauthorized extends Component {

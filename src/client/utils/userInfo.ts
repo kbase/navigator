@@ -1,15 +1,10 @@
 export {};
-import { getToken } from '../utils/auth';
+import Runtime from '../utils/runtime';
 
 async function getBFFServiceUrl(token: string) {
-  // TODO: for dev, the baseUrl will be whatever works for the CRA workflow, which is ''.
   let versionNum: number | null = null;
-  let url: string;
-  if (window._env.kbase_endpoint.includes('localhost')) {
-    url = 'https://ci.kbase.us/services/service_wizard';
-  } else {
-    url = window._env.kbase_endpoint + '/service_wizard';
-  }
+  let url: string = Runtime.getConfig().service_routes.service_wizard;
+
   const body = {
     id: 0,
     method: 'ServiceWizard.get_service_status',
@@ -41,7 +36,7 @@ async function getBFFServiceUrl(token: string) {
 }
 
 export async function fetchProfileAPI(username: string) {
-  let token = getToken();
+  let token = Runtime.token();
   if (!token) {
     throw new Error('Tried to fetch profile info without a token.');
   }

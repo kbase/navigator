@@ -1,5 +1,6 @@
 import iconData from './icons.json';
 import { KBaseServiceClient } from '@kbase/narrative-utils';
+import Runtime from '../utils/runtime';
 
 export interface IconInfo {
     icon?: string;
@@ -99,7 +100,7 @@ export default class IconProvider {
         if (!this.appIconCache[appTag][appId]) {
             const client = new KBaseServiceClient({
                 module: 'NarrativeMethodStore',
-                url: window._env.kbase_endpoint + '/narrative_method_store/rpc'
+                url: Runtime.getConfig().service_routes.narrative_method_store + '/rpc'
             });
             try {
                 let methodInfo = await client.call('get_method_brief_info', [{ids: [appId], tag: appTag}]);
@@ -110,7 +111,7 @@ export default class IconProvider {
                 else {
                     this.appIconCache[appTag][appId] = {
                         isImage: true,
-                        url: `${window._env.kbase_endpoint}/narrative_method_store/${icon}`,
+                        url: `${Runtime.getConfig().service_routes.narrative_method_store}/${icon}`,
                         color: 'silver'
                     };
                 }
