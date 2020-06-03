@@ -118,7 +118,11 @@ export default class Preview extends Component<Props, State> {
     let moreCells = null;
     if (this.state.cells.length > maxLength) {
       const extraCells = this.state.cells.length - maxLength;
-      moreCells = <p>+ {extraCells} more cell{extraCells > 1 ? 's' : ''}</p>;
+      moreCells = (
+        <p>
+          + {extraCells} more cell{extraCells > 1 ? 's' : ''}
+        </p>
+      );
     }
     return (
       <div>
