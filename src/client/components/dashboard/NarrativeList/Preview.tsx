@@ -22,15 +22,6 @@ interface PreviewCellProps {
   tag?: string | null;
 }
 
-// Human readable names for each cell type.
-const cellNames: { [key: string]: string } = {
-  code_cell: 'Code',
-  markdown: 'Text',
-  kbase_app: 'App',
-  widget: 'Widget',
-  data: 'Data',
-};
-
 export default class Preview extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -105,7 +96,11 @@ export default class Preview extends Component<Props, State> {
           tag = metadata?.appCell?.app?.tag;
           break;
         case 'data':
-          metaName = metadata?.dataCell?.objectInfo?.typeName;
+          const info = metadata?.dataCell?.objectInfo || {};
+          metaName = info?.typeName;
+          if (!metaName) {
+            metaName = info?.type;
+          }
           break;
       }
       return (
@@ -119,9 +114,16 @@ export default class Preview extends Component<Props, State> {
         />
       );
     });
+
+    let moreCells = null;
+    if (this.state.cells.length > maxLength) {
+      const extraCells = this.state.cells.length - maxLength;
+      moreCells = <p>+ {extraCells} more cell{extraCells > 1 ? 's' : ''}</p>;
+    }
     return (
       <div>
         <div>{rows}</div>
+        {moreCells}
         {this.viewFullNarrativeLink(this.props.narrative.access_group)}
       </div>
     );
@@ -153,7 +155,6 @@ export default class Preview extends Component<Props, State> {
 
 class PreviewCell extends Component<PreviewCellProps> {
   render() {
-    const leftWidth = 18;
     let icon;
     switch (this.props.cellType) {
       case 'app':
