@@ -128,7 +128,7 @@ export class FilterDropdown extends Component<Props, State> {
     if (this.state.isOpen) {
       dropdownItems = (
         <div
-          className="dib bg-light-gray ba b--black-20 shadow-3 br2"
+          className="dib bg-white ba b--black-20 shadow-3 br2"
           style={{
             position: 'absolute' as 'absolute',
             right: '0',
@@ -150,7 +150,7 @@ export class FilterDropdown extends Component<Props, State> {
     return (
       <div className="dib relative">
         <a
-          className="dim dib pa3 pointer"
+          className="dim dib pa2 br2 ba b--solid b--black-20 pointer bg-white"
           onClick={ev => this.handleMouseDown(ev)}
         >
           {this.props.txt + ': ' + selected}

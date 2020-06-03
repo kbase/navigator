@@ -56,7 +56,7 @@ export class Filters extends Component<Props, State> {
       'Least recently updated',
     ];
     return (
-      <div className="bg-light-gray flex justify-between">
+      <div className="bg-light-gray flex">
         {/* Left-aligned actions (eg. search) */}
         <div className="pv3">
           <SearchInput
@@ -67,10 +67,10 @@ export class Filters extends Component<Props, State> {
         </div>
 
         {/* Right-aligned actions (eg. filter dropdown) */}
-        <div className="pa2">
+        <div className="pa3">
           <FilterDropdown
             onSelect={this.handleFilter.bind(this)}
-            txt={'Sorting by'}
+            txt={'Sort by'}
             items={dropdownItems}
           />
         </div>
