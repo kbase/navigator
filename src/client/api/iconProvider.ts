@@ -83,6 +83,10 @@ export default class IconProvider {
     }
 
     public typeIcon(objType: string): IconInfo {
+        if (!objType) {
+            console.warn('Got objType: ', objType);
+            return this.defaultType;
+        }
         if (objType.includes('.')) {
             objType = objType.split('.')[1];
         }
