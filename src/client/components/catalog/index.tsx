@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
-import { History, UnregisterCallback } from 'history';
-
-import { fetchApps } from '../../utils/fetchApps';
+import { History } from 'history';
 
 // Components
 import { NotFoundPage } from '../not_found';
 import { Router, Route } from '../generic/Router';
 import { CatalogNav } from './CatalogNav';
 import { AppCatalog } from './AppCatalog';
-import { SearchInput } from '../generic/SearchInput';
-import { LoadMoreBtn } from '../generic/LoadMoreBtn';
 import { AppDetails } from '../app_details';
 
 interface Props {

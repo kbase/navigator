@@ -48,7 +48,7 @@ export class AccountDropdown extends Component<Props, State> {
   }
 
   toggleDropdown() {
-    this.setState({ dropdownHidden: !this.state.dropdownHidden });
+    this.setState(prevState => ({ dropdownHidden: !prevState.dropdownHidden }));
   }
 
   // View for the account drop down when signed in

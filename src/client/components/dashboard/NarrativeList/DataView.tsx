@@ -25,7 +25,6 @@ export default function DataView(props: Props) {
   // View for each row in the data listing for the narrative
   function dataViewRow(obj: DataObject) {
     const key = obj.name + obj.obj_type;
-    const leftWidth = 40; // percentage
     return (
       <div key={key} className="flex flex-row flex-nowrap pv1 pl2">
         <div>

@@ -5,8 +5,6 @@ import { render } from 'react-dom';
 import { Router, Route } from '../client/components/generic/Router';
 // path: /dashboard
 import { Dashboard } from './components/dashboard/index';
-// path: /object_relations
-import { ObjectRelations } from './components/object_relations/index';
 // path: /catalog
 import { Catalog } from './components/catalog/index';
 // Used when a suffix from some base-path is not found, such as "/account/xyz"

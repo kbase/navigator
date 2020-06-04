@@ -5,8 +5,7 @@ import SubTabs from '../../generic/SubTabs';
 
 // Utils
 import { readableDate } from '../../../utils/readableDate';
-import { getWSTypeName } from '../../../utils/stringUtils';
-import { Cell, Doc } from '../../../utils/narrativeData';
+import { Doc } from '../../../utils/narrativeData';
 import Runtime from '../../../utils/runtime';
 import ControlMenu from './ControlMenu';
 import DataView from './DataView';
