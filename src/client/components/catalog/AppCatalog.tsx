@@ -81,7 +81,7 @@ export class AppCatalog extends Component<Props, State> {
 
   // Load more button click; show more results
   appendPage() {
-    this.setState({ currentPage: this.state.currentPage + 1 });
+    this.setState(prevState => ({ currentPage: prevState.currentPage + 1 }));
   }
 
   // Handle input to the search box. In-memory search with no network request.
@@ -324,7 +324,6 @@ function rowView(result: SDKApp) {
 // Convert data from the server into objects that we use directly in the UI
 function mungeData(inpData: CombinedResult): Array<SDKApp> {
   let ret = inpData.details.map((data: DetailsResult) => {
-    const name = data.id.replace(data.module_name + '/', '');
     const runs = inpData.runs[data.id.toLowerCase()] || 0;
     return {
       name: data.name,

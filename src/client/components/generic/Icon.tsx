@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import IconProvider, { IconInfo, AppTag } from '../../api/iconProvider';
-import { Cell } from '../../utils/narrativeData';
 
 /**
  * Generates various KBase Narrative icons from input props.
@@ -43,17 +42,11 @@ export function TypeIcon(props: TypeProps) {
 }
 
 interface AppIconState {
-  isLoading: boolean;
   iconInfo?: IconInfo;
 }
 
 export class AppCellIcon extends Component<AppIconProps, AppIconState> {
-  constructor(props: AppIconProps, state: AppIconState) {
-    super(props);
-    this.state = {
-      isLoading: true,
-    };
-  }
+  state: AppIconState = {};
 
   async componentDidMount() {
     const iconProvider = IconProvider.Instance;
@@ -62,7 +55,6 @@ export class AppCellIcon extends Component<AppIconProps, AppIconState> {
       this.props.appTag as AppTag
     );
     this.setState({
-      isLoading: false,
       iconInfo: iconInfo,
     });
   }
@@ -105,7 +97,7 @@ export function CellIcon(cellType: string) {
 }
 
 export function DefaultIcon(props: DefaultIconProps) {
-  let icon = 'fa-code';
+  let icon;
   switch (props.cellType) {
     case 'code':
       icon = CellIcons.code_cell;

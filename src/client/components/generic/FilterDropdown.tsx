@@ -36,7 +36,7 @@ export class FilterDropdown extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    this.removeDocClickListener;
+    this.removeDocClickListener();
   }
 
   // Used in the componentDidMount document click event listener above
@@ -61,7 +61,7 @@ export class FilterDropdown extends Component<Props, State> {
       return;
     }
     this.addOrRemoveDocClickListener();
-    this.setState({ isOpen: !this.state.isOpen });
+    this.setState(prevState => ({ isOpen: !prevState.isOpen }));
   }
 
   addDocumentClickListener() {

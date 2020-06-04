@@ -128,10 +128,10 @@ export class NarrativeList extends Component<Props, State> {
           const items = resp.hits.map(hit => hit.doc);
           // If we are loading a subsequent page, append to items. Otherwise, replace them.
           if (searchParams.skip > 0) {
-            this.setState({
-              items: this.state.items.concat(items),
+            this.setState(prevState => ({
+              items: prevState.items.concat(items),
               totalItems: total,
-            });
+            }));
           } else {
             this.setState({ items, totalItems: total });
           }
