@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Doc } from '../../../../utils/narrativeData';
 import { findDOMNode } from 'react-dom';
 import ControlMenuItemProps from './ControlMenuItemProps';
 import Modal from '../../../generic/Modal';
@@ -91,6 +90,10 @@ export default class ControlMenu extends Component<
     this.setState({ showMenu: false });
   }
 
+  closeModal() {
+    this.setState({ showModal: false });
+  }
+
   menuItemClicked(item: MenuItem) {
     this.setState({
       showMenu: false,
@@ -105,7 +108,7 @@ export default class ControlMenu extends Component<
       menu = (
         <div
           className="ba b--black-30 bg-white db fr absolute"
-          style={{ top: '3em', right: '1em' }}
+          style={{ top: '3em', right: '1em', boxShadow: '0 2px 3px #aaa' }}
         >
           {menuItems.map((item, idx) => this.menuItem(item, idx))}
         </div>
@@ -115,8 +118,11 @@ export default class ControlMenu extends Component<
     let modal = null;
     if (this.state.showModal && this.state.modalItem) {
       modal = (
-        <Modal closeFn={() => this.setState({ showModal: false })}>
-          {React.createElement(this.state.modalItem.menuComponent, this.props)}
+        <Modal closeFn={() => this.closeModal()}>
+          {React.createElement(this.state.modalItem.menuComponent, {
+            ...this.props,
+            cancelFn: () => this.closeModal(),
+          })}
         </Modal>
       );
     }
@@ -137,9 +143,7 @@ export default class ControlMenu extends Component<
     return (
       <div
         key={item.title}
-        className={`flex pa2 cursor hover-bg-light-gray ${
-          idx > 0 ? 'bt b--black-20' : ''
-        }`}
+        className="flex pa2 cursor hover-bg-light-gray"
         style={{ flexFlow: 'row nowrap' }}
         onClick={e => {
           this.menuItemClicked(item);

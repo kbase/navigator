@@ -6,7 +6,7 @@ const inDevelopment = !process.env.PRODUCTION;
 
 const exp = {
   mode: inDevelopment ? 'development' : 'production',
-  devtool: inDevelopment ? 'cheap-module-source-map' : 'hidden-source-map',
+  devtool: inDevelopment ? 'inline-source-map' : 'hidden-source-map',
   entry: dir + '/src/client/index.tsx',
   output: {
     filename: 'bundle.js',

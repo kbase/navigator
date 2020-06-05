@@ -9,7 +9,7 @@
     "outDir": "./src/static/build",
     "noImplicitAny": true,
     "module": "esnext",
-    "target": "es5",
+    "target": "es6",
     "jsx": "react",
     "allowJs": true,
     "resolveJsonModule": true,
