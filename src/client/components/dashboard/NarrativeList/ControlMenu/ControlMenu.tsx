@@ -120,7 +120,10 @@ export default class ControlMenu extends Component<
     if (this.state.showModal && this.state.modalItem) {
       modal = (
         <Modal closeFn={() => this.closeModal()}>
-          {React.createElement(this.state.modalItem.menuComponent, {...this.props, cancelFn: () => this.closeModal()})}
+          {React.createElement(this.state.modalItem.menuComponent, {
+            ...this.props,
+            cancelFn: () => this.closeModal(),
+          })}
         </Modal>
       );
     }
