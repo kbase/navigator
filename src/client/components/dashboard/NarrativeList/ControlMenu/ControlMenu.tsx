@@ -1,54 +1,64 @@
 import React, { Component } from 'react';
-import { Doc } from '../../../utils/narrativeData';
+import { Doc } from '../../../../utils/narrativeData';
 import { findDOMNode } from 'react-dom';
-
-interface Props {
-  narrative: Doc;
-}
+import ControlMenuItemProps from './ControlMenuItemProps';
+import Modal from '../../../generic/Modal';
+import DeleteItem from './DeleteItem';
+import CopyItem from './CopyItem';
+import LinkOrgItem from './LinkOrgItem';
+import RenameItem from './RenameItem';
+import SharingItem from './SharingItem';
 
 interface State {
   showMenu: boolean;
+  showModal: boolean;
+  modalItem: MenuItem | null;
 }
 
 interface MenuItem {
   title: string;
   icon: string;
-  clickFn: (narrativeInfo: Doc) => void;
+  menuComponent: React.ComponentType<any>;
 }
 
 const menuItems: Array<MenuItem> = [
   {
     title: 'Manage Sharing',
     icon: 'fa fa-share-alt',
-    clickFn: testFunction,
+    menuComponent: SharingItem,
   },
   {
     title: 'Copy this Narrative',
     icon: 'fa fa-copy',
-    clickFn: testFunction,
+    menuComponent: CopyItem,
   },
   {
     title: 'Rename',
     icon: 'fa fa-paragraph',
-    clickFn: testFunction,
+    menuComponent: RenameItem,
   },
   {
     title: 'Link to Organization',
     icon: 'fa fa-users',
-    clickFn: testFunction,
+    menuComponent: LinkOrgItem,
   },
   {
     title: 'Delete',
     icon: 'fa fa-trash-o',
-    clickFn: testFunction,
+    menuComponent: DeleteItem,
   },
 ];
 
-export default class ControlMenu extends Component<Props, State> {
-  constructor(props: Props) {
+export default class ControlMenu extends Component<
+  ControlMenuItemProps,
+  State
+> {
+  constructor(props: ControlMenuItemProps) {
     super(props);
     this.state = {
       showMenu: false,
+      showModal: false,
+      modalItem: null,
     };
 
     this.toggleMenu = this.toggleMenu.bind(this);
@@ -81,23 +91,44 @@ export default class ControlMenu extends Component<Props, State> {
     this.setState({ showMenu: false });
   }
 
+  menuItemClicked(item: MenuItem) {
+    this.setState({
+      showMenu: false,
+      showModal: true,
+      modalItem: item,
+    });
+  }
+
   render() {
+    let menu = null;
+    if (this.state.showMenu) {
+      menu = (
+        <div
+          className="ba b--black-30 bg-white db fr absolute"
+          style={{ top: '3em', right: '1em' }}
+        >
+          {menuItems.map((item, idx) => this.menuItem(item, idx))}
+        </div>
+      );
+    }
+
+    let modal = null;
+    if (this.state.showModal && this.state.modalItem) {
+      modal = (
+        <Modal closeFn={() => this.setState({ showModal: false })}>
+          {React.createElement(this.state.modalItem.menuComponent, this.props)}
+        </Modal>
+      );
+    }
+
     return (
       <div className="cursor tr">
         <span
           className="black-20 dim fa fa-2x fa-cog"
           onClick={e => this.menuClicked()}
         ></span>
-        {this.state.showMenu ? (
-          <div
-            className="ba b--black-30 bg-white db fr absolute"
-            style={{ top: '3em', right: '1em' }}
-          >
-            {menuItems.map((item, idx) => this.menuItem(item, idx))}
-          </div>
-        ) : (
-          ''
-        )}
+        {menu}
+        {modal}
       </div>
     );
   }
@@ -111,8 +142,7 @@ export default class ControlMenu extends Component<Props, State> {
         }`}
         style={{ flexFlow: 'row nowrap' }}
         onClick={e => {
-          item.clickFn(this.props.narrative);
-          this.hideMenu();
+          this.menuItemClicked(item);
         }}
       >
         <span className={`${item.icon} w-10 blue`} />
@@ -120,9 +150,4 @@ export default class ControlMenu extends Component<Props, State> {
       </div>
     );
   }
-}
-
-function testFunction(narrativeInfo: Doc): void {
-  console.log(narrativeInfo);
-  alert('not implemented yet :(');
 }

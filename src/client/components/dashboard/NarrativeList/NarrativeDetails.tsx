@@ -7,7 +7,7 @@ import SubTabs from '../../generic/SubTabs';
 import { readableDate } from '../../../utils/readableDate';
 import { Doc } from '../../../utils/narrativeData';
 import Runtime from '../../../utils/runtime';
-import ControlMenu from './ControlMenu';
+import ControlMenu from './ControlMenu/ControlMenu';
 import DataView from './DataView';
 import Preview from './Preview';
 
