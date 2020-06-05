@@ -8,6 +8,6 @@ export default class LinkOrgItem extends Component<
   State
 > {
   render() {
-    return <div>I'm a link organizations component!</div>;
+    return <div>Link to Organizations function still in development.</div>;
   }
 }

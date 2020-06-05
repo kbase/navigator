@@ -8,6 +8,6 @@ export default class SharingItem extends Component<
   State
 > {
   render() {
-    return <div>I'm a sharing component!</div>;
+    return <div>The narrative sharing manager is still in development.</div>;
   }
 }
