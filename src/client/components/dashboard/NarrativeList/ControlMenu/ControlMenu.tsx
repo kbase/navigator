@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Doc } from '../../../../utils/narrativeData';
 import { findDOMNode } from 'react-dom';
 import ControlMenuItemProps from './ControlMenuItemProps';
 import Modal from '../../../generic/Modal';

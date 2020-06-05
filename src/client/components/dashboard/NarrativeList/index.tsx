@@ -192,6 +192,7 @@ export class NarrativeList extends Component<Props, State> {
 
             <NarrativeDetails
               activeItem={this.state.items[this.state.activeIdx]}
+              updateSearch={() => this.performSearch()}
             />
           </div>
         </div>

@@ -14,6 +14,7 @@ import Preview from './Preview';
 interface Props {
   activeItem: Doc;
   selectedTabIdx?: number;
+  updateSearch: () => void;
 }
 
 interface State {
@@ -101,7 +102,13 @@ export class NarrativeDetails extends Component<Props, State> {
             </a>
           </div>
           <div className="ml-auto">
-            <ControlMenu narrative={this.props.activeItem} />
+            <ControlMenu
+              narrative={this.props.activeItem}
+              doneFn={() => {
+                console.log('updating');
+                this.props.updateSearch();
+              }}
+            />
           </div>
         </div>
         <div>{this.detailsHeader(activeItem)}</div>
