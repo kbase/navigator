@@ -34,15 +34,6 @@ export default class IconProvider {
     private typeIconInfos: { [key: string]: IconInfo };
     private defaultApp: IconInfo;
     private defaultType: IconInfo;
-    // appIconCache - {
-    //     release: {
-    //         appId1: IconInfo,
-    //         appId2: IconInfo,
-    //     },
-    //     beta, {
-    //         appId1: IconInfo
-    //     }
-    // }
     private appIconCache: AppIconCache;
 
     private constructor() {
@@ -76,7 +67,6 @@ export default class IconProvider {
             }
         })
     }
-
 
     public static get Instance() {
         return this._instance || (this._instance = new this());

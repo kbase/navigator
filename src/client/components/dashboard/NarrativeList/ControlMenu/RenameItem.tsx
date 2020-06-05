@@ -5,6 +5,6 @@ interface State {}
 
 export default class RenameItem extends Component<ControlMenuItemProps, State> {
   render() {
-    return <div>I'm a rename component!</div>;
+    return <div>Not implemented yet, pending a Narrative Service function.</div>;
   }
 }
