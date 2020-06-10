@@ -26,15 +26,13 @@ export default class Modal extends Component<Props, State> {
       left: 0,
       right: 0,
       backgroundColor: 'rgba(0, 0, 0, 0.2)',
+      zIndex: 10,
     };
 
     const bodyStyle = {
       boxSizing: 'border-box',
       backgroundColor: 'white',
       borderRadius: '0.25rem',
-      // top: '30%',
-      // left: '50%',
-      // transform: 'translate(-50%, -30%)',
       margin: '0 auto',
       padding: '3rem',
       minHeight: '10rem',
@@ -43,6 +41,8 @@ export default class Modal extends Component<Props, State> {
       maxHeight: '80%',
       overflowY: 'auto',
       border: '1px solid rgba(0, 0, 0, 0.5)',
+      top: '15%',
+      position: 'absolute',
     };
     return this.state.open
       ? createPortal(
