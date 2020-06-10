@@ -42,7 +42,7 @@ export default class Modal extends Component<Props, State> {
       overflowY: 'auto',
       border: '1px solid rgba(0, 0, 0, 0.5)',
       top: '15%',
-      position: 'absolute'
+      position: 'absolute',
     };
     return this.state.open
       ? createPortal(
