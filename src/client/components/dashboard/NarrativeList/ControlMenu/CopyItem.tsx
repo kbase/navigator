@@ -20,7 +20,6 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
 
   async makeCopy() {
     this.setState({ makingCopy: true });
-    console.log('copy time');
     const config = Runtime.getConfig();
     const wsId = this.props.narrative.access_group;
     const objId = this.props.narrative.obj_id;
@@ -50,8 +49,8 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
     }
   }
 
-  validateName(event: any) {
-    const value = event.target.value;
+  validateName(event: React.ChangeEvent) {
+    const value = (event.target as HTMLInputElement).value;
     this.setState({ newName: value || '' });
   }
 
