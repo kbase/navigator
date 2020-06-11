@@ -20,9 +20,8 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
     this.state = {
       doingRename: false,
       newName: this.currentName,
-      renameError: null
+      renameError: null,
     };
-
   }
 
   validateName(event: React.ChangeEvent) {
@@ -112,4 +111,5 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
         {copyControls}
       </div>
     );
-  }}
+  }
+}
