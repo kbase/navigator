@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 
 interface Props {
   closeFn: () => void;
+  title?: string;
+  withCloseButton?: boolean;
 }
 
 interface State {
@@ -16,7 +18,7 @@ export default class Modal extends Component<Props, State> {
   }
 
   render() {
-    const backdropStyle = {
+    const backdropStyle: CSSProperties = {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
@@ -29,12 +31,10 @@ export default class Modal extends Component<Props, State> {
       zIndex: 10,
     };
 
-    const bodyStyle = {
+    const outerModalStyle: CSSProperties = {
       boxSizing: 'border-box',
       backgroundColor: 'white',
       borderRadius: '0.25rem',
-      margin: '0 auto',
-      padding: '3rem',
       minHeight: '10rem',
       minWidth: '30rem',
       maxWidth: '80%',
@@ -44,19 +44,49 @@ export default class Modal extends Component<Props, State> {
       top: '15%',
       position: 'absolute',
     };
+
+    const headerStyle: CSSProperties = {
+      borderBottom: '1px solid #ccc',
+      padding: '0.5rem',
+      fontWeight: 'bold',
+      display: 'flex',
+      flexFlow: 'row nowrap',
+    };
+
+    const bodyStyle = {
+      margin: '0 auto',
+      padding: '3rem',
+    };
+
+    let closeButton = null;
+    if (this.props.withCloseButton) {
+      closeButton = (
+        <span
+          className={'fa fa-times black-30 dim pointer'}
+          onClick={this.props.closeFn}
+        ></span>
+      );
+    }
+    let header = null;
+    if (this.props.title || this.props.withCloseButton) {
+      header = (
+        <div style={headerStyle}>
+          <div>{this.props.title}</div>
+          <div style={{ marginLeft: 'auto' }}>{closeButton}</div>
+        </div>
+      );
+    }
+
     return this.state.open
       ? createPortal(
-          <div
-            onClick={this.props.closeFn}
-            className=""
-            style={backdropStyle as CSSProperties}
-          >
+          <div onClick={this.props.closeFn} className="" style={backdropStyle}>
             <div
               onClick={e => e.stopPropagation()}
               className="bg-white br2 w"
-              style={bodyStyle as CSSProperties}
+              style={outerModalStyle}
             >
-              {this.props.children}
+              {header}
+              <div style={bodyStyle}>{this.props.children}</div>
             </div>
           </div>,
           document.body

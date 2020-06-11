@@ -17,6 +17,7 @@ interface State {
 interface MenuItem {
   title: string;
   icon: string;
+  dialogTitle?: string;
   menuComponent: React.ComponentType<any>;
 }
 
@@ -24,26 +25,31 @@ const menuItems: Array<MenuItem> = [
   {
     title: 'Manage Sharing',
     icon: 'fa fa-share-alt',
+    dialogTitle: 'Manage Sharing',
     menuComponent: SharingItem,
   },
   {
     title: 'Copy this Narrative',
     icon: 'fa fa-copy',
+    dialogTitle: 'Make a Copy',
     menuComponent: CopyItem,
   },
   {
     title: 'Rename',
     icon: 'fa fa-paragraph',
+    dialogTitle: 'Rename Narrative',
     menuComponent: RenameItem,
   },
   {
     title: 'Link to Organization',
     icon: 'fa fa-users',
+    dialogTitle: 'Link to Organization',
     menuComponent: LinkOrgItem,
   },
   {
     title: 'Delete',
     icon: 'fa fa-trash-o',
+    dialogTitle: 'Delete Narrative?',
     menuComponent: DeleteItem,
   },
 ];
@@ -118,7 +124,11 @@ export default class ControlMenu extends Component<
     let modal = null;
     if (this.state.showModal && this.state.modalItem) {
       modal = (
-        <Modal closeFn={() => this.closeModal()}>
+        <Modal
+          closeFn={() => this.closeModal()}
+          title={this.state.modalItem.dialogTitle}
+          withCloseButton={true}
+        >
           {React.createElement(this.state.modalItem.menuComponent, {
             ...this.props,
             cancelFn: () => this.closeModal(),
