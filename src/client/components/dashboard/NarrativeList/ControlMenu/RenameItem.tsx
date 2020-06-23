@@ -45,7 +45,7 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
       moduleName: 'NarrativeService',
       wizardUrl: config.service_routes.service_wizard,
       authToken: Runtime.token(),
-      version: 'beta'
+      version: 'beta',
     });
     try {
       const updatedUpa = await narrativeService.call('rename_narrative', [
