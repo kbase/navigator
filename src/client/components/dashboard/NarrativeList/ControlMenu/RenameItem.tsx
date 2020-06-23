@@ -34,6 +34,7 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
       console.log('not doing rename!');
       if (this.props.cancelFn) {
         this.props.cancelFn();
+        return;
       }
     }
     this.setState({ doingRename: true });
@@ -44,12 +45,13 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
       moduleName: 'NarrativeService',
       wizardUrl: config.service_routes.service_wizard,
       authToken: Runtime.token(),
+      version: 'beta',
     });
     try {
       const updatedUpa = await narrativeService.call('rename_narrative', [
         {
-          narrativeRef: `${wsId}/${objId}`,
-          newName: this.state.newName,
+          narrative_ref: `${wsId}/${objId}`,
+          new_name: this.state.newName,
         },
       ]);
       console.log(updatedUpa);
