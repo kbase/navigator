@@ -23,7 +23,7 @@ export class Filters extends Component<Props, State> {
     this.state = {
       searchParams: {
         term: '',
-        sort: 'Newest',
+        sort: 'Recently updated',
       },
     };
   }
@@ -50,10 +50,10 @@ export class Filters extends Component<Props, State> {
 
   render() {
     const dropdownItems = [
-      'Newest',
-      'Oldest',
       'Recently updated',
       'Least recently updated',
+      'Recently created',
+      'Oldest',
     ];
     return (
       <div className="bg-light-gray flex">

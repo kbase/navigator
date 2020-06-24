@@ -49,12 +49,14 @@ export class NarrativeDetails extends Component<Props, State> {
     const sharedWith = data.shared_users.filter(
       (user: string) => user !== Runtime.username()
     );
+    console.log(data);
     return (
       <div className="flex flex-wrap f6 pb3">
         {detailsHeaderItem('Author', data.creator)}
         {detailsHeaderItem('Total cells', String(data.total_cells))}
         {detailsHeaderItem('Visibility', data.is_public ? 'Public' : 'Private')}
         {detailsHeaderItem('Created on', readableDate(data.creation_date))}
+        {detailsHeaderItem('Last saved', readableDate(data.timestamp))}
         {detailsHeaderItem('Data objects', String(data.data_objects.length))}
         {data.is_public || !sharedWith.length
           ? ''

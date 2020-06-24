@@ -24,7 +24,6 @@ export class SearchInput extends Component<Props, State> {
     super(props);
     this.inputID = 'search-input' + String(Math.floor(Math.random() * 1000000));
     this.state = {
-      // value: props.value || '', <-- react doesn't like this
       value: '',
     };
   }
