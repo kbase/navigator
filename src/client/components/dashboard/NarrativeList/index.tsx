@@ -52,7 +52,7 @@ export class NarrativeList extends Component<Props, State> {
       // parameters to send to the searchNarratives function
       searchParams: {
         term: '',
-        sort: 'Newest',
+        sort: 'Recently updated',
         category: 'own',
         skip: 0,
         pageSize: PAGE_SIZE,

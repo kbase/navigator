@@ -45,7 +45,7 @@ export interface SearchResults {
 /**
  * Search narratives using ElasticSearch.
  * `term` is a search term
- * `sortBy` can be one of "Newest" or "Oldest"
+ * `sortBy` can be one of "Recently updated", "Recently created", "Least recently updated", "Oldest"
  * `category` can be one of:
  *   - 'own' - narratives created by the current user
  *   - 'shared' - narratives shared with the current user
@@ -58,7 +58,7 @@ export interface SearchResults {
 export function searchNarratives({
   term,
   category,
-  sort = 'Newest',
+  sort = 'Recently updated',
   skip = 0,
   pageSize = 20,
 }: SearchParams) {
@@ -97,7 +97,7 @@ export function searchNarratives({
     options.auth = true;
   }
   if (sort) {
-    if (sort === 'Newest') {
+    if (sort === 'Recently created') {
       options.sort = [{ creation_date: { order: 'desc' } }, '_score'];
     } else if (sort === 'Oldest') {
       options.sort = [{ creation_date: { order: 'asc' } }, '_score'];
