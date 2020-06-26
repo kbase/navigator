@@ -10,7 +10,6 @@ import DashboardButton from '../../../generic/DashboardButton';
 
 interface State {
   isLoading: boolean;
-  isUpdating: boolean;
   perms: NarrativePerms;
 }
 
@@ -52,7 +51,6 @@ export default class SharingItem extends Component<
 
     this.state = {
       isLoading: true,
-      isUpdating: false,
       perms: {
         allUserPerms: [],
         isGlobal: false,
@@ -334,7 +332,7 @@ interface PermSearchState {
   perm: string;
 }
 
-class PermSearch extends Component<PermSearchProps, PermSearchState> {
+class PermSearch extends Component<PermSearchProps> {
   state: PermSearchState = {
     inputValue: '',
     selectedUsers: [],
