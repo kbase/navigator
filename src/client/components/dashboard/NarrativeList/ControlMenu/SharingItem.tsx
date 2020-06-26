@@ -373,7 +373,7 @@ class PermSearch extends Component<PermSearchProps> {
     const selectStyles: Partial<Styles> = {
       menuPortal: base => ({ ...base, zIndex: 9999 }),
       // container: base => ({ ...base, flex: 1 })
-    }
+    };
     return (
       <div className="flex flex-row flex-nowrap">
         <AsyncSelect
@@ -382,7 +382,10 @@ class PermSearch extends Component<PermSearchProps> {
           defaultOptions
           loadOptions={this.props.searchUsers}
           placeholder={'Share with...'}
-          styles={{...selectStyles, container: base => ({ ...base, flex: 2})}}
+          styles={{
+            ...selectStyles,
+            container: base => ({ ...base, flex: 2 }),
+          }}
           menuPortalTarget={document.body}
           onInputChange={this.handleInputChange}
           onChange={this.handleUserChange}
@@ -390,11 +393,14 @@ class PermSearch extends Component<PermSearchProps> {
         <Select
           defaultValue={this.permOptions[0]}
           options={this.permOptions}
-          styles={{...selectStyles, container: base => ({ ...base, flex: 1})}}
+          styles={{
+            ...selectStyles,
+            container: base => ({ ...base, flex: 1 }),
+          }}
           menuPortalTarget={document.body}
           onChange={this.handlePermChange}
         />
-        <div style={{flexShrink: 1}}>
+        <div style={{ flexShrink: 1 }}>
           <DashboardButton
             disabled={this.state.selectedUsers.length === 0}
             onClick={this.updatePerms}
