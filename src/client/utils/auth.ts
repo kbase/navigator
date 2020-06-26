@@ -22,23 +22,44 @@ export function getToken() : string {
 // Fetch the username from the auth server or from session storage
 // Calls the given callback with the username (or `null`)
 export function getUsername(callBack: (username: string | null) => void) {
-  const token = getToken();
-  if (!token) {
+  if (!getToken()) {
     callBack(null);
   }
   if (sessionStorage.getItem('kbase_username')) {
     callBack(sessionStorage.getItem('kbase_username'));
   }
-  const headers = { Authorization: token };
-  fetch(CONFIG.service_routes.auth + '/token', {
-    method: 'GET',
-    headers,
-  })
-    .then(resp => resp.json())
+  makeAuthCall('/token')
     .then(json => {
       const username = json.user;
       sessionStorage.setItem('kbase_username', username);
       callBack(username);
     })
     .catch(reason => console.error(reason));
+}
+
+export async function getUsernames(userIds: string[]): Promise<{[key: string]: string}> {
+  const encodedUsers = userIds.map((u) => encodeURIComponent(u));
+  const operation = '/users/?list=' + encodedUsers.join(',');
+  return makeAuthCall(operation);
+}
+
+export async function searchUsernames(query: string, options?: string[]): Promise<{[key: string]: string}> {
+  let operation = '/users/search/' + query;
+  if (options) {
+    operation += '/?fields=' + options.join(',');
+  }
+  return makeAuthCall(operation);
+}
+
+function makeAuthCall(operation: string): Promise<any> {
+  const token = getToken();
+  if (!token) {
+    throw new Error('Auth token not available.');
+  }
+  const headers = { Authorization: token };
+  return fetch (CONFIG.service_routes.auth + operation, {
+    method: 'GET',
+    headers,
+  })
+    .then(resp => resp.json())
 }
