@@ -4,7 +4,7 @@ import { LoadingSpinner } from '../../../generic/LoadingSpinner';
 import { KBaseServiceClient } from '@kbase/narrative-utils';
 import Runtime from '../../../../utils/runtime';
 import { getUsernames, searchUsernames } from '../../../../utils/auth';
-import Select, { OptionsType } from 'react-select';
+import Select, { OptionsType, Styles } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import DashboardButton from '../../../generic/DashboardButton';
 
@@ -196,7 +196,7 @@ export default class SharingItem extends Component<
     }
 
     return (
-      <div style={{ width: '30rem', minHeight: '10rem' }}>
+      <div style={{ width: '35rem', minHeight: '10rem' }}>
         <GlobalPerms
           isGlobal={this.state.perms.isGlobal}
           isAdmin={this.state.perms.curUserPerm.perm === 'a'}
@@ -370,16 +370,22 @@ class PermSearch extends Component<PermSearchProps> {
   };
 
   render() {
+    const selectStyles: Partial<Styles> = {
+      menuPortal: base => ({ ...base, zIndex: 9999 }),
+      // container: base => ({ ...base, flex: 1 })
+    };
     return (
-      <div>
-        {/* // className="flex flex-row flex-nowrap"> */}
+      <div className="flex flex-row flex-nowrap">
         <AsyncSelect
           isMulti
           cacheOptions
           defaultOptions
           loadOptions={this.props.searchUsers}
           placeholder={'Share with...'}
-          styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+          styles={{
+            ...selectStyles,
+            container: base => ({ ...base, flex: 2 }),
+          }}
           menuPortalTarget={document.body}
           onInputChange={this.handleInputChange}
           onChange={this.handleUserChange}
@@ -387,17 +393,22 @@ class PermSearch extends Component<PermSearchProps> {
         <Select
           defaultValue={this.permOptions[0]}
           options={this.permOptions}
-          styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+          styles={{
+            ...selectStyles,
+            container: base => ({ ...base, flex: 1 }),
+          }}
           menuPortalTarget={document.body}
           onChange={this.handlePermChange}
         />
-        <DashboardButton
-          disabled={this.state.selectedUsers.length === 0}
-          onClick={this.updatePerms}
-          bgcolor={'lightblue'}
-        >
-          Apply
-        </DashboardButton>
+        <div style={{ flexShrink: 1 }}>
+          <DashboardButton
+            disabled={this.state.selectedUsers.length === 0}
+            onClick={this.updatePerms}
+            bgcolor={'lightblue'}
+          >
+            Apply
+          </DashboardButton>
+        </div>
       </div>
     );
   }
