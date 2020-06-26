@@ -38,10 +38,6 @@ export default class DeleteItem extends Component<ControlMenuItemProps, State> {
       if (this.props.cancelFn) {
         this.props.cancelFn();
       }
-      // this.setState({
-      //   doingDelete: false,
-      //   deleteError: error,
-      // });
     }
   }
 

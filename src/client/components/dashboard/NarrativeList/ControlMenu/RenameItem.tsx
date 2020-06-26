@@ -79,7 +79,7 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
     } else {
       copyControls = (
         <React.Fragment>
-          <div className="pb2">Enter a name for the new Narrative.</div>
+          <div className="pb2">Enter a new name for the Narrative.</div>
           <div>
             <input
               className="w-100 pa2 mb2 br2 ba b--solid b--black-20"

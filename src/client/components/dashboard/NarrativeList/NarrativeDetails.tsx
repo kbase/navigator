@@ -49,7 +49,6 @@ export class NarrativeDetails extends Component<Props, State> {
     const sharedWith = data.shared_users.filter(
       (user: string) => user !== Runtime.username()
     );
-    console.log(data);
     return (
       <div className="flex flex-wrap f6 pb3">
         {detailsHeaderItem('Author', data.creator)}
