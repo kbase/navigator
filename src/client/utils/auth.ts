@@ -25,16 +25,18 @@ export function getUsername(callBack: (username: string | null) => void) {
   if (!getToken()) {
     callBack(null);
   }
-  if (sessionStorage.getItem('kbase_username')) {
+  else if (sessionStorage.getItem('kbase_username')) {
     callBack(sessionStorage.getItem('kbase_username'));
   }
-  makeAuthCall('/token')
-    .then(json => {
-      const username = json.user;
-      sessionStorage.setItem('kbase_username', username);
-      callBack(username);
-    })
-    .catch(reason => console.error(reason));
+  else {
+    makeAuthCall('/token')
+      .then(json => {
+        const username = json.user;
+        sessionStorage.setItem('kbase_username', username);
+        callBack(username);
+      })
+      .catch(reason => console.error(reason));
+  }
 }
 
 export async function getUsernames(userIds: string[]): Promise<{[key: string]: string}> {
