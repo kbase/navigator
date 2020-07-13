@@ -56,3 +56,25 @@ export function fetchNarrative(upa: string) {
   });
   return client.call('get_objects2', [{'objects': [{'ref': upa}]}]);
 }
+
+/**
+ * Returns the current user's permissions for some narrative. This is either 'a', 'w', 'r', or 'n';
+ * @param wsId workspace id for a narrative of interest
+ */
+export async function getCurrentUserPermission(wsId: number): Promise<string> {
+  const client = new KBaseServiceClient({
+    module: 'Workspace',
+    url: Runtime.getConfig().service_routes.workspace,
+    authToken: Runtime.token()
+  });
+
+  let perms = await client.call('get_permissions_mass', [
+    { workspaces: [{ id: wsId }] },
+  ]);
+  perms = perms.perms[0];
+  const user = Runtime.username();
+  if (user) {
+    return perms[user];
+  }
+  return 'n';
+}

@@ -13,11 +13,13 @@ interface Urls {
     narrative_method_store: string;
     catalog: string;
     service_wizard: string;
+    groups: string;
 }
 
 interface Routes {
     narrative: string;
     login: string;
+    orgs: string;
 }
 
 const LOADED_CONFIG: LoadedConfigFile = configFile;
