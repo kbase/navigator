@@ -6,10 +6,12 @@
         "workspace": "/ws",
         "search": "/searchapi2/rpc",
         "service_wizard": "/service_wizard",
-        "user_profile": "/user_profile"
+        "user_profile": "/user_profile",
+        "groups": "/groups"
     },
     "view_routes": {
         "narrative": "/narrative",
-        "login": "/#login"
+        "login": "/#login",
+        "orgs": "/#orgs"
     }
 }

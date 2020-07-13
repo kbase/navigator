@@ -178,7 +178,7 @@ export default class SharingItem extends Component<
   render() {
     if (this.state.isLoading) {
       return (
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ width: '35rem', textAlign: 'center' }}>
           <LoadingSpinner loading={true} />
         </div>
       );
@@ -220,13 +220,11 @@ interface GlobalProps {
 
 function GlobalPerms(props: GlobalProps): React.ReactElement {
   const globalStyle: CSSProperties = {
-    // backgroundColor: props.isGlobal ? 'lightgreen' : 'lightblue',
-    // color: props.isGlobal ? 'green' : 'blue',
     textAlign: 'center',
   };
   const icon = props.isGlobal ? 'fa-unlock' : 'fa-lock';
 
-  let className = 'pa2 mb2 br2';
+  let className = 'pa2 mb2 br2 ba';
   if (props.isAdmin) {
     className += ' dim pointer';
   }
@@ -234,13 +232,13 @@ function GlobalPerms(props: GlobalProps): React.ReactElement {
   let text = '';
   if (props.isGlobal) {
     text = 'Public';
-    className += ' bg-light-green dark-green';
+    className += ' bg-light-green dark-green b--green';
     if (props.isAdmin) {
       text += ' (click to lock)';
     }
   } else {
     text = 'Private';
-    className += ' bg-lightest-blue dark-blue';
+    className += ' bg-lightest-blue dark-blue b--dark-blue';
     if (props.isAdmin) {
       text += ' (click to unlock)';
     }
@@ -372,7 +370,6 @@ class PermSearch extends Component<PermSearchProps> {
   render() {
     const selectStyles: Partial<Styles> = {
       menuPortal: base => ({ ...base, zIndex: 9999 }),
-      // container: base => ({ ...base, flex: 1 })
     };
     return (
       <div className="flex flex-row flex-nowrap">
