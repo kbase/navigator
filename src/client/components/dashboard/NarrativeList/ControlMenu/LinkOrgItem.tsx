@@ -3,7 +3,13 @@ import ControlMenuItemProps from './ControlMenuItemProps';
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
 import Select, { Styles } from 'react-select';
 import DashboardButton from '../../../generic/DashboardButton';
-import { getLinkedOrgs, GroupInfo, lookupUserOrgs, GroupIdentity, linkNarrativeToOrg } from '../../../../utils/orgInfo';
+import {
+  getLinkedOrgs,
+  GroupInfo,
+  lookupUserOrgs,
+  GroupIdentity,
+  linkNarrativeToOrg,
+} from '../../../../utils/orgInfo';
 import { getCurrentUserPermission } from '../../../../utils/narrativeData';
 import Runtime from '../../../../utils/runtime';
 
@@ -28,7 +34,6 @@ export default class LinkOrgItem extends Component<
   ControlMenuItemProps,
   State
 > {
-
   state = {
     isLoading: true,
     perm: 'n',
@@ -37,9 +42,9 @@ export default class LinkOrgItem extends Component<
     request: {
       error: false,
       text: null,
-      requestSent: false
-    }
-  }
+      requestSent: false,
+    },
+  };
 
   /**
    * Once the componenent mounts, it should look up the user's permissions
@@ -55,7 +60,9 @@ export default class LinkOrgItem extends Component<
   }
 
   async updateState() {
-    const sharePerms = await getCurrentUserPermission(this.props.narrative.access_group);
+    const sharePerms = await getCurrentUserPermission(
+      this.props.narrative.access_group
+    );
     const linkedOrgs = await getLinkedOrgs(this.props.narrative.access_group);
     let userOrgs = await lookupUserOrgs();
 
@@ -65,7 +72,7 @@ export default class LinkOrgItem extends Component<
     for (const org of linkedOrgs) {
       linkedOrgIds.add(org.id);
     }
-    userOrgs = userOrgs.filter((org) => {
+    userOrgs = userOrgs.filter(org => {
       return !linkedOrgIds.has(org.id);
     });
 
@@ -73,43 +80,47 @@ export default class LinkOrgItem extends Component<
       perm: sharePerms,
       linkedOrgs,
       isLoading: false,
-      userOrgs
+      userOrgs,
     });
   }
 
   async linkOrg(orgId: string): Promise<void> {
     try {
-      this.setState({isLoading: true});
-      const request = await linkNarrativeToOrg(this.props.narrative.access_group, orgId);
+      this.setState({ isLoading: true });
+      const request = await linkNarrativeToOrg(
+        this.props.narrative.access_group,
+        orgId
+      );
       let result: RequestResult = {
         error: false,
         text: null,
-        requestSent: false
+        requestSent: false,
       };
       if (request.error) {
         result.error = true;
-        switch(request.error.appcode) {
+        switch (request.error.appcode) {
           case 40010:
-            result.text = 'A request has already been made to add this Narrative to the group.'
+            result.text =
+              'A request has already been made to add this Narrative to the group.';
             break;
           default:
-            result.text = 'An error was made while processing your request.'
+            result.text = 'An error was made while processing your request.';
             break;
         }
         result.requestSent = false;
-      }
-      else {
+      } else {
         result.error = false;
-        result.text = request.complete ? '' : 'A request has been sent to the group admins.';
+        result.text = request.complete
+          ? ''
+          : 'A request has been sent to the group admins.';
         result.requestSent = true;
       }
       this.setState({
         isLoading: false,
-        request: result
+        request: result,
       });
       return this.updateState();
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
     }
   }
@@ -119,17 +130,14 @@ export default class LinkOrgItem extends Component<
     let linkedOrgsList = null;
     if (this.state.linkedOrgs.length > 0) {
       linkedOrgsList = this.state.linkedOrgs.map((org: GroupInfo) => (
-        <LinkedOrg
-          {...org}
-          key={org.id}
-        />
+        <LinkedOrg {...org} key={org.id} />
       ));
       linkedOrgsText = 'Organizations this Narrative is linked to:';
     }
     return (
-      <div className='pt2'>
-        <div style={{textAlign: 'center'}}>{linkedOrgsText}</div>
-        <div className='pt2'>{linkedOrgsList}</div>
+      <div className="pt2">
+        <div style={{ textAlign: 'center' }}>{linkedOrgsText}</div>
+        <div className="pt2">{linkedOrgsList}</div>
       </div>
     );
   }
@@ -141,23 +149,25 @@ export default class LinkOrgItem extends Component<
           <LoadingSpinner loading={true} />
         </div>
       );
-    }
-    else if (this.state.perm !== 'a') {
+    } else if (this.state.perm !== 'a') {
       return (
-        <div style={{textAlign: 'center'}}>
-          Only users with share access can request to add their narrative to a group.
+        <div style={{ textAlign: 'center' }}>
+          Only users with share access can request to add their narrative to a
+          group.
         </div>
-      )
-    }
-    else {
+      );
+    } else {
       const linkedOrgs = this.makeLinkedOrgsList();
       let message = null;
       if (this.state.request.error || this.state.request.requestSent) {
         message = (
-          <div className={`pa3 mb2 ba br2 b--gold bg-light-yellow`} style={{textAlign: 'center'}}>
+          <div
+            className={`pa3 mb2 ba br2 b--gold bg-light-yellow`}
+            style={{ textAlign: 'center' }}
+          >
             {this.state.request.text}
           </div>
-        )
+        );
       }
       return (
         <div style={{ width: '35rem', minHeight: '10rem' }}>
@@ -180,22 +190,22 @@ interface LinkedOrgProps extends GroupInfo {
 const LinkedOrg = (props: LinkedOrgProps) => {
   console.log(props);
   return (
-    <div className='pl2 pt2'>
+    <div className="pl2 pt2">
       <a
-        className='blue pointer no-underline dim'
+        className="blue pointer no-underline dim"
         href={`${Runtime.getConfig().view_routes.orgs}/${props.id}`}
-        target='_blank'
-        >
-        <span className='fa fa-external-link pr1' />
+        target="_blank"
+      >
+        <span className="fa fa-external-link pr1" />
         {props.name}
       </a>
     </div>
-  )
-}
+  );
+};
 
 interface OrgListProps {
   linkOrg: (orgId: string) => void;
-  orgs: Array<GroupIdentity>
+  orgs: Array<GroupIdentity>;
 }
 
 interface OrgOption {
@@ -214,18 +224,17 @@ class OrgSelect extends Component<OrgListProps, OrgListState> {
     for (const org of props.orgs) {
       this.orgOptions.push({
         value: org.id,
-        label: org.name
+        label: org.name,
       });
     }
     this.state = {
-      selectedOrgId: ''
+      selectedOrgId: '',
     };
   }
 
   handleOrgChange = (selected: any) => {
-
-    this.setState({ selectedOrgId: selected?.value || ''});
-  }
+    this.setState({ selectedOrgId: selected?.value || '' });
+  };
 
   render() {
     const selectStyles: Partial<Styles> = {
@@ -241,21 +250,22 @@ class OrgSelect extends Component<OrgListProps, OrgListState> {
           placeholder={'Organizations you belong to...'}
           styles={{
             ...selectStyles,
-            container: base => ({ ...base, flex: 2 })
+            container: base => ({ ...base, flex: 2 }),
           }}
           menuPortalTarget={document.body}
           className="basic-single"
           classNamePrefix="select"
           options={this.orgOptions}
           onChange={this.handleOrgChange}
-          />
+        />
         <DashboardButton
           disabled={this.state.selectedOrgId.length === 0}
           onClick={() => this.props.linkOrg(this.state.selectedOrgId)}
-          bgcolor={'lightblue'}>
-            Link
+          bgcolor={'lightblue'}
+        >
+          Link
         </DashboardButton>
       </div>
-    )
+    );
   }
 }
