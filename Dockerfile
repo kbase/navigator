@@ -17,7 +17,7 @@ WORKDIR /app
 
 RUN apk add --no-cache openssl
 
-RUN apk --update add --virtual build-dependencies python-dev build-base && \
+RUN apk --update add --virtual build-dependencies python3-dev build-base && \
     pip install --upgrade pip && \
     pip install --upgrade --no-cache-dir -r requirements.txt && \
     apk del build-dependencies
