@@ -152,8 +152,7 @@ export default class LinkOrgItem extends Component<
     } else if (this.state.perm !== 'a') {
       return (
         <div style={{ textAlign: 'center' }}>
-          Only users with share access can request to add their narrative to a
-          group.
+          You don't have permission to request to add this Narrative to a group.
         </div>
       );
     } else {
