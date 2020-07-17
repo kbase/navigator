@@ -6,7 +6,7 @@ import DeleteItem from './DeleteItem';
 import CopyItem from './CopyItem';
 import LinkOrgItem from './LinkOrgItem';
 import RenameItem from './RenameItem';
-import SharingItem from './SharingItem';
+import SharingItem from './sharing/SharingItem';
 
 interface State {
   showMenu: boolean;
