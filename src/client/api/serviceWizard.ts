@@ -27,7 +27,8 @@ export class DynamicServiceClient extends KBaseServiceClient {
         this.version = options.version || 'release';
     }
 
-    private async getServiceUrl(): Promise<string> {
+    async getServiceUrl(): Promise<string> {
+        console.warn('GETTING URL from ' + this.wizardClient.url);
         if (!this.dynServUrl || this.isExpired()) {
             const wizardResponse = await this.wizardClient.call('get_service_status', [{
                 module_name: this.module,
