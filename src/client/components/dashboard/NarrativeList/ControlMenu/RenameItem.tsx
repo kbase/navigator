@@ -4,11 +4,13 @@ import DashboardButton from '../../../generic/DashboardButton';
 import Runtime from '../../../../utils/runtime';
 import { DynamicServiceClient } from '../../../../api/serviceWizard';
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
+import { getCurrentUserPermission } from '../../../../utils/narrativeData';
 
 interface State {
-  doingRename: boolean;
+  isLoading: boolean;
   newName: string;
   renameError: any;
+  canRename: boolean;
 }
 
 export default class RenameItem extends Component<ControlMenuItemProps, State> {
@@ -18,10 +20,21 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
     super(props);
     this.currentName = this.props.narrative.narrative_title;
     this.state = {
-      doingRename: false,
+      isLoading: true,
       newName: this.currentName,
       renameError: null,
+      canRename: false,
     };
+  }
+
+  async componentDidMount() {
+    const userPerm = await getCurrentUserPermission(
+      this.props.narrative.access_group
+    );
+    this.setState({
+      isLoading: false,
+      canRename: userPerm === 'a',
+    });
   }
 
   validateName(event: React.ChangeEvent) {
@@ -37,7 +50,7 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
         return;
       }
     }
-    this.setState({ doingRename: true });
+    this.setState({ isLoading: true });
     const config = Runtime.getConfig();
     const wsId = this.props.narrative.access_group;
     const objId = this.props.narrative.obj_id;
@@ -48,20 +61,19 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
       version: 'beta',
     });
     try {
-      const updatedUpa = await narrativeService.call('rename_narrative', [
+      await narrativeService.call('rename_narrative', [
         {
           narrative_ref: `${wsId}/${objId}`,
           new_name: this.state.newName,
         },
       ]);
-      console.log(updatedUpa);
       this.props.doneFn();
       if (this.props.cancelFn) {
         this.props.cancelFn();
       }
     } catch (error) {
       this.setState({
-        doingRename: false,
+        isLoading: false,
         renameError: error,
       });
     }
@@ -73,11 +85,11 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
 
   render() {
     let loadingSpinner = null;
-    let copyControls = null;
-    if (this.state.doingRename) {
+    let renameControls = null;
+    if (this.state.isLoading) {
       loadingSpinner = LoadingSpinner({ loading: true });
-    } else {
-      copyControls = (
+    } else if (this.state.canRename) {
+      renameControls = (
         <React.Fragment>
           <div className="pb2">Enter a new name for the Narrative.</div>
           <div>
@@ -101,6 +113,8 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
           </div>
         </React.Fragment>
       );
+    } else {
+      renameControls = 'You do not have permission to rename this Narrative';
     }
     let error = null;
     if (this.state.renameError) {
@@ -110,7 +124,7 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
       <div style={{ textAlign: 'center' }}>
         {loadingSpinner}
         {error}
-        {copyControls}
+        {renameControls}
       </div>
     );
   }

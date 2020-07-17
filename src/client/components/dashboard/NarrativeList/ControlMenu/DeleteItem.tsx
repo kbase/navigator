@@ -4,21 +4,34 @@ import { LoadingSpinner } from '../../../generic/LoadingSpinner';
 import DashboardButton from '../../../generic/DashboardButton';
 import Runtime from '../../../../utils/runtime';
 import { KBaseServiceClient } from '@kbase/narrative-utils';
+import { getCurrentUserPermission } from '../../../../utils/narrativeData';
 
 interface State {
-  doingDelete: boolean;
+  isLoading: boolean;
   deleteError: any;
+  canDelete: boolean;
 }
 
 export default class DeleteItem extends Component<ControlMenuItemProps, State> {
   state = {
-    doingDelete: false,
+    isLoading: true,
     deleteError: null,
+    canDelete: false,
   };
+
+  async componentDidMount() {
+    const perm = await getCurrentUserPermission(
+      this.props.narrative.access_group
+    );
+    this.setState({
+      isLoading: false,
+      canDelete: perm === 'a',
+    });
+  }
 
   async doDelete() {
     this.setState({
-      doingDelete: true,
+      isLoading: true,
     });
     const workspaceClient = new KBaseServiceClient({
       module: 'Workspace',
@@ -49,9 +62,9 @@ export default class DeleteItem extends Component<ControlMenuItemProps, State> {
   render() {
     let loadingSpinner = null;
     let deleteControls = null;
-    if (this.state.doingDelete) {
+    if (this.state.isLoading) {
       loadingSpinner = LoadingSpinner({ loading: true });
-    } else {
+    } else if (this.state.canDelete) {
       deleteControls = (
         <React.Fragment>
           <div className="pb2">
@@ -75,6 +88,8 @@ export default class DeleteItem extends Component<ControlMenuItemProps, State> {
           </div>
         </React.Fragment>
       );
+    } else {
+      deleteControls = 'You do not have permission to delete this Narrative.';
     }
     let error = null;
     if (this.state.deleteError) {

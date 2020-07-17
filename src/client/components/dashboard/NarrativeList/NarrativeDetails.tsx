@@ -106,7 +106,6 @@ export class NarrativeDetails extends Component<Props, State> {
             <ControlMenu
               narrative={this.props.activeItem}
               doneFn={() => {
-                console.log('updating');
                 this.props.updateSearch();
               }}
             />
