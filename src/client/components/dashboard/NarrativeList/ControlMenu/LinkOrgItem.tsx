@@ -85,44 +85,49 @@ export default class LinkOrgItem extends Component<
   }
 
   async linkOrg(orgId: string): Promise<void> {
+    this.setState({ isLoading: true });
+    let result: RequestResult = {
+      error: false,
+      text: null,
+      requestSent: false,
+    };
     try {
-      this.setState({ isLoading: true });
       const request = await linkNarrativeToOrg(
         this.props.narrative.access_group,
         orgId
       );
-      let result: RequestResult = {
-        error: false,
-        text: null,
-        requestSent: false,
-      };
-      if (request.error) {
-        result.error = true;
-        switch (request.error.appcode) {
-          case 40010:
-            result.text =
-              'A request has already been made to add this Narrative to the group.';
-            break;
-          default:
-            result.text = 'An error was made while processing your request.';
-            break;
-        }
-        result.requestSent = false;
-      } else {
-        result.error = false;
-        result.text = request.complete
-          ? ''
-          : 'A request has been sent to the group admins.';
-        result.requestSent = true;
-      }
-      this.setState({
-        isLoading: false,
-        request: result,
-      });
-      return this.updateState();
+      result.error = false;
+      result.text = request.complete
+        ? null
+        : 'A request has been sent to the group admins.';
+      result.requestSent = !request.complete;
     } catch (error) {
-      console.log(error);
+      // default
+      result.text = 'An error was made while processing your request.';
+      try {
+        const errJson = await error.response.json();
+        if (errJson.error) {
+          result.error = true;
+          switch (errJson.error.appcode) {
+            case 40010:
+              result.text =
+                'A request has already been made to add this Narrative to the group.';
+              break;
+            default:
+              break;
+          }
+          result.requestSent = false;
+        }
+      } catch (err) {
+        // no op.
+        console.error(err);
+      }
     }
+    this.setState({
+      isLoading: false,
+      request: result,
+    });
+    return this.updateState();
   }
 
   makeLinkedOrgsList() {

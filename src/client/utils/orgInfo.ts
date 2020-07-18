@@ -47,6 +47,14 @@ export async function linkNarrativeToOrg(wsId: number, orgId: string): Promise<a
     return makeOrgsCall(call, 'POST');
 }
 
+export class OrgAPIError extends Error {
+    public response: any;
+    constructor(m: string, response: Response) {
+        super(m);
+        this.response = response;
+    }
+}
+
 /**
  * Call the REST interface to the Groups service. Takes a call (without a leading slash)
  * and REST method (GET, POST, etc.)
@@ -65,5 +73,16 @@ async function makeOrgsCall(call: string, method: string): Promise<any> {
     return fetch (groupsUrl + '/' + call, {
         headers,
         method: method
-    }).then(res => res.json());
+    })
+    .then(res => {
+        if (!res.ok) {
+            console.error(res);
+            throw new OrgAPIError(res.statusText, res);
+        }
+        return res;
+    })
+    .then(res => res.json());
+    // .catch((error: OrgAPIError) => {
+    //     return error.response.json();
+    // });
 }
