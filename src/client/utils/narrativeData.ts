@@ -52,9 +52,9 @@ export function fetchNarrative(upa: string) {
   const client = new KBaseServiceClient({
     module: 'Workspace',
     url: Runtime.getConfig().service_routes.workspace,
-    authToken: Runtime.token()
+    authToken: Runtime.token(),
   });
-  return client.call('get_objects2', [{'objects': [{'ref': upa}]}]);
+  return client.call('get_objects2', [{ objects: [{ ref: upa }] }]);
 }
 
 /**
@@ -65,7 +65,7 @@ export async function getCurrentUserPermission(wsId: number): Promise<string> {
   const client = new KBaseServiceClient({
     module: 'Workspace',
     url: Runtime.getConfig().service_routes.workspace,
-    authToken: Runtime.token()
+    authToken: Runtime.token(),
   });
 
   let perms = await client.call('get_permissions_mass', [

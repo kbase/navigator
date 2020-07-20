@@ -10,7 +10,7 @@ export async function fetchProfileAPI(username: string) {
   const serviceWizardClient = new DynamicServiceClient({
     moduleName: 'bff',
     wizardUrl: Runtime.getConfig().service_routes.service_wizard,
-    version: 'beta'
+    version: 'beta',
   });
 
   const bffServiceUrl = await serviceWizardClient.getServiceUrl();

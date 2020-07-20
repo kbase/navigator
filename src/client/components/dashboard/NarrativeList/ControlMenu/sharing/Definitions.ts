@@ -6,7 +6,7 @@ export const PERM_MAPPING: { [key: string]: string } = {
 };
 
 export interface UserPerms {
-    userId: string;
-    userName: string;
-    perm: string;
+  userId: string;
+  userName: string;
+  perm: string;
 }

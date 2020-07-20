@@ -7,9 +7,9 @@ import { getToken } from './auth';
 const CONFIG = Config.Instance;
 
 export default class Runtime {
-    static username = () => window._env.username || undefined;
+  static username = () => window._env.username || undefined;
 
-    static getConfig = () => CONFIG;
+  static getConfig = () => CONFIG;
 
-    static token = () => getToken();
+  static token = () => getToken();
 }
