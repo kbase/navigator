@@ -6,7 +6,7 @@ const CONFIG = Config.Instance;
 /**
  * If the token isn't found, returns ''.
  */
-export function getToken() : string {
+export function getToken(): string {
   let token;
   try {
     token = getCookie('kbase_session');
@@ -24,11 +24,9 @@ export function getToken() : string {
 export function getUsername(callBack: (username: string | null) => void) {
   if (!getToken()) {
     callBack(null);
-  }
-  else if (sessionStorage.getItem('kbase_username')) {
+  } else if (sessionStorage.getItem('kbase_username')) {
     callBack(sessionStorage.getItem('kbase_username'));
-  }
-  else {
+  } else {
     makeAuthCall('/token')
       .then(json => {
         const username = json.user;
@@ -39,13 +37,18 @@ export function getUsername(callBack: (username: string | null) => void) {
   }
 }
 
-export async function getUsernames(userIds: string[]): Promise<{[key: string]: string}> {
-  const encodedUsers = userIds.map((u) => encodeURIComponent(u));
+export async function getUsernames(
+  userIds: string[]
+): Promise<{ [key: string]: string }> {
+  const encodedUsers = userIds.map(u => encodeURIComponent(u));
   const operation = '/users/?list=' + encodedUsers.join(',');
   return makeAuthCall(operation);
 }
 
-export async function searchUsernames(query: string, options?: string[]): Promise<{[key: string]: string}> {
+export async function searchUsernames(
+  query: string,
+  options?: string[]
+): Promise<{ [key: string]: string }> {
   let operation = '/users/search/' + query;
   if (options) {
     operation += '/?fields=' + options.join(',');
@@ -59,9 +62,8 @@ function makeAuthCall(operation: string): Promise<any> {
     throw new Error('Auth token not available.');
   }
   const headers = { Authorization: token };
-  return fetch (CONFIG.service_routes.auth + operation, {
+  return fetch(CONFIG.service_routes.auth + operation, {
     method: 'GET',
     headers,
-  })
-    .then(resp => resp.json())
+  }).then(resp => resp.json());
 }

@@ -39,7 +39,8 @@ export interface DetailsResult {
 // So to have a canonical app id, we need module_name/app_id where module_name is always lowercased
 export async function fetchApps(tag = 'release') {
   const catalogUrl = Runtime.getConfig().service_routes.catalog;
-  const nmsUrl = Runtime.getConfig().service_routes.narrative_method_store + '/rpc';
+  const nmsUrl =
+    Runtime.getConfig().service_routes.narrative_method_store + '/rpc';
   const runs = fetch(catalogUrl, {
     method: 'POST',
     body: JSON.stringify({
@@ -68,6 +69,7 @@ export async function fetchApps(tag = 'release') {
     return acc;
   }, {});
   let detailsJson = await details.json();
+  console.log(detailsJson);
   detailsJson = detailsJson.result[0];
   // Reduce all the details data into an array of category names
   const categories: Array<string> = detailsJson.reduce(

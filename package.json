@@ -5,7 +5,7 @@
     "build": "yarn install && yarn run css && webpack --mode production",
     "watch": "yarn install && yarn run css && webpack --watch --progress --colors",
     "css": "mkdir -p src/static/build && cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/build/tachyons.min.css",
-    "fix": "prettier --write \"src/client/**/*.tsx\""
+    "fix": "prettier --write \"src/client/**/*.ts*\" && prettier --write \"test/**/*.ts*\""
   },
   "license": "MIT",
   "devDependencies": {
@@ -17,6 +17,7 @@
     "compression-webpack-plugin": "^3.0.0",
     "css-loader": "^3.2.0",
     "jest": "^26.0.0",
+    "jest-fetch-mock": "^3.0.3",
     "prettier": "^1.18.2",
     "style-loader": "^1.0.0",
     "ts-jest": "^26.0.0",
