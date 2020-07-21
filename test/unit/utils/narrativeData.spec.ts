@@ -41,6 +41,13 @@ describe('narrativeData tests', () => {
         const perms = {'some_user': 'a'};
         mockGetPermissionsMassOk(perms);
         const fetchedPerms = await getCurrentUserPermission(123);
-        expect(fetchedPerms).toEqual('a');
+        expect(fetchedPerms).toBe('a');
+    });
+
+    it('Should return a default of no access when user permissions are not defined', async () => {
+        const perms = {'other_user': 'a', 'yet_another_user': 'w'};
+        mockGetPermissionsMassOk(perms);
+        const fetchedPerms = await getCurrentUserPermission(123);
+        expect(fetchedPerms).toBe('n');
     });
 });

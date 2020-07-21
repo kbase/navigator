@@ -73,7 +73,7 @@ export async function getCurrentUserPermission(wsId: number): Promise<string> {
   ]);
   perms = perms.perms[0];
   const user = Runtime.username();
-  if (user) {
+  if (user && user in perms) {
     return perms[user];
   }
   return 'n';
