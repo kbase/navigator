@@ -61,7 +61,8 @@ module.exports = {
   globals: {
       _env: {
         service_root: 'https://ci.kbase.us/services',
-        host_root: 'https://ci.kbase.us'
+        host_root: 'https://ci.kbase.us',
+        username: 'some_user'
       }
   },
 
