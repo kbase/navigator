@@ -16,15 +16,11 @@ interface State {
 export class TabHeader extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    // "This style is quite elegant and pleasantly terse; that said,
-    // it can be really hard to read, especially for beginners."
-    // const selectedIdx = this.props.selectedIdx || 0;
     const selectedIdxProps = this.props.selectedIdx
       ? this.props.selectedIdx
       : 0;
     this.state = {
       tabs: this.props.tabs,
-      // selectedIdx,
       selectedIdx: selectedIdxProps,
     };
   }
@@ -45,11 +41,9 @@ export class TabHeader extends Component<Props, State> {
 
   // Handle click event on a tab element
   handleClickTab(idx: number) {
-    if (idx === this.state.selectedIdx) {
-      // No-op if the tab is already selected
-      return;
+    if (idx !== this.state.selectedIdx) {
+      this.select(idx);
     }
-    this.select(idx);
   }
 
   render() {
@@ -88,5 +82,5 @@ export class TabHeader extends Component<Props, State> {
 // Active and inactive tab styles using Tachyons classes
 const tabClasses = {
   active: 'dib pv3 ph3 bb bw1 b--green',
-  inactive: 'dib pv3 pointer dim ph3',
+  inactive: 'dib pv3 pointer dim ph3 bb bw1 b--transparent',
 };
