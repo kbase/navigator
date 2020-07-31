@@ -2,12 +2,7 @@
  * @jest-environment jsdom
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
-import {
-  getToken,
-  getUsername,
-  getUsernames,
-  searchUsernames,
-} from '../auth';
+import { getToken, getUsername, getUsernames, searchUsernames } from '../auth';
 enableFetchMocks();
 
 const token = 'someAuthToken';

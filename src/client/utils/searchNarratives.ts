@@ -96,12 +96,12 @@ export default async function searchNarratives({
   }
   switch (category) {
     case 'own':
-      musts.push({ term: { creator: Runtime.username() }});
+      musts.push({ term: { creator: Runtime.username() } });
       options.auth = true;
       break;
     case 'shared':
-      musts.push({ term: { shared_users: Runtime.username() }});
-      mustNots.push({ term: { creator: Runtime.username() }});
+      musts.push({ term: { shared_users: Runtime.username() } });
+      mustNots.push({ term: { creator: Runtime.username() } });
       options.auth = true;
       break;
     case 'public':
@@ -165,7 +165,9 @@ async function makeRequest({
   if (auth) {
     const token = getToken();
     if (!token) {
-      throw new Error('Auth token not available for an authenticated search lookup!')
+      throw new Error(
+        'Auth token not available for an authenticated search lookup!'
+      );
     }
     Object.assign(headers, { Authorization: token });
   }
@@ -182,7 +184,7 @@ async function makeRequest({
   const result = await fetch(Runtime.getConfig().service_routes.search, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ method: 'search_objects', params })
+    body: JSON.stringify({ method: 'search_objects', params }),
   });
   if (!result.ok) {
     throw new Error('An error occurred while searching - ' + result.status);

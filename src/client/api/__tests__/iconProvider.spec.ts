@@ -3,10 +3,7 @@
  */
 import iconData from '../icons.json';
 
-import IconProvider, {
-  IconInfo,
-  AppTag,
-} from '../iconProvider';
+import IconProvider, { IconInfo, AppTag } from '../iconProvider';
 const ip = IconProvider.Instance;
 const defaultType = {
   isImage: false,
