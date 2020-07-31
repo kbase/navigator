@@ -9,8 +9,7 @@ import { Doc } from '../../../utils/narrativeData';
 
 // Utils
 import Runtime from '../../../utils/runtime';
-import {
-  searchNarratives,
+import searchNarratives, {
   SearchParams,
   SearchResults,
 } from '../../../utils/searchNarratives';
