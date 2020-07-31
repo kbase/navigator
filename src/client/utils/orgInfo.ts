@@ -85,7 +85,4 @@ async function makeOrgsCall(call: string, method: string): Promise<any> {
       return res;
     })
     .then(res => res.json());
-  // .catch((error: OrgAPIError) => {
-  //     return error.response.json();
-  // });
 }
