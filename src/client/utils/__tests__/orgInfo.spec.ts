@@ -7,7 +7,7 @@ import {
   getLinkedOrgs,
   lookupUserOrgs,
   linkNarrativeToOrg,
-} from '../../../src/client/utils/orgInfo';
+} from '../orgInfo';
 
 describe('Organizations API testing', () => {
   const authToken = 'someToken';

@@ -7,7 +7,7 @@ import {
   getUsername,
   getUsernames,
   searchUsernames,
-} from '../../../src/client/utils/auth';
+} from '../auth';
 enableFetchMocks();
 
 const token = 'someAuthToken';

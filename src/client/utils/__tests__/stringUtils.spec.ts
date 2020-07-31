@@ -5,7 +5,7 @@
 import {
   formatSnakeCase,
   getWSTypeName,
-} from '../../../src/client/utils/stringUtils';
+} from '../stringUtils';
 
 test('formatSnakeCase should alter snakey strings', () => {
   const testStr = 'some_test_string';

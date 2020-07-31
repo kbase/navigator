@@ -10,7 +10,7 @@
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
-import searchNarratives, { SearchParams } from '../../../src/client/utils/searchNarratives';
+import searchNarratives, { SearchParams } from '../searchNarratives';
 
 const VALID_TOKEN = 'some_valid_token';
 const TEST_USER = 'some_user';
@@ -21,7 +21,7 @@ const TEST_USER = 'some_user';
  * @param first int, the first id / name / etc in the list of narratives
  * @param count the total number of narratives to return
  */
-const fakeNarratives = (owner: string, first: number, count: number) => {
+function fakeNarratives (owner: string, first: number, count: number) {
     const docs = [];
     for (let id=first; id<count+first; id++) {
         docs.push({
@@ -56,13 +56,13 @@ const fakeNarratives = (owner: string, first: number, count: number) => {
  * the auth token (if needed) is valid.
  * @param param0 SearchParams - should be same as passed to searchNarratives
  */
-const mockSearchOk = ({
+function mockSearchOk ({
     term,
     sort,
     category,
     skip,
     pageSize
-}: SearchParams, owner: string) => {
+}: SearchParams, owner: string) {
     // mock should return up to the page size requested.
     // use a fake list of narratives.
     fetchMock.mockResponse(async (req) => {
@@ -114,11 +114,11 @@ const mockSearchOk = ({
     });
 }
 
-const setValidToken = () => {
+function setValidToken () {
     document.cookie = `kbase_session=${VALID_TOKEN}`;
 }
 
-const setInvalidToken = () => {
+function setInvalidToken () {
     document.cookie = `kbase_session=NOPE.`;
 }
 

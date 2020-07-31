@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { readableDate } from '../../../src/client/utils/readableDate';
+import { readableDate } from '../readableDate';
 
 const happyCases = [
   ['2020-05-01T20:56:05+0000', '5/1/2020'],

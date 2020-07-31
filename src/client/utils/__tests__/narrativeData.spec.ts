@@ -3,7 +3,7 @@
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
-import {fetchNarrative, getCurrentUserPermission} from '../../../src/client/utils/narrativeData';
+import {fetchNarrative, getCurrentUserPermission} from '../narrativeData';
 
 describe('narrativeData tests', () => {
     const mockWSGetObjects2Ok = (narr: object) => {
