@@ -51,12 +51,6 @@ const fakeNarratives = (owner: string, first: number, count: number) => {
     return docs;
 }
 
-const fakeHits = () => {
-
-}
-
-
-
 /**
  * This mocks doing the search in the happy case. Assumes no errors and that
  * the auth token (if needed) is valid.
@@ -117,15 +111,6 @@ const mockSearchOk = ({
                 };
             }
         }
-    });
-}
-
-const mockSearchBadAuth = () => {
-    fetchMock.mockResponse(async () => {
-        return {
-            body: JSON.stringify({}),
-            status: 401
-        };
     });
 }
 
