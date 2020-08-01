@@ -122,7 +122,7 @@ export class FilterDropdown extends Component<Props, State> {
 
   render() {
     const { items } = this.props;
-    let dropdownItems;
+    let dropdownItems = null;
     let selected = null;
     selected = items[this.state.selectedIdx];
     if (this.state.isOpen) {
@@ -140,10 +140,6 @@ export class FilterDropdown extends Component<Props, State> {
           {items.map((item, idx) => this.itemView(item, idx))}
         </div>
       );
-    } else {
-      dropdownItems = (
-        <div></div> // display: none?
-      );
     }
     const iconClass =
       'ml1 fa ' + (this.state.isOpen ? 'fa-caret-up' : 'fa-caret-down');
@@ -156,7 +152,7 @@ export class FilterDropdown extends Component<Props, State> {
           {this.props.txt + ': ' + selected}
           <i className={iconClass}></i>
         </a>
-        {dropdownItems}{' '}
+        {dropdownItems}
       </div>
     );
   }
