@@ -3,9 +3,8 @@
  */
 
 import React from 'react';
-import { shallow, render, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import { FilterDropdown } from '../FilterDropdown';
-import { doesNotReject } from 'assert';
 
 const dummyEvent = {
   preventDefault: () => {},
