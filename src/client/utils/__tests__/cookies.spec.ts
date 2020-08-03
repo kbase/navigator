@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { getCookie, removeCookie } from '../../../src/client/utils/cookies';
+import { getCookie, removeCookie } from '../cookies';
 
 describe('cookie tests', () => {
   const cookieName = 'some_cookie';

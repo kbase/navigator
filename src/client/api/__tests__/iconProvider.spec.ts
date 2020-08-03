@@ -1,12 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import iconData from '../../../src/client/api/icons.json';
+import iconData from '../icons.json';
 
-import IconProvider, {
-  IconInfo,
-  AppTag,
-} from '../../../src/client/api/iconProvider';
+import IconProvider, { IconInfo, AppTag } from '../iconProvider';
 const ip = IconProvider.Instance;
 const defaultType = {
   isImage: false,

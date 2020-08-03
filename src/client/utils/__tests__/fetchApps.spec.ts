@@ -6,8 +6,8 @@
 
 import { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
-import { fetchApps } from '../../../src/client/utils/fetchApps';
-import Runtime from '../../../src/client/utils/runtime';
+import { fetchApps } from '../fetchApps';
+import Runtime from '../runtime';
 
 describe('fetchApps tests', () => {
   beforeEach(() => {});

@@ -1,4 +1,4 @@
-import { sortBy } from '../../../src/client/utils/sortBy';
+import { sortBy } from '../sortBy';
 
 test('sortBy should work for a simple number array', () => {
   const disordered = [3, 2, 1, 4, 6, 5];

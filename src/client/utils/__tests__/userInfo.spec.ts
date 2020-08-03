@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
-import { fetchProfileAPI } from '../../../src/client/utils/userInfo';
-jest.mock('../../../src/client/api/serviceWizard');
+import { fetchProfileAPI } from '../userInfo';
+jest.mock('../../api/serviceWizard');
 enableFetchMocks();
 
 describe('fetchProfile tests', () => {

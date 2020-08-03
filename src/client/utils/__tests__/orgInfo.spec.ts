@@ -3,11 +3,7 @@
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
-import {
-  getLinkedOrgs,
-  lookupUserOrgs,
-  linkNarrativeToOrg,
-} from '../../../src/client/utils/orgInfo';
+import { getLinkedOrgs, lookupUserOrgs, linkNarrativeToOrg } from '../orgInfo';
 
 describe('Organizations API testing', () => {
   const authToken = 'someToken';

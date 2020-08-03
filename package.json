@@ -5,10 +5,12 @@
     "build": "yarn install && yarn run css && webpack --mode production",
     "watch": "yarn install && yarn run css && webpack --watch --progress --colors",
     "css": "mkdir -p src/static/build && cp node_modules/@kbase/base-css/css/tachyons.min.css src/static/build/tachyons.min.css",
-    "fix": "prettier --write \"src/client/**/*.ts*\" && prettier --write \"test/**/*.ts*\""
+    "fix": "prettier --write \"src/client/**/*.ts*\""
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/enzyme": "^3.10.5",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/history": "^4.7.3",
     "@types/jest": "^25.2.1",
     "@types/node": "^10.0.3",
@@ -16,6 +18,9 @@
     "@types/react-dom": "16.9.1",
     "compression-webpack-plugin": "^3.0.0",
     "css-loader": "^3.2.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
+    "enzyme-to-json": "^3.5.0",
     "jest": "^26.0.0",
     "jest-fetch-mock": "^3.0.3",
     "prettier": "^1.18.2",

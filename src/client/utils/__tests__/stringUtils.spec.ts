@@ -2,10 +2,7 @@
  * @jest-environment jsdom
  */
 
-import {
-  formatSnakeCase,
-  getWSTypeName,
-} from '../../../src/client/utils/stringUtils';
+import { formatSnakeCase, getWSTypeName } from '../stringUtils';
 
 test('formatSnakeCase should alter snakey strings', () => {
   const testStr = 'some_test_string';
