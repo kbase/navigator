@@ -9,6 +9,13 @@ interface Props {
 
 interface State {}
 
+/**
+ * This is a stateless button with a few different forms based on its props.
+ * It ixpec
+ * If it has a loading prop, it'll return a spinner.
+ * If it has some nonzero numerical items, it'll compare them and return how many remain.
+ * If there are more items, then when clicked it'll trigger its onLoadMore function prop.
+ */
 export class LoadMoreBtn extends Component<Props, State> {
   handleClick() {
     if (this.props.onLoadMore) {
@@ -19,9 +26,6 @@ export class LoadMoreBtn extends Component<Props, State> {
   render() {
     const { loading = false, totalItems = 0, itemCount = 0 } = this.props;
     const hasMore = itemCount < totalItems;
-    if (!hasMore) {
-      return <span className="black-50 pa3 dib tc">No more results.</span>;
-    }
     if (loading) {
       return (
         <span className="black-60 pa3 tc dib">
@@ -29,6 +33,9 @@ export class LoadMoreBtn extends Component<Props, State> {
           Loading...
         </span>
       );
+    }
+    if (!hasMore) {
+      return <span className="black-50 pa3 dib tc">No more results.</span>;
     }
     return (
       <a

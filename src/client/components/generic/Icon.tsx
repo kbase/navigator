@@ -27,6 +27,10 @@ enum CellIcons {
   data = 'fa fa-database',
 }
 
+/**
+ * This renders an icon span for a typed object.
+ * @param props TypeProps - in this case, just the object type string (Module.Type, like KBaseGenomes.Genome).
+ */
 export function TypeIcon(props: TypeProps) {
   const iconProvider = IconProvider.Instance;
   const iconInfo = iconProvider.typeIcon(props.objType);
@@ -45,9 +49,20 @@ interface AppIconState {
   iconInfo?: IconInfo;
 }
 
+/**
+ * The AppCellIcon is a little more complex here. To avoid it being blank then popping it,
+ * it starts by rendering a default icon. Then it asynchronously loads its icon based on the
+ * app spec, which gets its info fetched from the IconProvider service.
+ *
+ * Its props are app id (ModuleName.appName) and tag (release, beta, or dev)
+ */
 export class AppCellIcon extends Component<AppIconProps, AppIconState> {
   state: AppIconState = {};
 
+  /**
+   * On mount, ask the icon provider to cough up the info about the app icon
+   * so we can render it. This updates the iconInfo state.
+   */
   async componentDidMount() {
     const iconProvider = IconProvider.Instance;
     const iconInfo = await iconProvider.appIcon(
@@ -59,6 +74,11 @@ export class AppCellIcon extends Component<AppIconProps, AppIconState> {
     });
   }
 
+  /**
+   * If we don't have the icon info yet, just make a little loading spinner "icon".
+   *
+   * Once it's loaded, either render the image or the icon.
+   */
   render() {
     const iconInfo = this.state.iconInfo
       ? this.state.iconInfo
@@ -85,15 +105,6 @@ export class AppCellIcon extends Component<AppIconProps, AppIconState> {
       );
     }
   }
-}
-
-export function CellIcon(cellType: string) {
-  return (
-    <span className="fa-stack fa-lg">
-      <span className="fa fa-square fa-stack-2x" />
-      <span className={`fa fa-inverse fa-stack-1x fa-cube`} />
-    </span>
-  );
 }
 
 export function DefaultIcon(props: DefaultIconProps) {
