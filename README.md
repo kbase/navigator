@@ -21,11 +21,11 @@
 
 In one terminal, run `make serve` to start the python server.
 
-In another terminal, run `yarn run watch` to start the bundler.
+In another terminal, run `yarn watch` to start the bundler.
 
 ### Linting and formatting typescript
 
-Run `yarn test` to lint your code, and `yarn run fix` to auto-format your code.
+Run `yarn fix` to lint and auto-format your code using Prettier. Run `yarn test` to run the test suite. Note that if Prettier complains, then tests will fail.
 
 ### Troubleshooting
 
@@ -45,6 +45,8 @@ There are a few dockerfiles:
 ### Build image
 
 To build locally, first increment the semantic version in `scripts/local-build.sh` and then run that script.
+
+Building for deployment is done via Github Actions. Once a branch is ready for deployment, do a release through Github. An action will be run that builds the Docker image and sends it to [Dockerhub](https://hub.docker.com/repository/docker/kbase/proto-ui). See [deployment.md](docs/deployment.md) for detailed instructions.
 
 ### Environment variables
 
