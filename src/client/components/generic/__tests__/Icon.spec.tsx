@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import { TypeIcon, AppCellIcon, DefaultIcon } from '../Icon';
 
 describe('TypeIcon tests', () => {
@@ -40,6 +40,19 @@ describe('AppIcon tests', () => {
       <AppCellIcon appId={'SomeModule.someApp'} appTag={'release'} />
     );
     expect(wrapper.find('span.fa-spinner').length).toEqual(1);
+  });
+
+  it('should render an icon after the callback finishes', async () => {
+    const wrapper = mount(
+      <AppCellIcon appId={'SomeModule.someApp'} appTag={'release'} />
+    );
+
+    const currentEventLoopEnd = () =>
+      new Promise(resolve => setImmediate(resolve));
+    await currentEventLoopEnd();
+    wrapper.update();
+    expect(wrapper.find('span.fa-spinner').length).toEqual(0);
+    expect(wrapper.find('span.fa-cube').length).toEqual(1);
   });
 });
 
