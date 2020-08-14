@@ -109,16 +109,8 @@ export default async function searchNarratives({
       options.auth = false;
       break;
     case 'tutorials':
-      musts.push({ term: { is_public: true } });
+      musts.push({ term: { is_narratorial: true } });
       options.auth = false;
-      musts.push({
-        bool: {
-          should: [
-            { match: { narrative_title: 'tutorial' } },
-            { match: { narrative_title: 'narratorial' } },
-          ],
-        },
-      });
       break;
     default:
       throw new Error('Unknown search category');

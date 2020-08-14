@@ -65,13 +65,20 @@ function mockSearchOk(
   fetchMock.mockResponse(async req => {
     const authHeader = req.headers.get('Authorization');
     const reqBody = await req.json();
-    let isPublic = false;
+    let isPublic = false,
+      isNarratorial = false;
     const musts = reqBody.params.query.bool.must;
     const publicTerm = musts.find((m: any) => {
       return 'term' in m && 'is_public' in m.term;
     });
+    const narratorialTerm = musts.find((m: any) => {
+      return 'term' in m && 'is_narratorial' in m.term;
+    });
     if (publicTerm) {
       isPublic = publicTerm.term.is_public;
+    }
+    if (narratorialTerm) {
+      isNarratorial = narratorialTerm.term.is_narratorial;
     }
     const response = {
       jsonrpc: '2.0',
@@ -87,7 +94,7 @@ function mockSearchOk(
     if (authHeader === VALID_TOKEN) {
       return JSON.stringify(response);
     } else {
-      if (isPublic) {
+      if (isPublic || isNarratorial) {
         return JSON.stringify(response);
       } else {
         return {
