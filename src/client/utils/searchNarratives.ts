@@ -2,9 +2,6 @@ import { getToken } from './auth';
 import { Doc } from './narrativeData';
 import Runtime from '../utils/runtime';
 
-// Constants
-const INDEX_NAME = 'narrative';
-
 // Interface to the searchNarratives function
 export interface SearchOptions {
   term: string;
