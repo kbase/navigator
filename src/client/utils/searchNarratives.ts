@@ -189,6 +189,7 @@ async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
     }
     headers.Authorization = token;
   }
+  console.log('xyz headers', headers);
   const result = await fetch(Runtime.getConfig().service_routes.search, {
     method: 'POST',
     headers,
