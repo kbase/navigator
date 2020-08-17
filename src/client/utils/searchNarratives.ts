@@ -19,12 +19,12 @@ export interface SearchOptions {
 // Sort direction
 enum SortDir {
   Asc = 'asc',
-  Desc = 'desc'
+  Desc = 'desc',
 }
 
 enum Operator {
   And = 'AND',
-  Or = 'OR'
+  Or = 'OR',
 }
 
 // `filters` key in the search query
@@ -73,7 +73,7 @@ interface SearchParams {
  * This is (probably) JSON-RPC 2.0 format.
  */
 interface JSONRPCResponse {
-  jsonrpc: "2.0";
+  jsonrpc: '2.0';
   result: any;
   id: string;
 }
@@ -118,7 +118,7 @@ export default async function searchNarratives({
   pageSize = 20,
 }: SearchOptions): Promise<SearchResults> {
   const params: SearchParams = {
-    types: ["KBaseNarrative.Narrative"],
+    types: ['KBaseNarrative.Narrative'],
     paging: {
       length: pageSize,
       offset: skip,
@@ -133,24 +133,31 @@ export default async function searchNarratives({
   }
   params.filters = {
     operator: Operator.And,
-    fields: [
-      {field: 'is_temporary', term: false},
-    ]
-  }
+    fields: [{ field: 'is_temporary', term: false }],
+  };
   switch (category) {
     case 'own':
-      params.filters.fields.push({field: 'creator', term: Runtime.username()});
+      params.filters.fields.push({
+        field: 'creator',
+        term: Runtime.username(),
+      });
       break;
     case 'shared':
-      params.filters.fields.push({field: 'creator', not_term: Runtime.username()});
-      params.filters.fields.push({field: 'shared_users', term: Runtime.username()});
+      params.filters.fields.push({
+        field: 'creator',
+        not_term: Runtime.username(),
+      });
+      params.filters.fields.push({
+        field: 'shared_users',
+        term: Runtime.username(),
+      });
       break;
     case 'public':
-      params.access = {only_public: true};
+      params.access = { only_public: true };
       break;
     case 'tutorials':
-      params.access = {only_public: true};
-      params.filters.fields.push({field: 'is_narratorial', term: true});
+      params.access = { only_public: true };
+      params.filters.fields.push({ field: 'is_narratorial', term: true });
       break;
     default:
       throw new Error('Unknown search category');
@@ -158,13 +165,25 @@ export default async function searchNarratives({
 
   if (sort) {
     if (sort === 'Recently created') {
-      params.sorts = [['creation_date', SortDir.Desc], ['_score', SortDir.Desc]];
+      params.sorts = [
+        ['creation_date', SortDir.Desc],
+        ['_score', SortDir.Desc],
+      ];
     } else if (sort === 'Oldest') {
-      params.sorts = [['creation_date', SortDir.Asc], ['_score', SortDir.Desc]];
+      params.sorts = [
+        ['creation_date', SortDir.Asc],
+        ['_score', SortDir.Desc],
+      ];
     } else if (sort === 'Least recently updated') {
-      params.sorts = [['timestamp', SortDir.Asc], ['_score', SortDir.Desc]];
+      params.sorts = [
+        ['timestamp', SortDir.Asc],
+        ['_score', SortDir.Desc],
+      ];
     } else if (sort === 'Recently updated') {
-      params.sorts = [['timestamp', SortDir.Desc], ['_score', SortDir.Desc]];
+      params.sorts = [
+        ['timestamp', SortDir.Desc],
+        ['_score', SortDir.Desc],
+      ];
     } else {
       throw new Error('Unknown sorting method');
     }
@@ -178,8 +197,10 @@ export default async function searchNarratives({
  *  sort parameter, auth (boolean, true if we're looking up personal data), and pageSize
  */
 async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
-  const headers: {[key: string]: string} = { 'Content-Type': 'application/json' };
-  if (!params.access || !params.access.only_public ) {
+  const headers: { [key: string]: string } = {
+    'Content-Type': 'application/json',
+  };
+  if (!params.access || !params.access.only_public) {
     // Requires an auth token
     const token = getToken();
     if (!token) {
@@ -197,7 +218,7 @@ async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
       jsonrpc: '2.0',
       id: Number(new Date()),
       method: 'search_workspace',
-      params
+      params,
     }),
   });
   if (!result.ok) {
