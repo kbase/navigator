@@ -179,7 +179,7 @@ export default async function searchNarratives({
 
 /**
  *
- * @param param0 SearchParams - this takes a query, number of documents to skip,
+ * @param params SearchParams - this takes a query, number of documents to skip,
  *  sort parameter, auth (boolean, true if we're looking up personal data), and pageSize
  */
 async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
