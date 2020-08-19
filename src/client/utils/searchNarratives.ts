@@ -105,7 +105,7 @@ export interface SearchResults {
  *       that to make it obvious)
  *  2. if any search results in a 401 from the server (typically a present, but invalid, token), this
  *     also throws an AuthError.
- * @param param0 - SearchParams
+ * @param params - SearchOptions
  */
 export default async function searchNarratives({
   term,
@@ -161,26 +161,15 @@ export default async function searchNarratives({
   }
 
   if (sort) {
+    params.sorts = [['_score', SortDir.Desc]];
     if (sort === 'Recently created') {
-      params.sorts = [
-        ['creation_date', SortDir.Desc],
-        ['_score', SortDir.Desc],
-      ];
+      params.sorts.unshift(['creation_date', SortDir.Desc]);
     } else if (sort === 'Oldest') {
-      params.sorts = [
-        ['creation_date', SortDir.Asc],
-        ['_score', SortDir.Desc],
-      ];
+      params.sorts.unshift(['creation_date', SortDir.Asc]);
     } else if (sort === 'Least recently updated') {
-      params.sorts = [
-        ['timestamp', SortDir.Asc],
-        ['_score', SortDir.Desc],
-      ];
+      params.sorts.unshift(['timestamp', SortDir.Asc]);
     } else if (sort === 'Recently updated') {
-      params.sorts = [
-        ['timestamp', SortDir.Desc],
-        ['_score', SortDir.Desc],
-      ];
+      params.sorts.unshift(['timestamp', SortDir.Desc]);
     } else {
       throw new Error('Unknown sorting method');
     }
@@ -207,7 +196,6 @@ async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
     }
     headers.Authorization = token;
   }
-  console.log('xyz headers', headers);
   const result = await fetch(Runtime.getConfig().service_routes.search, {
     method: 'POST',
     headers,
