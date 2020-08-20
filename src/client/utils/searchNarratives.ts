@@ -105,7 +105,7 @@ export interface SearchResults {
  *       that to make it obvious)
  *  2. if any search results in a 401 from the server (typically a present, but invalid, token), this
  *     also throws an AuthError.
- * @param params - SearchOptions
+ * @param param0 - SearchOptions
  */
 export default async function searchNarratives({
   term,
