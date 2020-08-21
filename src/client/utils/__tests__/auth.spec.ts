@@ -25,7 +25,6 @@ describe('getToken tests', () => {
 describe('getUsername tests', () => {
   beforeEach(() => {
     document.cookie = `kbase_session=${token}`;
-    sessionStorage.clear();
   });
 
   it('Should return null if there is no token', done => {
@@ -36,26 +35,6 @@ describe('getUsername tests', () => {
     });
   });
 
-  it('Should return an existing username if one is in session storage', done => {
-    const sessionUsername = 'SessionUser';
-    sessionStorage.setItem('kbase_username', sessionUsername);
-    getUsername(username => {
-      expect(username).toBe(sessionUsername);
-      done();
-    });
-  });
-
-  it('Should fetch the username and store it in session storage if not there', done => {
-    const sessionUsername = 'AnotherUser';
-    fetchMock.doMock(async req => {
-      return JSON.stringify({ user: sessionUsername });
-    });
-    getUsername(username => {
-      expect(username).toBe(sessionUsername);
-      expect(sessionStorage.getItem('kbase_username')).toBe(sessionUsername);
-      done();
-    });
-  });
 });
 
 describe('getUsernames tests', () => {
