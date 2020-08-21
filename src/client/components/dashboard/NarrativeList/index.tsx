@@ -10,7 +10,7 @@ import { Doc } from '../../../utils/narrativeData';
 // Utils
 import Runtime from '../../../utils/runtime';
 import searchNarratives, {
-  SearchParams,
+  SearchOptions,
   SearchResults,
 } from '../../../utils/searchNarratives';
 import { getUsername } from '../../../utils/auth';
@@ -28,7 +28,7 @@ interface State {
   // Currently activated narrative details
   activeIdx: number;
   // Parameters to send to searchNarratives
-  searchParams: SearchParams;
+  searchParams: SearchOptions;
 }
 
 interface Props {
@@ -122,10 +122,9 @@ export class NarrativeList extends Component<Props, State> {
     const searchParams = this.state.searchParams;
     return searchNarratives(searchParams)
       .then((resp: SearchResults) => {
-        console.log(resp);
         if (resp && resp.hits) {
           const total = resp.count;
-          const items = resp.hits.map(hit => hit.doc);
+          const items = resp.hits;
           // If we are loading a subsequent page, append to items. Otherwise, replace them.
           if (searchParams.skip > 0) {
             this.setState(prevState => ({

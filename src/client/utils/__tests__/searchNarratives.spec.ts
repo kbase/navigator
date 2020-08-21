@@ -10,7 +10,7 @@
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
-import searchNarratives, { SearchParams } from '../searchNarratives';
+import searchNarratives, { SearchOptions } from '../searchNarratives';
 
 const VALID_TOKEN = 'some_valid_token';
 const TEST_USER = 'some_user';
@@ -25,27 +25,23 @@ function fakeNarratives(owner: string, first: number, count: number) {
   const docs = [];
   for (let id = first; id < count + first; id++) {
     docs.push({
-      id: `WS:${id}:1`,
-      index: 'narrative_1',
-      doc: {
-        access_group: id,
-        cells: [],
-        creation_date: '2020-07-17T22:04:00+0000',
-        creator: owner,
-        data_objects: [],
-        is_public: false,
-        narrative_title: `Narrative #${id}`,
-        obj_id: 1,
-        obj_name: `Narrative.${id}`,
-        obj_type_module: 'KBaseNarrative',
-        obj_type_name: 'Narrative',
-        obj_type_version: '4.0',
-        shared_users: [owner],
-        tags: ['narrative'],
-        timestamp: 1595023480707,
-        total_cells: 1,
-        version: 1,
-      },
+      access_group: id,
+      cells: [],
+      creation_date: '2020-07-17T22:04:00+0000',
+      creator: owner,
+      data_objects: [],
+      is_public: false,
+      narrative_title: `Narrative #${id}`,
+      obj_id: 1,
+      obj_name: `Narrative.${id}`,
+      obj_type_module: 'KBaseNarrative',
+      obj_type_name: 'Narrative',
+      obj_type_version: '4.0',
+      shared_users: [owner],
+      tags: ['narrative'],
+      timestamp: 1595023480707,
+      total_cells: 1,
+      version: 1,
     });
   }
   return docs;
@@ -54,10 +50,10 @@ function fakeNarratives(owner: string, first: number, count: number) {
 /**
  * This mocks doing the search in the happy case. Assumes no errors and that
  * the auth token (if needed) is valid.
- * @param param0 SearchParams - should be same as passed to searchNarratives
+ * @param param0 SearchOptions - should be same as passed to searchNarratives
  */
 function mockSearchOk(
-  { term, sort, category, skip, pageSize }: SearchParams,
+  { term, sort, category, skip, pageSize }: SearchOptions,
   owner: string
 ) {
   // mock should return up to the page size requested.
@@ -65,21 +61,13 @@ function mockSearchOk(
   fetchMock.mockResponse(async req => {
     const authHeader = req.headers.get('Authorization');
     const reqBody = await req.json();
-    let isPublic = false;
-    const musts = reqBody.params.query.bool.must;
-    const publicTerm = musts.find((m: any) => {
-      return 'term' in m && 'is_public' in m.term;
-    });
-    if (publicTerm) {
-      isPublic = publicTerm.term.is_public;
-    }
+    const isPublic = reqBody.params.access && reqBody.params.access.only_public;
     const response = {
       jsonrpc: '2.0',
       id: '12345',
       result: {
         count: pageSize,
         search_time: 1,
-        aggregations: {},
         hits: fakeNarratives(owner, skip, pageSize),
       },
     };

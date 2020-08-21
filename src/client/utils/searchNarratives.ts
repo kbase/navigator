@@ -2,11 +2,8 @@ import { getToken } from './auth';
 import { Doc } from './narrativeData';
 import Runtime from '../utils/runtime';
 
-// Constants
-const SEARCH_FIELDS = ['narrative_title', 'creator', 'data_objects'];
-const INDEX_NAME = 'narrative';
-
-export interface SearchParams {
+// Interface to the searchNarratives function
+export interface SearchOptions {
   term: string;
   sort: string;
   category: string;
@@ -16,23 +13,56 @@ export interface SearchParams {
   mustNots?: Array<any>;
 }
 
-interface SearchOptions {
-  query: {
-    bool: {
-      must: Array<object>;
-      must_not?: Array<object>;
-    };
-  };
-  pageSize: number;
-  auth?: boolean;
-  sort?: Array<{ [key: string]: { [key: string]: string } } | string>;
-  skip?: number;
+// Sort direction
+enum SortDir {
+  Asc = 'asc',
+  Desc = 'desc',
 }
 
-interface SearchHit {
-  id: string;
-  index: string;
-  doc: Doc;
+enum Operator {
+  And = 'AND',
+  Or = 'OR',
+}
+
+// `filters` key in the search query
+type FilterClause = FilterBool | FilterField;
+
+// Boolean combination of multiple filters
+interface FilterBool {
+  operator: Operator;
+  fields: Array<FilterClause>;
+}
+
+// Filter on a single field
+interface FilterField {
+  field: string;
+  range?: {
+    max: number;
+    min: number;
+  };
+  term?: string | boolean;
+  not_term?: string;
+}
+
+// Parameters we pass to the searchapi2 server
+interface SearchParams {
+  types: Array<string>;
+  include_fields?: Array<string>;
+  search?: {
+    query: string;
+    fields: Array<string>;
+  };
+  filters?: FilterClause;
+  sorts?: Array<[string, SortDir]>;
+  paging?: {
+    length?: number;
+    offset?: number;
+  };
+  access?: {
+    only_public?: boolean;
+    only_private?: boolean;
+  };
+  track_total_hits: boolean;
 }
 
 /**
@@ -40,16 +70,15 @@ interface SearchHit {
  * This is (probably) JSON-RPC 2.0 format.
  */
 interface JSONRPCResponse {
-  jsonrpc: string;
+  jsonrpc: '2.0';
   result: any;
-  id: string | null;
+  id: string;
 }
 
 export interface SearchResults {
   count: number;
   search_time: number;
-  aggregations: Object;
-  hits: Array<SearchHit>;
+  hits: Array<Doc>;
 }
 
 /**
@@ -76,7 +105,7 @@ export interface SearchResults {
  *       that to make it obvious)
  *  2. if any search results in a 401 from the server (typically a present, but invalid, token), this
  *     also throws an AuthError.
- * @param param0 - SearchParams
+ * @param param0 - SearchOptions
  */
 export default async function searchNarratives({
   term,
@@ -84,107 +113,98 @@ export default async function searchNarratives({
   sort = 'Recently updated',
   skip = 0,
   pageSize = 20,
-}: SearchParams): Promise<SearchResults> {
-  const options: SearchOptions = { query: { bool: { must: [] } }, pageSize };
-  // Query constraints for "must" conditions
-  const musts = [];
-  // Query constraints for "must not" conditions
-  const mustNots = [];
+}: SearchOptions): Promise<SearchResults> {
+  const params: SearchParams = {
+    types: ['KBaseNarrative.Narrative'],
+    paging: {
+      length: pageSize,
+      offset: skip,
+    },
+    track_total_hits: false,
+  };
   if (term) {
-    // Multi-match on narrative fields for the given search term
-    musts.push({ multi_match: { query: term, fields: SEARCH_FIELDS } });
+    params.search = {
+      query: term,
+      fields: ['agg_fields'], // Search on all text fields
+    };
   }
+  params.filters = {
+    operator: Operator.And,
+    fields: [{ field: 'is_temporary', term: false }],
+  };
   switch (category) {
     case 'own':
-      musts.push({ term: { creator: Runtime.username() } });
-      options.auth = true;
+      params.filters.fields.push({
+        field: 'creator',
+        term: Runtime.username(),
+      });
       break;
     case 'shared':
-      musts.push({ term: { shared_users: Runtime.username() } });
-      mustNots.push({ term: { creator: Runtime.username() } });
-      options.auth = true;
+      params.filters.fields.push({
+        field: 'creator',
+        not_term: Runtime.username(),
+      });
+      params.filters.fields.push({
+        field: 'shared_users',
+        term: Runtime.username(),
+      });
       break;
     case 'public':
-      musts.push({ term: { is_public: true } });
-      options.auth = false;
+      params.access = { only_public: true };
       break;
     case 'tutorials':
-      musts.push({ term: { is_public: true } });
-      options.auth = false;
-      musts.push({
-        bool: {
-          should: [
-            { match: { narrative_title: 'tutorial' } },
-            { match: { narrative_title: 'narratorial' } },
-          ],
-        },
-      });
+      params.access = { only_public: true };
+      params.filters.fields.push({ field: 'is_narratorial', term: true });
       break;
     default:
       throw new Error('Unknown search category');
   }
 
   if (sort) {
+    params.sorts = [['_score', SortDir.Desc]];
     if (sort === 'Recently created') {
-      options.sort = [{ creation_date: { order: 'desc' } }, '_score'];
+      params.sorts.unshift(['creation_date', SortDir.Desc]);
     } else if (sort === 'Oldest') {
-      options.sort = [{ creation_date: { order: 'asc' } }, '_score'];
+      params.sorts.unshift(['creation_date', SortDir.Asc]);
     } else if (sort === 'Least recently updated') {
-      options.sort = [{ timestamp: { order: 'asc' } }, '_score'];
+      params.sorts.unshift(['timestamp', SortDir.Asc]);
     } else if (sort === 'Recently updated') {
-      options.sort = [{ timestamp: { order: 'desc' } }, '_score'];
+      params.sorts.unshift(['timestamp', SortDir.Desc]);
     } else {
       throw new Error('Unknown sorting method');
     }
   }
-  if (skip) {
-    options.skip = skip;
-  }
-  if (musts.length) {
-    options.query.bool.must = musts;
-  }
-  if (mustNots.length) {
-    options.query.bool.must_not = mustNots;
-  }
-  return await (await makeRequest(options)).result;
+  return await (await makeRequest(params)).result;
 }
 
 /**
  *
- * @param param0 SearchOptions - this takes a query, number of documents to skip,
+ * @param params SearchParams - this takes a query, number of documents to skip,
  *  sort parameter, auth (boolean, true if we're looking up personal data), and pageSize
  */
-async function makeRequest({
-  query,
-  skip = 0,
-  sort,
-  auth = true,
-  pageSize,
-}: SearchOptions): Promise<JSONRPCResponse> {
-  const headers = { 'Content-Type': 'application/json' };
-  if (auth) {
+async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
+  const headers: { [key: string]: string } = {
+    'Content-Type': 'application/json',
+  };
+  if (!params.access || !params.access.only_public) {
+    // Requires an auth token
     const token = getToken();
     if (!token) {
       throw new Error(
         'Auth token not available for an authenticated search lookup!'
       );
     }
-    Object.assign(headers, { Authorization: token });
-  }
-  const params = {
-    indexes: [INDEX_NAME],
-    size: pageSize,
-    query,
-    from: skip,
-  };
-  if (sort) {
-    let sortObj = sort;
-    Object.assign(params, { sort: sortObj });
+    headers.Authorization = token;
   }
   const result = await fetch(Runtime.getConfig().service_routes.search, {
     method: 'POST',
     headers,
-    body: JSON.stringify({ method: 'search_objects', params }),
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: Number(new Date()),
+      method: 'search_workspace',
+      params,
+    }),
   });
   if (!result.ok) {
     throw new Error('An error occurred while searching - ' + result.status);
