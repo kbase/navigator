@@ -34,7 +34,6 @@ describe('getUsername tests', () => {
       done();
     });
   });
-
 });
 
 describe('getUsernames tests', () => {
