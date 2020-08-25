@@ -120,6 +120,7 @@ export class NarrativeDetails extends Component<Props, State> {
             <a
               className="blue pointer no-underline dim"
               href={narrativeHref}
+              rel="noopener noreferrer"
               target="_blank"
             >
               <span className="fa fa-external-link"></span>
