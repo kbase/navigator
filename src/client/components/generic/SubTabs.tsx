@@ -6,36 +6,36 @@
  * "buttons" that activate whatever's bound to the onTabSelect prop.
  */
 import React from 'react';
-import { TabHeader } from './TabHeader';
-
-export default class SubTabs extends TabHeader {
-  render() {
-    const { tabs } = this.props;
-    const { selectedIdx } = this.state;
-    return (
-      <div className="w-100 bt bb b--black-20">
-        <ul className="pa0 ma0 tc b w-100">
-          {tabs.map((tabText, idx) => {
-            const className =
-              selectedIdx === idx ? tabClasses.active : tabClasses.inactive;
-            return (
-              <li
-                key={tabText}
-                className={className}
-                onClick={() => this.handleClickTab(idx)}
-                style={{ userSelect: 'none', float: 'none' }}
-              >
-                {tabText}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    );
-  }
-}
+import { Link } from 'react-router-dom';
+import { Props } from './TabHeader';
 
 const tabClasses = {
-  active: 'dib pv3 ph3 green',
-  inactive: 'dib pv3 ph3 pointer dim',
+  active: 'subtab active',
+  inactive: 'subtab inactive',
 };
+
+export const SubTabs: React.FC<Props> = ({ className, selected, tabs }) => {
+  return (
+    <div className="w-100 bb b--black-20">
+      <ul className="pa0 ma0 tc b w-100">
+        {tabs.map(([tabSlug, tabData]) => {
+          const className =
+            selected === tabSlug ? tabClasses.active : tabClasses.inactive;
+          return (
+            <Link key={tabSlug} to={tabData.link}>
+              <li
+                key={tabSlug}
+                className={className}
+                style={{ userSelect: 'none', float: 'none' }}
+              >
+                {tabData.name}
+              </li>
+            </Link>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+export default SubTabs;

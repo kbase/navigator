@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
+import { keepParamsLinkTo } from '../utils';
 import { Doc } from '../../../utils/narrativeData';
+
 const timeago = require('timeago.js');
 
 interface Props {
@@ -9,9 +13,24 @@ interface Props {
   onLoadMore?: () => void;
   onSelectItem?: (idx: number) => void;
   selectedIdx: number;
+  category: string;
+  selected: string;
+  sort?: string;
 }
 
 interface State {}
+
+// Active and inactive classnames for the item listing
+const itemClasses = {
+  active: {
+    inner: 'narrative-item-inner',
+    outer: 'narrative-item-outer active',
+  },
+  inactive: {
+    inner: 'narrative-item-inner',
+    outer: 'narrative-item-outer inactive',
+  },
+};
 
 // Simple UI for a list of selectable search results
 export class ItemList extends Component<Props, State> {
@@ -47,9 +66,18 @@ export class ItemList extends Component<Props, State> {
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
     const upa = `${item.access_group}/${item.obj_id}/${item.version}`;
+    const keepParams = (link: string) =>
+      keepParamsLinkTo(['limit', 'sort', 'view'], link);
+    const { category } = this.props;
+    const prefix = '/dashboard/' + (category === 'own' ? '' : `${category}/`);
     // Action to select an item to view details
     return (
-      <div onClick={() => this.handleClickItem(idx)} key={upa}>
+      <Link
+        className="narrative-item"
+        key={upa}
+        onClick={() => this.handleClickItem(idx)}
+        to={keepParams(prefix + `${upa}/`)}
+      >
         <div className={css.outer}>
           <div className={css.inner}>
             <div className="ma0 mb2 pa0 f5">
@@ -61,7 +89,7 @@ export class ItemList extends Component<Props, State> {
           </div>
           <div className="center bb b--black-20"></div>
         </div>
-      </div>
+      </Link>
     );
   };
 
@@ -118,15 +146,3 @@ export class ItemList extends Component<Props, State> {
     );
   }
 }
-
-// Active and inactive classnames for the item listing
-const itemClasses = {
-  active: {
-    inner: 'pv3 pr3',
-    outer: 'ph3 bg-lightest-blue',
-  },
-  inactive: {
-    inner: 'pv3 pr3',
-    outer: 'ph3 dim black-70 pointer bg-white',
-  },
-};

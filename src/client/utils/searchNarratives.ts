@@ -81,6 +81,16 @@ export interface SearchResults {
   hits: Array<Doc>;
 }
 
+export const sorts: Record<string, string> = {
+  '-updated': 'Recently updated',
+  updated: 'Least recently updated',
+  '-created': 'Recently created',
+  created: 'Oldest',
+};
+export const sortsLookup = Object.fromEntries(
+  Object.entries(sorts).map(([key, val]) => [val, key])
+);
+
 /**
  * Search narratives using ElasticSearch.
  * `term` is a search term
@@ -132,21 +142,23 @@ export default async function searchNarratives({
     operator: Operator.And,
     fields: [{ field: 'is_temporary', term: false }],
   };
+  const username = Runtime.username();
+  if (!username) return { count: 0, search_time: 0, hits: [] };
   switch (category) {
     case 'own':
       params.filters.fields.push({
         field: 'creator',
-        term: Runtime.username(),
+        term: username,
       });
       break;
     case 'shared':
       params.filters.fields.push({
         field: 'creator',
-        not_term: Runtime.username(),
+        not_term: username,
       });
       params.filters.fields.push({
         field: 'shared_users',
-        term: Runtime.username(),
+        term: username,
       });
       break;
     case 'public':

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 interface Props {
-  onSelect: (idx: number, val: string) => void;
+  onSelect: (val: string) => void;
   txt: string;
   items: string[];
-  selectedIdx?: number;
+  selectedIdx: number;
   isOpen?: boolean;
   disabled?: boolean;
 }
@@ -94,7 +94,7 @@ export class FilterDropdown extends Component<Props, State> {
       isOpen: false,
     });
     if (this.props.onSelect) {
-      this.props.onSelect(idx, this.props.items[idx]);
+      this.props.onSelect(this.props.items[idx]);
     }
   }
 
@@ -123,8 +123,7 @@ export class FilterDropdown extends Component<Props, State> {
   render() {
     const { items } = this.props;
     let dropdownItems = null;
-    let selected = null;
-    selected = items[this.state.selectedIdx];
+    const selected = items[this.props.selectedIdx];
     if (this.state.isOpen) {
       dropdownItems = (
         <div
