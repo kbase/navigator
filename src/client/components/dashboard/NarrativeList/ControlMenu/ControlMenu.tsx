@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
-import ControlMenuItemProps from './ControlMenuItemProps';
+// as of now eslint cannot detect when imported interfaces are used
+import ControlMenuItemProps from './ControlMenuItemProps'; // eslint-disable-line no-unused-vars
 import Modal from '../../../generic/Modal';
 import DeleteItem from './DeleteItem';
 import CopyItem from './CopyItem';
@@ -78,7 +79,7 @@ export default class ControlMenu extends Component<
   }
 
   toggleMenu(e: any) {
-    const menuElem = findDOMNode(this);
+    const menuElem = findDOMNode(this); // eslint-disable-line react/no-find-dom-node
     if (
       e.target !== menuElem &&
       !menuElem?.contains(e.target) &&

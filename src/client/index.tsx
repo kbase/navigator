@@ -30,7 +30,7 @@ document.querySelectorAll('[data-hl-nav]').forEach((node: Element) => {
 // Highlight dashboard for root path
 // For legacy nav:
 document.querySelectorAll('[data-hl-legacy-nav]').forEach(node => {
-  let HTMLEle: HTMLElement = node as HTMLElement;
+  const HTMLEle: HTMLElement = node as HTMLElement;
   const path = history.location.pathname;
   if (path === node.getAttribute('data-hl-legacy-nav')) {
     HTMLEle.style.backgroundColor = '#e4e3e4';

@@ -1,4 +1,5 @@
-import React, { CSSProperties } from 'react';
+// as of now eslint cannot detect when imported interfaces are used
+import React, { CSSProperties } from 'react'; // eslint-disable-line no-unused-vars
 
 type DashboardButtonProps = {
   bgcolor?: string;

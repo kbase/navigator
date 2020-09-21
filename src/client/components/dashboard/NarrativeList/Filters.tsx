@@ -6,19 +6,19 @@ import { sorts, sortsLookup } from '../../../utils/searchNarratives';
 // Components
 import { FilterDropdown } from '../../generic/FilterDropdown';
 import { SearchInput } from '../../generic/SearchInput';
-
+interface SearchParams {
+  term: string;
+  sort: string;
+}
 interface State {
-  searchParams: {
-    term: string;
-    sort: string;
-  };
+  searchParams: SearchParams;
 }
 
 interface Props {
   category: string;
   history: History;
   loading: boolean;
-  onSetSearch: (searchParams: State['searchParams']) => void;
+  onSetSearch: (searchParams: SearchParams) => void;
   sort: string;
 }
 

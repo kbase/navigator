@@ -45,7 +45,7 @@ export class Dashboard extends Component<Props, State> {
     const paramObj = parseInt(obj || '0');
     const paramVer = parseInt(ver || '0');
     const queryParams = new URLSearchParams(this.props.location.search);
-    let paramLimit = queryParams.get('limit');
+    const paramLimit = queryParams.get('limit');
     const limit = paramLimit ? parseInt(paramLimit) : 0;
     const sort = queryParams.get('sort') || sortSlugDefault;
     const view = queryParams.get('view') || 'data';

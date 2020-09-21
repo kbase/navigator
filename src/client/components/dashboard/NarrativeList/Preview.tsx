@@ -49,11 +49,12 @@ export default class Preview extends Component<Props, State> {
 
   fetchNarrativeObject() {
     this.setState({ isLoading: true });
-    const upa = `${this.props.narrative.access_group}/${this.props.narrative.obj_id}/${this.props.narrative.version}`;
+    const { narrative } = this.props;
+    const upa = `${narrative.access_group}/${narrative.obj_id}/${narrative.version}`;
     return fetchNarrative(upa)
       .then(narr => {
         narr = narr.data[0].data;
-        let cells = narr.cells ? narr.cells : [];
+        const cells = narr.cells ? narr.cells : [];
         this.setState({
           isLoading: false,
           narrObj: narr,
@@ -88,6 +89,7 @@ export default class Preview extends Component<Props, State> {
       const title = metadata?.attributes?.title;
       const subtitle = metadata?.attributes?.subtitle || cell.source;
       const cellType = metadata.type ? metadata.type : cell.cell_type;
+      const info = metadata?.dataCell?.objectInfo || {};
       let metaName = null;
       let tag = null;
       switch (cellType) {
@@ -96,7 +98,6 @@ export default class Preview extends Component<Props, State> {
           tag = metadata?.appCell?.app?.tag;
           break;
         case 'data':
-          const info = metadata?.dataCell?.objectInfo || {};
           metaName = info?.typeName;
           if (!metaName) {
             metaName = info?.type;
@@ -147,7 +148,7 @@ export default class Preview extends Component<Props, State> {
   }
 
   renderError(error: any) {
-    let msg = error?.data?.message;
+    const msg = error?.data?.message;
     return (
       <div className="pt3">
         <div>An error happened while getting narrative info:</div>
@@ -160,9 +161,9 @@ export default class Preview extends Component<Props, State> {
 class PreviewCell extends Component<PreviewCellProps> {
   render() {
     let icon;
+    const tag = this.props.tag || 'dev';
     switch (this.props.cellType) {
       case 'app':
-        let tag = this.props.tag || 'dev';
         icon = <AppCellIcon appId={this.props.metaName} appTag={tag} />;
         break;
       case 'data':

@@ -7,7 +7,9 @@
  */
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Props } from './TabHeader';
+
+// as of now eslint cannot detect when imported interfaces are used
+import { Props } from './TabHeader'; // eslint-disable-line no-unused-vars
 
 const tabClasses = {
   active: 'subtab active',

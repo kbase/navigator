@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import Runtime from '../../utils/runtime';
 
+// as of now eslint cannot detect when imported interfaces are used
 import {
   fetchApps,
-  CombinedResult,
-  DetailsResult,
+  CombinedResult, // eslint-disable-line no-unused-vars
+  DetailsResult, // eslint-disable-line no-unused-vars
 } from '../../utils/fetchApps';
 import { sortBy } from '../../utils/sortBy';
 import { formatSnakeCase } from '../../utils/stringUtils';

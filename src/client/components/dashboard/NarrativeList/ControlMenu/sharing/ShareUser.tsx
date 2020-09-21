@@ -51,7 +51,7 @@ interface PermDropdownProps {
 }
 
 function PermDropdown(props: PermDropdownProps): React.ReactElement {
-  let options = ['r', 'w', 'a'].map(o => (
+  const options = ['r', 'w', 'a'].map(o => (
     <option key={o} value={o}>
       {PERM_MAPPING[o]}
     </option>

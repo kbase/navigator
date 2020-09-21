@@ -83,7 +83,7 @@ export class NarrativeList extends Component<Props, State> {
   async componentDidUpdate(prevProps: Props) {
     const { category } = this.props;
     const { pageSize, skip } = this.state.searchParams;
-    let sort = sorts[this.props.sort];
+    const sort = sorts[this.props.sort];
     const nextSearchParams = { term: '', sort, category, skip, pageSize };
     const performSearchCondition =
       prevProps.category !== this.props.category ||

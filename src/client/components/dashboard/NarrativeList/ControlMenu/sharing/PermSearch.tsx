@@ -1,4 +1,5 @@
-import Select, { OptionsType, Styles } from 'react-select';
+// as of now eslint cannot detect when imported interfaces are used
+import Select, { OptionsType, Styles } from 'react-select'; // eslint-disable-line no-unused-vars
 import AsyncSelect from 'react-select/async';
 import DashboardButton from '../../../../generic/DashboardButton';
 import React, { Component } from 'react';

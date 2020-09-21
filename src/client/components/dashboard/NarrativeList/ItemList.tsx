@@ -59,7 +59,9 @@ export class ItemList extends Component<Props, State> {
   /**
    * Creates a view for a single Narrative item.
    * @param {Doc} item - the Narrative to show.
-   * @param {number} idx - the index of the narrative being shown. Used to communicate to the onSelectItem prop.
+   * @param {number} idx - the index of the narrative being shown. Used to
+   *   communicate to the onSelectItem prop.
+   * @return {JSX} narrative selection link
    */
   itemView = (item: Doc, idx: number) => {
     // I need this until I figure out what's in item

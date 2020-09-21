@@ -1,7 +1,9 @@
-import React, { Component, CSSProperties } from 'react';
-import ControlMenuItemProps from './ControlMenuItemProps';
+import React, { Component } from 'react';
+// as of now eslint cannot detect when imported interfaces are used
+import Select, { Styles } from 'react-select'; // eslint-disable-line no-unused-vars
+
+import ControlMenuItemProps from './ControlMenuItemProps'; // eslint-disable-line no-unused-vars
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
-import Select, { Styles } from 'react-select';
 import DashboardButton from '../../../generic/DashboardButton';
 import {
   getLinkedOrgs,
@@ -86,7 +88,7 @@ export default class LinkOrgItem extends Component<
 
   async linkOrg(orgId: string): Promise<void> {
     this.setState({ isLoading: true });
-    let result: RequestResult = {
+    const result: RequestResult = {
       error: false,
       text: null,
       requestSent: false,
@@ -199,6 +201,7 @@ const LinkedOrg = (props: LinkedOrgProps) => {
         className="blue pointer no-underline dim"
         href={`${Runtime.getConfig().view_routes.orgs}/${props.id}`}
         target="_blank"
+        rel="noopener noreferrer"
       >
         <span className="fa fa-external-link pr1" />
         {props.name}
