@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { History } from 'history';
+
+import { sorts, sortsLookup } from '../../../utils/searchNarratives';
 
 // Components
 import { FilterDropdown } from '../../generic/FilterDropdown';
@@ -12,34 +15,59 @@ interface State {
 }
 
 interface Props {
-  onSetSearch: (searchParams: State['searchParams']) => void;
+  category: string;
+  history: History;
   loading: boolean;
+  onSetSearch: (searchParams: State['searchParams']) => void;
+  sort: string;
 }
+
+const sortSlugDefault = Object.keys(sorts)[0];
 
 // Filter bar for searching and sorting data results
 export class Filters extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    let sort = sortSlugDefault;
+    if (props.sort) {
+      sort = sorts[props.sort];
+    }
     this.state = {
       searchParams: {
         term: '',
-        sort: 'Recently updated',
+        sort: sort,
       },
     };
+  }
+
+  componentDidMount() {
+    this.handleFilter(this.state.searchParams.sort, false);
   }
 
   // Handle an onSetVal event from SearchInput
   handleSearch(val: string): void {
     const searchParams = this.state.searchParams;
     searchParams.term = val;
-    this.setState({ searchParams });
     if (this.props.onSetSearch) {
       this.props.onSetSearch(searchParams);
     }
   }
 
   // Handle an onSelect event from FilterDropdown
-  handleFilter(idx: number, val: string): void {
+  handleFilter(val: string, updateLocation: boolean = true): void {
+    const { category } = this.props;
+    const queryParams = new URLSearchParams(location.search);
+    const sortSlug = sortsLookup[val];
+    if (sortSlug === sortSlugDefault) {
+      queryParams.delete('sort');
+    } else {
+      queryParams.set('sort', sortSlug);
+    }
+    if (updateLocation) {
+      const prefix = '/dashboard/' + (category === 'own' ? '' : `${category}/`);
+      const newLocation = `${prefix}?${queryParams.toString()}`;
+      this.props.history.push(newLocation);
+    }
     const searchParams = this.state.searchParams;
     searchParams.sort = val;
     this.setState({ searchParams });
@@ -49,12 +77,10 @@ export class Filters extends Component<Props, State> {
   }
 
   render() {
-    const dropdownItems = [
-      'Recently updated',
-      'Least recently updated',
-      'Recently created',
-      'Oldest',
-    ];
+    const dropdownItems = Object.values(sorts);
+    const searchParams = this.state.searchParams;
+    const selectedSort = sorts[this.props.sort] || searchParams.sort;
+    const selectedIdx = dropdownItems.indexOf(selectedSort);
     return (
       <div className="bg-light-gray flex">
         {/* Left-aligned actions (eg. search) */}
@@ -70,6 +96,7 @@ export class Filters extends Component<Props, State> {
         <div className="pa3">
           <FilterDropdown
             onSelect={this.handleFilter.bind(this)}
+            selectedIdx={selectedIdx}
             txt={'Sort by'}
             items={dropdownItems}
           />

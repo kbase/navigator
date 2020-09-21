@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { History } from 'history';
 
 // Components
 import { TabHeader } from '../../generic/TabHeader';
@@ -8,10 +9,11 @@ import { NarrativeDetails } from './NarrativeDetails';
 import { Doc } from '../../../utils/narrativeData';
 
 // Utils
+import { keepSort } from '../utils';
 import Runtime from '../../../utils/runtime';
 import searchNarratives, {
+  sorts,
   SearchOptions,
-  SearchResults,
 } from '../../../utils/searchNarratives';
 import { getUsername } from '../../../utils/auth';
 
@@ -27,12 +29,20 @@ interface State {
   totalItems: number;
   // Currently activated narrative details
   activeIdx: number;
+  pages: number;
   // Parameters to send to searchNarratives
   searchParams: SearchOptions;
 }
 
 interface Props {
-  items?: Array<any>;
+  category: string;
+  history: History;
+  id: number;
+  limit: number;
+  obj: number;
+  sort: string;
+  ver: number;
+  view: string;
 }
 
 // This is a parent component to everything in the narrative browser (tabs,
@@ -40,21 +50,24 @@ interface Props {
 export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
+    const { category } = this.props;
+    const sortDefault = Object.values(sorts)[0];
     this.state = {
-      totalItems: props.items ? props.items.length : 0,
+      totalItems: 0,
       loading: false,
       // List of narrative data
-      items: props.items || [],
+      items: [],
       // Currently active narrative result, selected on the left and shown on the right
       // This is unused if the items array is empty.
       activeIdx: 0,
       // parameters to send to the searchNarratives function
+      pages: parseInt((props.limit / PAGE_SIZE).toString()),
       searchParams: {
         term: '',
-        sort: 'Recently updated',
-        category: 'own',
+        sort: sortDefault,
+        category: category,
         skip: 0,
-        pageSize: PAGE_SIZE,
+        pageSize: props.limit || PAGE_SIZE,
       },
     };
   }
@@ -67,47 +80,52 @@ export class NarrativeList extends Component<Props, State> {
     });
   }
 
+  async componentDidUpdate(prevProps: Props) {
+    const { category } = this.props;
+    const { pageSize, skip } = this.state.searchParams;
+    let sort = sorts[this.props.sort];
+    const nextSearchParams = { term: '', sort, category, skip, pageSize };
+    const performSearchCondition =
+      prevProps.category !== this.props.category ||
+      prevProps.id !== this.props.id ||
+      prevProps.sort !== this.props.sort;
+    if (performSearchCondition) {
+      await this.performSearch(nextSearchParams);
+      this.setState({
+        searchParams: nextSearchParams,
+      });
+    }
+  }
+
   // Handle an onSetSearch callback from Filters
   handleSearch(searchP: { term: string; sort: string }): void {
     const searchParams = this.state.searchParams;
     searchParams.term = searchP.term;
     searchParams.sort = searchP.sort;
     searchParams.skip = 0;
-    this.setState({ searchParams });
-    this.performSearch();
-  }
-
-  // Handle an onSelectTab callback from TabHeader
-  handleTabChange(idx: number, name: string): void {
-    // Reset the search state and results
-    const searchParams = this.state.searchParams;
-    searchParams.term = '';
-    searchParams.skip = 0;
-    const categoryMap: { [key: string]: string } = {
-      'my narratives': 'own',
-      'shared with me': 'shared',
-      tutorials: 'tutorials',
-      public: 'public',
-    };
-    // map from tab text to a more canonical name
-    //  filter based on a tab name ("my narratives", "shared with me", etc)
-    searchParams.category = categoryMap[name.toLowerCase()];
-    // (leaving the searchParams.sort param alone)
-    this.setState({
-      items: [],
-      activeIdx: 0,
-      searchParams,
-    });
-    this.performSearch();
+    this.performSearch(searchParams);
   }
 
   // Handle the onLoadMore callback from ItemList
-  handleLoadMore() {
-    const searchParams = this.state.searchParams;
+  async handleLoadMore() {
+    const searchParams = { ...this.state.searchParams };
     // Increment the skip size to be a multiple of the page size.
-    searchParams.skip += PAGE_SIZE;
-    this.setState({ searchParams });
-    this.performSearch();
+    searchParams.pageSize = PAGE_SIZE;
+    searchParams.skip = (this.state.pages + 1) * PAGE_SIZE;
+    await this.performSearch(searchParams);
+    const queryParams = new URLSearchParams(location.search);
+    const itemsLoaded = searchParams.skip + PAGE_SIZE;
+    if (itemsLoaded === PAGE_SIZE) {
+      queryParams.delete('limit');
+    } else {
+      queryParams.set('limit', itemsLoaded.toString());
+    }
+    const newLocation = `${location.pathname}?${queryParams.toString()}`;
+    this.props.history.push(newLocation);
+    this.setState({
+      searchParams,
+      pages: this.state.pages + 1,
+    });
   }
 
   // Handle an onSelectItem callback from ItemList
@@ -117,35 +135,76 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Perform a search and return the Promise for the fetch
-  performSearch() {
+  async performSearch(searchParams?: SearchOptions) {
+    if (!searchParams) {
+      searchParams = this.state.searchParams;
+    }
     this.setState({ loading: true });
-    const searchParams = this.state.searchParams;
-    return searchNarratives(searchParams)
-      .then((resp: SearchResults) => {
-        if (resp && resp.hits) {
-          const total = resp.count;
-          const items = resp.hits;
-          // If we are loading a subsequent page, append to items. Otherwise, replace them.
-          if (searchParams.skip > 0) {
-            this.setState(prevState => ({
-              items: prevState.items.concat(items),
-              totalItems: total,
-            }));
-          } else {
-            this.setState({ items, totalItems: total });
-          }
-        }
-      })
-      .finally(() => {
-        this.setState({ loading: false });
-        if (searchParams.skip === 0) {
-          this.setState({ activeIdx: 0 });
-        }
-      });
+    const requestedId = this.props.id;
+    const resp = await searchNarratives(searchParams);
     // TODO handle error from server
+    if (resp && resp.hits) {
+      const total = resp.count;
+      const items = resp.hits;
+      // Is the requested id in these results?
+      const requestedItemArr = items
+        .map<[number, Doc]>((item, idx) => [idx, item])
+        .filter(([idx, item]) => item.access_group === requestedId);
+      let requestedItemIdx = 0;
+      if (requestedItemArr.length === 1) {
+        requestedItemIdx = requestedItemArr[0][0];
+      }
+      // If we are loading a subsequent page, append to items. Otherwise, replace them.
+      if (searchParams.skip > 0) {
+        this.setState(prevState => {
+          const itemKeys = prevState.items.map(item => item.access_group);
+          const extraItems = items.filter(
+            item => itemKeys.indexOf(item.access_group) === -1
+          );
+          const itemsNext = prevState.items.concat(extraItems);
+          const itemSelectedIndex = itemsNext
+            .map(item => item.access_group)
+            .indexOf(requestedId);
+          return {
+            activeIdx: itemSelectedIndex,
+            loading: false,
+            items: itemsNext,
+            totalItems: total,
+          };
+        });
+      } else {
+        this.setState({
+          activeIdx: requestedItemIdx,
+          loading: false,
+          items,
+          totalItems: total,
+        });
+      }
+    }
   }
 
   render() {
+    const { category, id, obj, sort, view, ver } = this.props;
+    const upa = `${id}/${obj}/${ver}`;
+    const tabs = Object.entries({
+      own: {
+        name: 'My Narratives',
+        link: keepSort('/dashboard/'),
+      },
+      shared: {
+        name: 'Shared With Me',
+        link: keepSort('/dashboard/shared/'),
+      },
+      tutorials: {
+        name: 'Tutorials',
+        link: keepSort('/dashboard/tutorials/'),
+      },
+      public: {
+        name: 'Public',
+        link: keepSort('/dashboard/public/'),
+      },
+    });
+
     return (
       <div className="bg-light-gray w-100">
         <div
@@ -154,11 +213,7 @@ export class NarrativeList extends Component<Props, State> {
         >
           {/* Tab sections */}
           <div className="pt2">
-            <TabHeader
-              tabs={['My Narratives', 'Shared With Me', 'Tutorials', 'Public']}
-              onSelectTab={this.handleTabChange.bind(this)}
-              selectedIdx={0}
-            />
+            <TabHeader tabs={tabs} selected={category} />
           </div>
 
           {/* New narrative button */}
@@ -174,8 +229,11 @@ export class NarrativeList extends Component<Props, State> {
         <div>
           {/* Search, sort, filter */}
           <Filters
-            onSetSearch={this.handleSearch.bind(this)}
+            category={category}
+            history={this.props.history}
             loading={this.state.loading}
+            onSetSearch={this.handleSearch.bind(this)}
+            sort={sort}
           />
 
           {/* Narrative listing and side-panel details */}
@@ -187,10 +245,14 @@ export class NarrativeList extends Component<Props, State> {
               totalItems={this.state.totalItems}
               onLoadMore={this.handleLoadMore.bind(this)}
               onSelectItem={this.handleSelectItem.bind(this)}
+              category={category}
+              selected={upa}
+              sort={sort}
             />
 
             <NarrativeDetails
               activeItem={this.state.items[this.state.activeIdx]}
+              view={view}
               updateSearch={() => this.performSearch()}
             />
           </div>

@@ -15,7 +15,8 @@ const dummyEvent = {
 test('Filterdropdown should expand and collapse as expected', () => {
   const dropdown = mount(
     <FilterDropdown
-      onSelect={(idx: number, val: string) => {}}
+      onSelect={(val: string) => {}}
+      selectedIdx={0}
       txt={'text'}
       items={['item1', 'item2']}
     />
@@ -31,7 +32,8 @@ test('Filterdropdown should expand and collapse as expected', () => {
 test('FilterDropdown should start with showing its options with the isOpen prop', () => {
   const dropdown = mount(
     <FilterDropdown
-      onSelect={(idx, val) => {}}
+      onSelect={val => {}}
+      selectedIdx={0}
       txt={'text'}
       items={['item1', 'item2']}
       isOpen={true}
@@ -43,7 +45,8 @@ test('FilterDropdown should start with showing its options with the isOpen prop'
 test('FilterDropdown should close on document click', () => {
   const wrapper = mount(
     <FilterDropdown
-      onSelect={(idx, val) => {}}
+      onSelect={val => {}}
+      selectedIdx={0}
       txt={'text'}
       items={['item1', 'item2']}
       isOpen={true}

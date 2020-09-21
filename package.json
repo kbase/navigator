@@ -35,10 +35,12 @@
   "dependencies": {
     "@kbase/base-css": "0.0.2",
     "@kbase/narrative-utils": "^0.0.6",
+    "@types/react-router-dom": "^5.1.5",
     "@types/react-select": "^3.0.13",
     "history": "^4.10.1",
     "react": "16.11.0",
     "react-dom": "16.11.0",
+    "react-router-dom": "^5.2.0",
     "react-select": "^3.1.0",
     "timeago.js": "^4.0.0"
   }
