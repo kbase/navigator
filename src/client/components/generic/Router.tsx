@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { History, UnregisterCallback } from 'history';
+// as of now eslint cannot detect when imported interfaces are used
+import { History, UnregisterCallback } from 'history'; // eslint-disable-line no-unused-vars
 
 interface RouterProps {
   history: History;

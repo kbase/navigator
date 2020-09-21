@@ -20,8 +20,8 @@ interface DefaultIconProps {
 
 // Font-awesome class names for each narrative cell type
 enum CellIcons {
-  code_cell = 'fa fa-code',
-  kbase_app = 'fa fa-cube',
+  codeCell = 'fa fa-code',
+  kbaseApp = 'fa fa-cube',
   markdown = 'fa fa-paragraph',
   widget = 'fa fa-wrench',
   data = 'fa fa-database',
@@ -29,7 +29,9 @@ enum CellIcons {
 
 /**
  * This renders an icon span for a typed object.
- * @param props TypeProps - in this case, just the object type string (Module.Type, like KBaseGenomes.Genome).
+ * @param {TypeProps} props - in this case, just the object type string
+ *   (Module.Type, like KBaseGenomes.Genome).
+ * @return {JSX}
  */
 export function TypeIcon(props: TypeProps) {
   const iconProvider = IconProvider.Instance;
@@ -78,6 +80,7 @@ export class AppCellIcon extends Component<AppIconProps, AppIconState> {
    * If we don't have the icon info yet, just make a little loading spinner "icon".
    *
    * Once it's loaded, either render the image or the icon.
+   * @return {JSX}
    */
   render() {
     const iconInfo = this.state.iconInfo
@@ -111,7 +114,7 @@ export function DefaultIcon(props: DefaultIconProps) {
   let icon;
   switch (props.cellType) {
     case 'code':
-      icon = CellIcons.code_cell;
+      icon = CellIcons.codeCell;
       break;
     case 'markdown':
       icon = CellIcons.markdown;
@@ -120,7 +123,7 @@ export function DefaultIcon(props: DefaultIconProps) {
       icon = CellIcons.data;
       break;
     case 'app':
-      icon = CellIcons.kbase_app;
+      icon = CellIcons.kbaseApp;
       break;
     default:
       icon = CellIcons.widget;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ControlMenuItemProps from './ControlMenuItemProps';
+// as of now eslint cannot detect when imported interfaces are used
+import ControlMenuItemProps from './ControlMenuItemProps'; // eslint-disable-line no-unused-vars
 import DashboardButton from '../../../generic/DashboardButton';
 import Runtime from '../../../../utils/runtime';
 import { DynamicServiceClient } from '../../../../api/serviceWizard';
@@ -12,11 +13,15 @@ interface State {
 }
 
 export default class CopyItem extends Component<ControlMenuItemProps, State> {
-  state: State = {
-    newName: this.props.narrative.narrative_title + ' - Copy',
-    makingCopy: false,
-    copyError: null,
-  };
+  state: State;
+  constructor(props: ControlMenuItemProps) {
+    super(props);
+    this.state = {
+      newName: this.props.narrative.narrative_title + ' - Copy',
+      makingCopy: false,
+      copyError: null,
+    };
+  }
 
   async makeCopy() {
     this.setState({ makingCopy: true });
@@ -62,7 +67,7 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
     let loadingSpinner = null;
     let copyControls = null;
     if (this.state.makingCopy) {
-      loadingSpinner = LoadingSpinner({ loading: true });
+      loadingSpinner = LoadingSpinner({ loading: true }); // eslint-disable-line new-cap
     } else {
       copyControls = (
         <React.Fragment>

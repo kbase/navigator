@@ -1,4 +1,5 @@
-import React, { Component, CSSProperties } from 'react';
+// as of now eslint cannot detect when imported interfaces are used
+import React, { Component, CSSProperties } from 'react'; // eslint-disable-line no-unused-vars
 import { createPortal } from 'react-dom';
 
 interface Props {
@@ -77,20 +78,18 @@ export default class Modal extends Component<Props, State> {
       );
     }
 
-    return this.state.open
-      ? createPortal(
-          <div onClick={this.props.closeFn} className="" style={backdropStyle}>
-            <div
-              onClick={e => e.stopPropagation()}
-              className="bg-white br2 w"
-              style={outerModalStyle}
-            >
-              {header}
-              <div style={bodyStyle}>{this.props.children}</div>
-            </div>
-          </div>,
-          document.body
-        )
-      : null;
+    const modal = (
+      <div onClick={this.props.closeFn} className="" style={backdropStyle}>
+        <div
+          onClick={e => e.stopPropagation()}
+          className="bg-white br2 w"
+          style={outerModalStyle}
+        >
+          {header}
+          <div style={bodyStyle}>{this.props.children}</div>
+        </div>
+      </div>
+    );
+    return this.state.open ? createPortal(modal, document.body) : null;
   }
 }

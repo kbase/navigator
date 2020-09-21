@@ -44,15 +44,15 @@ export class Header extends Component<Props, State> {
       signedout: false,
     };
     this.getUserID = this.getUserID.bind(this);
-    this.setUrl_prefix = this.setUrl_prefix.bind(this);
+    this.setUrlPrefix = this.setUrlPrefix.bind(this);
     this.getUserInfo = this.getUserInfo.bind(this);
     this.signOut = this.signOut.bind(this);
   }
 
   componentDidMount() {
-    //TODO: AKIYO setUrl_prefix setting the state calling getUserID second time.
+    // TODO: AKIYO setUrlPrefix setting the state calling getUserID second time.
     // make change to stop second call
-    this.setUrl_prefix();
+    this.setUrlPrefix();
     this.getUserID();
   }
 
@@ -72,11 +72,11 @@ export class Header extends Component<Props, State> {
     });
   }
 
-  setUrl_prefix() {
+  setUrlPrefix() {
+    const icon: string[] = ['fa', 'fa-2x'];
+    const matches = Runtime.getConfig().host_root.match('//([^.]+).kbase.us');
     let prefix: string = '';
-    let icon: string[] = ['fa', 'fa-2x'];
     let env: string = 'ci';
-    let matches = Runtime.getConfig().host_root.match('//([^.]+).kbase.us');
     if (matches !== null) {
       env = matches[1];
     }

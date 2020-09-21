@@ -1,5 +1,6 @@
-import React, { Component, CSSProperties } from 'react';
-import ControlMenuItemProps from '../ControlMenuItemProps';
+// as of now eslint cannot detect when imported interfaces are used
+import React, { Component, CSSProperties } from 'react'; // eslint-disable-line no-unused-vars
+import ControlMenuItemProps from '../ControlMenuItemProps'; // eslint-disable-line no-unused-vars
 import { LoadingSpinner } from '../../../../generic/LoadingSpinner';
 import { KBaseServiceClient } from '@kbase/narrative-utils';
 import Runtime from '../../../../../utils/runtime';
@@ -55,7 +56,7 @@ export default class SharingItem extends Component<
   }
 
   async updateSharedUserInfo() {
-    let sharedUserInfo: NarrativePerms = await this.fetchSharedUsers();
+    const sharedUserInfo: NarrativePerms = await this.fetchSharedUsers();
     this.setState({
       isLoading: false,
       perms: sharedUserInfo,

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ControlMenuItemProps from './ControlMenuItemProps';
+// as of now eslint cannot detect when imported interfaces are used
+import ControlMenuItemProps from './ControlMenuItemProps'; // eslint-disable-line no-unused-vars
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
 import DashboardButton from '../../../generic/DashboardButton';
 import Runtime from '../../../../utils/runtime';
@@ -63,7 +64,7 @@ export default class DeleteItem extends Component<ControlMenuItemProps, State> {
     let loadingSpinner = null;
     let deleteControls = null;
     if (this.state.isLoading) {
-      loadingSpinner = LoadingSpinner({ loading: true });
+      loadingSpinner = LoadingSpinner({ loading: true }); // eslint-disable-line new-cap
     } else if (this.state.canDelete) {
       deleteControls = (
         <React.Fragment>

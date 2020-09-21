@@ -19,7 +19,8 @@ import Preview from './Preview';
  *  - visibility (public or private)
  *  - created date
  *  - data objects
- * @param data
+ * @param {Doc} data - a representation of a narrative
+ * @return {JSX}
  */
 const detailsHeader = (data: Doc) => {
   const sharedWith = data.shared_users.filter(

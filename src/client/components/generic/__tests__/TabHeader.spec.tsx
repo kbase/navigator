@@ -17,11 +17,6 @@ describe('TabHeader tests', () => {
       link: '/thatOtherTab/',
     },
   });
-  let selectTabSpy: (idx: number, name: string) => void;
-
-  beforeEach(() => {
-    selectTabSpy = jest.fn();
-  });
 
   test('should instantiate with given tabs and second one selected', () => {
     const wrapper = shallow(<TabHeader selected={'two'} tabs={tabs} />);
