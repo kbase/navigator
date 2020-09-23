@@ -9,6 +9,11 @@
   --white: #fff;
 }
 
+.dataview a, .dataview a:visited {
+  color: var(--black);
+  text-decoration: none;
+}
+
 .narrative-item {
   color: var(--tachyon-black-70);
   text-decoration: none;
