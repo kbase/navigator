@@ -10,16 +10,20 @@
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
-import searchNarratives, { SearchOptions } from '../searchNarratives';
+// as of now eslint cannot detect when imported interfaces are used
+import searchNarratives, {
+  SearchOptions, // eslint-disable-line no-unused-vars
+} from '../searchNarratives';
 
 const VALID_TOKEN = 'some_valid_token';
 const TEST_USER = 'some_user';
 
 /**
  * This returns a list of narrative doc elements.
- * @param owner string, the 'owner' of the fake narrative
- * @param first int, the first id / name / etc in the list of narratives
- * @param count the total number of narratives to return
+ * @param {string} owner, the 'owner' of the fake narrative
+ * @param {number} first, the first id / name / etc in the list of narratives
+ * @param {number} count the total number of narratives to return
+ * @return {array}
  */
 function fakeNarratives(owner: string, first: number, count: number) {
   const docs = [];
@@ -50,7 +54,8 @@ function fakeNarratives(owner: string, first: number, count: number) {
 /**
  * This mocks doing the search in the happy case. Assumes no errors and that
  * the auth token (if needed) is valid.
- * @param param0 SearchOptions - should be same as passed to searchNarratives
+ * @param {SearchOptions} param0 - should be same as passed to searchNarratives
+ * @param {string} owner
  */
 function mockSearchOk(
   { term, sort, category, skip, pageSize }: SearchOptions,
@@ -130,21 +135,25 @@ describe('searchNarratives tests', () => {
     expect(results.count).toEqual(results.hits.length);
   });
 
-  it('searchNarratives should fail to return own narratives when a token is not present', async () => {
-    mockSearchOk(
-      { term: '', sort: '', category: '', skip: 0, pageSize: 10 },
-      TEST_USER
-    );
-    await expect(() =>
-      searchNarratives({
-        term: '',
-        category: 'own',
-        sort: 'Recently updated',
-        skip: 0,
-        pageSize: 10,
-      })
-    ).rejects.toThrow();
-  });
+  it(
+    'searchNarratives should fail to return own narratives when a token is ' +
+      'not present',
+    async () => {
+      mockSearchOk(
+        { term: '', sort: '', category: '', skip: 0, pageSize: 10 },
+        TEST_USER
+      );
+      await expect(() =>
+        searchNarratives({
+          term: '',
+          category: 'own',
+          sort: 'Recently updated',
+          skip: 0,
+          pageSize: 10,
+        })
+      ).rejects.toThrow();
+    }
+  );
 
   it('searchNarratives should fail when a bad token is used', async () => {
     setInvalidToken();
@@ -197,21 +206,25 @@ describe('searchNarratives tests', () => {
     expect(results.hits.length).toEqual(results.count);
   });
 
-  it('searchNarratives should fail to return shared narratives when a token is not present', async () => {
-    mockSearchOk(
-      { term: '', sort: '', category: 'shared', skip: 0, pageSize: 10 },
-      TEST_USER
-    );
-    await expect(() =>
-      searchNarratives({
-        term: '',
-        category: 'shared',
-        sort: 'Recently updated',
-        skip: 0,
-        pageSize: 10,
-      })
-    ).rejects.toThrow();
-  });
+  it(
+    'searchNarratives should fail to return shared narratives when a token is ' +
+      'not present',
+    async () => {
+      mockSearchOk(
+        { term: '', sort: '', category: 'shared', skip: 0, pageSize: 10 },
+        TEST_USER
+      );
+      await expect(() =>
+        searchNarratives({
+          term: '',
+          category: 'shared',
+          sort: 'Recently updated',
+          skip: 0,
+          pageSize: 10,
+        })
+      ).rejects.toThrow();
+    }
+  );
 
   it('searchNarratives should return public narratives', async () => {
     setValidToken();

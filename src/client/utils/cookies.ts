@@ -1,6 +1,7 @@
 /**
  * Returns the value of a given cookie. If not present, throws an Error.
- * @param name name of the cookie to fetch
+ * @param {string} name name of the cookie to fetch
+ * @return {string}
  */
 export function getCookie(name: string): string {
   const vals = document.cookie
@@ -15,7 +16,7 @@ export function getCookie(name: string): string {
 
 /**
  * Removes a cookie by setting its expiration date to the epoch.
- * @param name name of cookie to remove
+ * @param {string} name name of cookie to remove
  */
 export function removeCookie(name: string) {
   const date = new Date();

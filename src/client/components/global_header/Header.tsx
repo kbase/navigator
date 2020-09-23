@@ -114,7 +114,7 @@ export class Header extends Component<Props, State> {
   // Set gravatarURL
   gravatarSrc() {
     if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
-      return Runtime.getConfig().host_root + '/static/images/nouserpic.png';
+      return '/static/images/nouserpic.png';
     } else if (this.state.gravatarHash) {
       return (
         'https://www.gravatar.com/avatar/' +

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import iconData from './icons.json';
 import { KBaseServiceClient } from '@kbase/narrative-utils';
 import Runtime from '../utils/runtime';
@@ -99,10 +100,10 @@ export default class IconProvider {
         url: Runtime.getConfig().service_routes.narrative_method_store + '/rpc',
       });
       try {
-        let methodInfo = await client.call('get_method_brief_info', [
+        const methodInfo = await client.call('get_method_brief_info', [
           { ids: [appId], tag: appTag },
         ]);
-        let icon = methodInfo[0].icon.url;
+        const icon = methodInfo[0].icon.url;
         if (!icon) {
           this.appIconCache[appTag][appId] = this.defaultApp;
         } else {

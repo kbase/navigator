@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { KBaseServiceClient } from '@kbase/narrative-utils';
 import Runtime from '../utils/runtime';
 
@@ -59,7 +60,7 @@ export function fetchNarrative(upa: string) {
 
 /**
  * Returns the current user's permissions for some narrative. This is either 'a', 'w', 'r', or 'n';
- * @param wsId workspace id for a narrative of interest
+ * @param {number} wsId workspace id for a narrative of interest
  */
 export async function getCurrentUserPermission(wsId: number): Promise<string> {
   const client = new KBaseServiceClient({

@@ -7,7 +7,8 @@
  * Eg. "comparative_genomics" -> "Comparative genomics"
  * This makes the string sentence case. E.g.:
  * some_kind_of_string -> Some kind of string
- * @param str the snake-case string to change
+ * @param {string} str the snake-case string to change
+ * @return {string}
  */
 export function formatSnakeCase(str: string): string {
   str = str.replace(/_/g, ' ');
@@ -18,7 +19,8 @@ export function formatSnakeCase(str: string): string {
 /**
  * Get a friendly readable name from a workspace object type
  * E.g. "KBaseMatrices.AmpliconMatrix-1.2" -> "Amplicon Matrix"
- * @param type the workspace type string to break apart
+ * @param {string} type the workspace type string to break apart
+ * @return {string}
  */
 export function getWSTypeName(type: string): string {
   const matches = type.match(/[a-zA-Z]*\.([a-zA-Z]+)(-\d+\.\d+)?/);

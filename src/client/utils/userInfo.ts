@@ -3,7 +3,7 @@ import Runtime from '../utils/runtime';
 import { DynamicServiceClient } from '../api/serviceWizard';
 
 export async function fetchProfileAPI(username: string) {
-  let token = Runtime.token();
+  const token = Runtime.token();
   if (!token) {
     throw new Error('Tried to fetch profile info without a token.');
   }
@@ -14,7 +14,7 @@ export async function fetchProfileAPI(username: string) {
   });
 
   const bffServiceUrl = await serviceWizardClient.getServiceUrl();
-  let url = bffServiceUrl + '/fetchUserProfile/' + username;
+  const url = bffServiceUrl + '/fetchUserProfile/' + username;
   const response = await fetch(url, {
     method: 'GET',
   });

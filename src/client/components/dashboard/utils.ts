@@ -1,4 +1,5 @@
-import { Location } from 'history';
+// as of now eslint cannot detect when imported interfaces are used
+import { Location } from 'history'; // eslint-disable-line no-unused-vars
 
 export const keepParamsLinkTo = (paramsToKeep: string[], link: string) => (
   loc: Location
