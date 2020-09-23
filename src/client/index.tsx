@@ -54,10 +54,12 @@ if (headerElem) {
   render(<Header title={pageTitle || ''} />, headerElem);
 }
 
+const prefix = window._env.urlPrefix || '/';
+
 // Top level page component
-const Page: React.FC = () => (
+export const Page: React.FC = () => (
   <div className="ph4 bg-light-gray">
-    <Router>
+    <Router basename={prefix}>
       <Switch>
         <Route exact path={'/dashboard/'} component={Dashboard} />
         <Route exact path={'/dashboard/:id/:obj/:ver'} component={Dashboard} />
@@ -89,7 +91,7 @@ const Page: React.FC = () => (
 );
 
 // Placeholder component for pages we have not implemented yet
-function Todo(props: { text?: string }) {
+export function Todo(props: { text?: string }) {
   return <p>TODO {props.text}</p>;
 }
 
