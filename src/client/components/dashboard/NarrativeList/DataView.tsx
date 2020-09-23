@@ -4,10 +4,12 @@ import { getWSTypeName } from '../../../utils/stringUtils';
 import { TypeIcon } from '../../generic/Icon';
 
 interface Props {
+  accessGroup: number;
   dataObjects: Array<DataObject>;
 }
 
 export default function DataView(props: Props) {
+  const { accessGroup } = props;
   const rows = props.dataObjects
     .slice(0, 50)
     .map(obj => {
@@ -15,7 +17,7 @@ export default function DataView(props: Props) {
       return obj;
     })
     .sort((a, b) => a.readableType.localeCompare(b.readableType))
-    .map(obj => dataViewRow(obj));
+    .map(obj => dataViewRow(accessGroup, obj));
   return (
     <div className="pt3">
       {rows.length ? rows : 'This Narrative has no data.'}
@@ -23,7 +25,7 @@ export default function DataView(props: Props) {
   );
 
   // View for each row in the data listing for the narrative
-  function dataViewRow(obj: DataObject) {
+  function dataViewRow(accessGroup: number, obj: DataObject) {
     const key = obj.name + obj.obj_type;
     return (
       <div key={key} className="flex flex-row flex-nowrap pv1 pl2">
@@ -31,7 +33,14 @@ export default function DataView(props: Props) {
           <TypeIcon objType={obj.obj_type} />
         </div>
         <div className="ml4">
-          <div className="">{obj.name}</div>
+          <div className="dataview">
+            <a
+              href={`/#dataview/${accessGroup}/${obj.name}`}
+              rel="noopener noreferrer"
+            >
+              {obj.name}
+            </a>
+          </div>
           <div className="black-80 f6 mt1">{obj.readableType}</div>
         </div>
       </div>

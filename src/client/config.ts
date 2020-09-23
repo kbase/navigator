@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import configFile from '../static/config.json';
 
 interface LoadedConfigFile {
@@ -32,11 +33,11 @@ export default class Config implements LoadedConfigFile {
   public view_routes: Routes;
 
   private constructor() {
-    this.host_root = window._env.host_root; //LOADED_CONFIG.host_root;
+    this.host_root = window._env.host_root; // LOADED_CONFIG.host_root;
     if (this.host_root.endsWith('/')) {
       this.host_root = this.host_root.slice(0, -1);
     }
-    this.service_root = window._env.service_root; //LOADED_CONFIG.service_root;
+    this.service_root = window._env.service_root; // LOADED_CONFIG.service_root;
     if (this.service_root.endsWith('/')) {
       this.service_root = this.service_root.slice(0, -1);
     }

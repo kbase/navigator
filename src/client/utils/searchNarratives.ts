@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { getToken } from './auth';
 import { Doc } from './narrativeData';
 import Runtime from '../utils/runtime';
@@ -104,25 +105,26 @@ export const sortsLookup = Object.fromEntries(
  * returns a fetch Promise that results in SearchResults
  *
  * Authentication is a little tricky here. Unauthenticated searches are allowed for things
- * like tutorials and public narratives (and, later, for static narratives). Authentication is required
- * to search by owner. When an incorrect auth token is given, regardless of data permissions,
- * the search request will fail.
+ * like tutorials and public narratives (and, later, for static narratives).
+ * Authentication is required to search by owner. When an incorrect auth token
+ * is given, regardless of data permissions, the search request will fail.
  *
  * This gets addressed in this function in the following way:
  *  1. if a user-based search (narratives owned by or shared by) is done, without a token available,
- *     this will throw an AuthError.
- *      (note that actually making the call without a token will just not return any results, this wraps
- *       that to make it obvious)
- *  2. if any search results in a 401 from the server (typically a present, but invalid, token), this
- *     also throws an AuthError.
- * @param param0 - SearchOptions
+ *       this will throw an AuthError.
+ *       (note that actually making the call without a token will just not
+ *         return any results, this wraps that to make it obvious)
+ *  2. if any search results in a 401 from the server (typically a present, but
+ *       invalid, token), this also throws an AuthError.
+ * @param {SearchOptions} SearchOptions
+ * @return {Promise<SearchResults>}
  */
 export default async function searchNarratives({
   term,
   category,
-  sort = 'Recently updated',
-  skip = 0,
-  pageSize = 20,
+  sort,
+  skip,
+  pageSize,
 }: SearchOptions): Promise<SearchResults> {
   const params: SearchParams = {
     types: ['KBaseNarrative.Narrative'],
@@ -172,27 +174,25 @@ export default async function searchNarratives({
       throw new Error('Unknown search category');
   }
 
-  if (sort) {
-    params.sorts = [['_score', SortDir.Desc]];
-    if (sort === 'Recently created') {
-      params.sorts.unshift(['creation_date', SortDir.Desc]);
-    } else if (sort === 'Oldest') {
-      params.sorts.unshift(['creation_date', SortDir.Asc]);
-    } else if (sort === 'Least recently updated') {
-      params.sorts.unshift(['timestamp', SortDir.Asc]);
-    } else if (sort === 'Recently updated') {
-      params.sorts.unshift(['timestamp', SortDir.Desc]);
-    } else {
-      throw new Error('Unknown sorting method');
-    }
+  params.sorts = [['_score', SortDir.Desc]];
+  if (sort === 'Recently created') {
+    params.sorts.unshift(['creation_date', SortDir.Desc]);
+  } else if (sort === 'Oldest') {
+    params.sorts.unshift(['creation_date', SortDir.Asc]);
+  } else if (sort === 'Least recently updated') {
+    params.sorts.unshift(['timestamp', SortDir.Asc]);
+  } else if (sort === 'Recently updated') {
+    params.sorts.unshift(['timestamp', SortDir.Desc]);
+  } else {
+    throw new Error('Unknown sorting method');
   }
   return await (await makeRequest(params)).result;
 }
 
 /**
  *
- * @param params SearchParams - this takes a query, number of documents to skip,
- *  sort parameter, auth (boolean, true if we're looking up personal data), and pageSize
+ * @param {SearchParams} params - this takes a query, number of documents to skip,
+ *   sort parameter, auth (boolean, true if we're looking up personal data), and pageSize
  */
 async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
   const headers: { [key: string]: string } = {

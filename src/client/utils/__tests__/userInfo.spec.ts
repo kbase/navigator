@@ -7,10 +7,11 @@ jest.mock('../../api/serviceWizard');
 enableFetchMocks();
 
 describe('fetchProfile tests', () => {
-  const token = 'someAuthToken',
-    userId = 'someuser',
-    userName = 'Some User',
-    userProfileFetchURL = `https://env.kbase.us/services/some_special_url/fetchUserProfile/${userId}`;
+  const token = 'someAuthToken';
+  const userId = 'someuser';
+  const userName = 'Some User';
+  const userProfileFetchURL =
+    'https://env.kbase.us/services/some_special_url/fetchUserProfile/' + userId;
 
   beforeEach(() => {
     document.cookie = `kbase_session=${token}`;
@@ -73,7 +74,7 @@ describe('fetchProfile tests', () => {
     expect(profile).toBeUndefined();
   });
 
-  test("fetchProfile should throw an error if it doesn't receive valid JSON", async () => {
+  test('fetchProfile should throw an error if it does not receive valid JSON', async () => {
     fetchMock.mockIf(userProfileFetchURL, async req => {
       return {
         status: 200,

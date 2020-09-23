@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 
-import { Location } from 'history';
+// as of now eslint cannot detect when imported interfaces are used
+import { Location } from 'history'; // eslint-disable-line no-unused-vars
 
 import { keepParamsLinkTo, keepSort } from '../utils';
 

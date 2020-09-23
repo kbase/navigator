@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import Runtime from '../utils/runtime';
 
 // Return type of fetchApps; aggregated data about every app
@@ -59,6 +60,7 @@ export async function fetchApps(tag = 'release') {
       params: [{ tag: tag }],
     }),
   });
+  // eslint-disable-next-line no-unused-vars
   const [runsResult, detailsResult] = await Promise.all([runs, details]);
   // TODO error handling cases
   // Extract and reduce the size of the data
@@ -74,7 +76,7 @@ export async function fetchApps(tag = 'release') {
   // Reduce all the details data into an array of category names
   const categories: Array<string> = detailsJson.reduce(
     (cats: Array<string>, det: DetailsResult) => {
-      for (let catName of det.categories) {
+      for (const catName of det.categories) {
         if (cats.indexOf(catName) === -1) {
           cats.push(catName);
         }

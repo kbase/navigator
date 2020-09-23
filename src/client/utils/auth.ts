@@ -5,6 +5,7 @@ const CONFIG = Config.Instance;
 
 /**
  * If the token isn't found, returns ''.
+ * @return {string}
  */
 export function getToken(): string {
   let token;

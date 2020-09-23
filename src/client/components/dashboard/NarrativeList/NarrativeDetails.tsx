@@ -88,7 +88,9 @@ export const NarrativeDetails: React.FC<Props> = ({
       break;
     case 'data':
     default:
-      content = <DataView dataObjects={activeItem.data_objects} />;
+      content = (
+        <DataView accessGroup={wsid} dataObjects={activeItem.data_objects} />
+      );
       break;
   }
   const tabs = Object.entries({
