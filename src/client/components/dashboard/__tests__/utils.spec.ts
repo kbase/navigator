@@ -5,7 +5,7 @@
 // as of now eslint cannot detect when imported interfaces are used
 import { Location } from 'history'; // eslint-disable-line no-unused-vars
 
-import { keepParamsLinkTo, keepSort } from '../utils';
+import { keepParamsLinkTo } from '../utils';
 
 const mocks = (
   pathname: string = 'path',
@@ -73,10 +73,5 @@ describe('Dashboard utils tests', () => {
     expect(link).toBe(
       '/path/elsewhere?withThisParam=true&keepThisParam=1729&andThis=Ramanujan'
     );
-  });
-  test('keepSort keeps the sort parameter', () => {
-    const { mockHistoryLocation } = mocks('/path/', '?sort=up&notThis=false');
-    const link = keepSort('/')(mockHistoryLocation);
-    expect(link).toBe('/?sort=up');
   });
 });

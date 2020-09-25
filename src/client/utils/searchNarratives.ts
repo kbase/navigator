@@ -8,7 +8,7 @@ export interface SearchOptions {
   term: string;
   sort: string;
   category: string;
-  skip: number;
+  skip?: number;
   pageSize: number;
   musts?: Array<any>;
   mustNots?: Array<any>;
@@ -130,7 +130,7 @@ export default async function searchNarratives({
     types: ['KBaseNarrative.Narrative'],
     paging: {
       length: pageSize,
-      offset: skip,
+      offset: skip || 0,
     },
     track_total_hits: false,
   };

@@ -7,7 +7,7 @@ import SubTabs from '../../generic/SubTabs';
 import { Doc } from '../../../utils/narrativeData';
 import { readableDate } from '../../../utils/readableDate';
 import Runtime from '../../../utils/runtime';
-import { keepSort } from '../utils';
+import { keepParamsLinkTo } from '../utils';
 import ControlMenu from './ControlMenu/ControlMenu';
 import DataView from './DataView';
 import Preview from './Preview';
@@ -93,14 +93,16 @@ export const NarrativeDetails: React.FC<Props> = ({
       );
       break;
   }
+  const keepParams = (link: string) =>
+    keepParamsLinkTo(['limit', 'sort'], link);
   const tabs = Object.entries({
     data: {
       name: 'Data',
-      link: keepSort('?view=data'),
+      link: keepParams('?view=data'),
     },
     preview: {
       name: 'Preview',
-      link: keepSort('?view=preview'),
+      link: keepParams('?view=preview'),
     },
   });
   return (
