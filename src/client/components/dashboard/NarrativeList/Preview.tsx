@@ -1,7 +1,12 @@
+import createDOMPurify from 'dompurify';
+import marked from 'marked';
 import React, { Component } from 'react';
-import { Doc, fetchNarrative } from '../../../utils/narrativeData';
+
 import { TypeIcon, AppCellIcon, DefaultIcon } from '../../generic/Icon';
+import { Doc, fetchNarrative } from '../../../utils/narrativeData';
 import Runtime from '../../../utils/runtime';
+
+const DOMPurify = createDOMPurify(window);
 
 interface Props {
   narrative: Doc;
@@ -158,7 +163,7 @@ export default class Preview extends Component<Props, State> {
   }
 }
 
-class PreviewCell extends Component<PreviewCellProps> {
+export class PreviewCell extends Component<PreviewCellProps> {
   render() {
     let icon;
     const tag = this.props.tag || 'dev';
@@ -173,14 +178,22 @@ class PreviewCell extends Component<PreviewCellProps> {
         icon = <DefaultIcon cellType={this.props.cellType} />;
         break;
     }
-
+    const title = this.props.title;
+    const subtitleRaw = this.props.subtitle || '';
+    // eslint-disable-next-line new-cap
+    let subtitle = DOMPurify.sanitize(marked(subtitleRaw), {
+      ALLOWED_TAGS: [],
+    });
+    if (subtitle.startsWith(title)) {
+      subtitle = subtitle.slice(title.length);
+    }
     return (
       <div className="flex flex-row flex-nowrap pv3 pl2">
         <div>{icon}</div>
         <div className="ml4" style={{ minWidth: 0 }}>
-          <div className="">{this.props.title}</div>
+          <div className="">{title}</div>
           <div className="black-80 f6 mt1 truncate" style={{}}>
-            {this.props.subtitle}
+            {subtitle}
           </div>
         </div>
       </div>

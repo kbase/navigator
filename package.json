@@ -43,9 +43,13 @@
   "dependencies": {
     "@kbase/base-css": "0.0.2",
     "@kbase/narrative-utils": "^0.0.6",
+    "@types/dompurify": "^2.0.4",
+    "@types/marked": "^1.1.0",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-select": "^3.0.13",
+    "dompurify": "^2.1.0",
     "history": "^4.10.1",
+    "marked": "^1.1.1",
     "react": "16.11.0",
     "react-dom": "16.11.0",
     "react-router-dom": "^5.2.0",
