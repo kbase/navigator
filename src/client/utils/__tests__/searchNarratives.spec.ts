@@ -25,7 +25,7 @@ const TEST_USER = 'some_user';
  * @param {number} count the total number of narratives to return
  * @return {array}
  */
-function fakeNarratives(owner: string, first: number, count: number) {
+function fakeNarratives(owner: string, first: number = 0, count: number) {
   const docs = [];
   for (let id = first; id < count + first; id++) {
     docs.push({

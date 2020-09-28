@@ -7,15 +7,15 @@ import { Doc } from '../../../utils/narrativeData';
 const timeago = require('timeago.js');
 
 interface Props {
+  category: string;
   items: Array<Doc>;
   loading: boolean;
-  totalItems: number;
-  onLoadMore?: () => void;
   onSelectItem?: (idx: number) => void;
-  selectedIdx: number;
-  category: string;
+  pageSize: number;
   selected: string;
+  selectedIdx: number;
   sort?: string;
+  totalItems: number;
 }
 
 interface State {}
@@ -41,13 +41,6 @@ export class ItemList extends Component<Props, State> {
     }
     if (this.props.onSelectItem) {
       this.props.onSelectItem(idx);
-    }
-  }
-
-  // Handle click event on the "load more" button
-  handleClickLoadMore(ev: React.MouseEvent) {
-    if (this.props.onLoadMore) {
-      this.props.onLoadMore();
     }
   }
 
@@ -96,7 +89,8 @@ export class ItemList extends Component<Props, State> {
   };
 
   hasMoreButton() {
-    const hasMore = this.props.items.length < this.props.totalItems;
+    const { items, pageSize, totalItems } = this.props;
+    const hasMore = items.length < totalItems;
     if (!hasMore) {
       return <span className="black-50 pa3 dib tc">No more results.</span>;
     }
@@ -108,13 +102,15 @@ export class ItemList extends Component<Props, State> {
         </span>
       );
     }
+    const keepParams = (link: string) =>
+      keepParamsLinkTo(['sort', 'view'], link);
     return (
-      <a
+      <Link
         className="tc pa3 dib pointer blue dim b"
-        onClick={(ev: React.MouseEvent) => this.handleClickLoadMore(ev)}
+        to={keepParams(`./?limit=${items.length + pageSize}`)}
       >
         Load more ({this.props.totalItems - this.props.items.length} remaining)
-      </a>
+      </Link>
     );
   }
 

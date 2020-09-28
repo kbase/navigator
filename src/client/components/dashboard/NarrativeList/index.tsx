@@ -9,7 +9,7 @@ import { NarrativeDetails } from './NarrativeDetails';
 import { Doc } from '../../../utils/narrativeData';
 
 // Utils
-import { keepSort } from '../utils';
+import { keepParamsLinkTo } from '../utils';
 import Runtime from '../../../utils/runtime';
 import searchNarratives, {
   sorts,
@@ -50,7 +50,7 @@ interface Props {
 export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { category } = this.props;
+    const { category, limit } = this.props;
     const sortDefault = Object.values(sorts)[0];
     this.state = {
       totalItems: 0,
@@ -61,13 +61,12 @@ export class NarrativeList extends Component<Props, State> {
       // This is unused if the items array is empty.
       activeIdx: 0,
       // parameters to send to the searchNarratives function
-      pages: parseInt((props.limit / PAGE_SIZE).toString()),
+      pages: parseInt((limit / PAGE_SIZE).toString()),
       searchParams: {
         term: '',
         sort: sortDefault,
         category: category,
-        skip: 0,
-        pageSize: props.limit || PAGE_SIZE,
+        pageSize: limit || PAGE_SIZE,
       },
     };
   }
@@ -82,12 +81,13 @@ export class NarrativeList extends Component<Props, State> {
 
   async componentDidUpdate(prevProps: Props) {
     const { category } = this.props;
-    const { pageSize, skip } = this.state.searchParams;
+    const pageSize = this.props.limit || PAGE_SIZE;
     const sort = sorts[this.props.sort];
-    const nextSearchParams = { term: '', sort, category, skip, pageSize };
+    const nextSearchParams = { term: '', sort, category, pageSize };
     const performSearchCondition =
       prevProps.category !== this.props.category ||
       prevProps.id !== this.props.id ||
+      prevProps.limit !== this.props.limit ||
       prevProps.sort !== this.props.sort;
     if (performSearchCondition) {
       await this.performSearch(nextSearchParams);
@@ -102,30 +102,7 @@ export class NarrativeList extends Component<Props, State> {
     const searchParams = this.state.searchParams;
     searchParams.term = searchP.term;
     searchParams.sort = searchP.sort;
-    searchParams.skip = 0;
     this.performSearch(searchParams);
-  }
-
-  // Handle the onLoadMore callback from ItemList
-  async handleLoadMore() {
-    const searchParams = { ...this.state.searchParams };
-    // Increment the skip size to be a multiple of the page size.
-    searchParams.pageSize = PAGE_SIZE;
-    searchParams.skip = (this.state.pages + 1) * PAGE_SIZE;
-    await this.performSearch(searchParams);
-    const queryParams = new URLSearchParams(location.search);
-    const itemsLoaded = searchParams.skip + PAGE_SIZE;
-    if (itemsLoaded === PAGE_SIZE) {
-      queryParams.delete('limit');
-    } else {
-      queryParams.set('limit', itemsLoaded.toString());
-    }
-    const newLocation = `${location.pathname}?${queryParams.toString()}`;
-    this.props.history.push(newLocation);
-    this.setState({
-      searchParams,
-      pages: this.state.pages + 1,
-    });
   }
 
   // Handle an onSelectItem callback from ItemList
@@ -155,37 +132,19 @@ export class NarrativeList extends Component<Props, State> {
         requestedItemIdx = requestedItemArr[0][0];
       }
       // If we are loading a subsequent page, append to items. Otherwise, replace them.
-      if (searchParams.skip > 0) {
-        this.setState(prevState => {
-          const itemKeys = prevState.items.map(item => item.access_group);
-          const extraItems = items.filter(
-            item => itemKeys.indexOf(item.access_group) === -1
-          );
-          const itemsNext = prevState.items.concat(extraItems);
-          const itemSelectedIndex = itemsNext
-            .map(item => item.access_group)
-            .indexOf(requestedId);
-          return {
-            activeIdx: itemSelectedIndex,
-            loading: false,
-            items: itemsNext,
-            totalItems: total,
-          };
-        });
-      } else {
-        this.setState({
-          activeIdx: requestedItemIdx,
-          loading: false,
-          items,
-          totalItems: total,
-        });
-      }
+      this.setState({
+        activeIdx: requestedItemIdx,
+        loading: false,
+        items,
+        totalItems: total,
+      });
     }
   }
 
   render() {
     const { category, id, obj, sort, view, ver } = this.props;
     const upa = `${id}/${obj}/${ver}`;
+    const keepSort = (link: string) => keepParamsLinkTo(['sort'], link);
     const tabs = Object.entries({
       own: {
         name: 'My Narratives',
@@ -239,15 +198,15 @@ export class NarrativeList extends Component<Props, State> {
           {/* Narrative listing and side-panel details */}
           <div className="flex">
             <ItemList
-              selectedIdx={this.state.activeIdx}
+              category={category}
               items={this.state.items}
               loading={this.state.loading}
-              totalItems={this.state.totalItems}
-              onLoadMore={this.handleLoadMore.bind(this)}
               onSelectItem={this.handleSelectItem.bind(this)}
-              category={category}
+              pageSize={PAGE_SIZE}
               selected={upa}
+              selectedIdx={this.state.activeIdx}
               sort={sort}
+              totalItems={this.state.totalItems}
             />
 
             <NarrativeDetails

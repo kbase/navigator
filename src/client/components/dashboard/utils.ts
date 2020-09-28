@@ -25,5 +25,3 @@ export const keepParamsLinkTo = (paramsToKeep: string[], link: string) => (
   });
   return newLink.pathname + newLink.search + newLink.hash;
 };
-
-export const keepSort = (link: string) => keepParamsLinkTo(['sort'], link);
