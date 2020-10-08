@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { getToken } from './auth';
-import { Doc } from './narrativeData';
+// as of now eslint cannot detect when imported interfaces are used
+import { Doc, KBaseCache } from './narrativeData'; // eslint-disable-line no-unused-vars
 import Runtime from '../utils/runtime';
 
 // Interface to the searchNarratives function
@@ -87,6 +88,8 @@ export const sorts: Record<string, string> = {
   updated: 'Least recently updated',
   '-created': 'Recently created',
   created: 'Oldest',
+  lex: 'Lexicographic (A-Za-z)',
+  '-lex': 'Reverse Lexicographic',
 };
 export const sortsLookup = Object.fromEntries(
   Object.entries(sorts).map(([key, val]) => [val, key])
@@ -95,7 +98,13 @@ export const sortsLookup = Object.fromEntries(
 /**
  * Search narratives using ElasticSearch.
  * `term` is a search term
- * `sortBy` can be one of "Recently updated", "Recently created", "Least recently updated", "Oldest"
+ * `sortBy` can be one of
+ *   - "Recently updated",
+ *   - "Recently created",
+ *   - "Least recently updated",
+ *   - "Oldest",
+ *   - "Lexicographic (A-Za-z)",
+ *   - "Reverse Lexicographic (z-aZ-A)",
  * `category` can be one of:
  *   - 'own' - narratives created by the current user
  *   - 'shared' - narratives shared with the current user
@@ -116,16 +125,19 @@ export const sortsLookup = Object.fromEntries(
  *         return any results, this wraps that to make it obvious)
  *  2. if any search results in a 401 from the server (typically a present, but
  *       invalid, token), this also throws an AuthError.
- * @param {SearchOptions} SearchOptions
+ * @param {SearchOptions} options
+ * @param {KBaseCache} cache
  * @return {Promise<SearchResults>}
  */
-export default async function searchNarratives({
-  term,
-  category,
-  sort,
-  skip,
-  pageSize,
-}: SearchOptions): Promise<SearchResults> {
+export default async function searchNarratives(
+  options: SearchOptions,
+  cache: KBaseCache = {}
+): Promise<SearchResults> {
+  const { term, category, sort, skip, pageSize } = options;
+  const key = JSON.stringify(options);
+  if (key in cache) {
+    return cache[key];
+  }
   const params: SearchParams = {
     types: ['KBaseNarrative.Narrative'],
     paging: {
@@ -142,7 +154,7 @@ export default async function searchNarratives({
   }
   params.filters = {
     operator: Operator.And,
-    fields: [{ field: 'is_temporary', term: false }],
+    fields: [],
   };
   const username = Runtime.username();
   if (!username) return { count: 0, search_time: 0, hits: [] };
@@ -175,18 +187,25 @@ export default async function searchNarratives({
   }
 
   params.sorts = [['_score', SortDir.Desc]];
-  if (sort === 'Recently created') {
+  const sortSlug = sortsLookup[sort];
+  if (sortSlug === '-created') {
     params.sorts.unshift(['creation_date', SortDir.Desc]);
-  } else if (sort === 'Oldest') {
+  } else if (sortSlug === 'created') {
     params.sorts.unshift(['creation_date', SortDir.Asc]);
-  } else if (sort === 'Least recently updated') {
+  } else if (sortSlug === 'updated') {
     params.sorts.unshift(['timestamp', SortDir.Asc]);
-  } else if (sort === 'Recently updated') {
+  } else if (sortSlug === '-updated') {
     params.sorts.unshift(['timestamp', SortDir.Desc]);
+  } else if (sortSlug === 'lex') {
+    params.sorts.unshift(['narrative_title.raw', SortDir.Asc]);
+  } else if (sortSlug === '-lex') {
+    params.sorts.unshift(['narrative_title.raw', SortDir.Desc]);
   } else {
     throw new Error('Unknown sorting method');
   }
-  return await (await makeRequest(params)).result;
+  const result = await (await makeRequest(params)).result;
+  cache[key] = result;
+  return result;
 }
 
 /**

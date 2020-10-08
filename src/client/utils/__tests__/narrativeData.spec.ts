@@ -32,7 +32,9 @@ describe('narrativeData tests', () => {
 
   it('Should return a narrative with the happy case', async () => {
     const dummyNarr = {
-      data: { narr: 'obj' },
+      data: [{
+        data: {}
+      }],
     };
     mockWSGetObjects2Ok(dummyNarr);
     const narrObj = await fetchNarrative('123/45/6');
