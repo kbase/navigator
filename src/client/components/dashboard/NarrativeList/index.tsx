@@ -6,7 +6,7 @@ import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
 import { NarrativeDetails } from './NarrativeDetails';
-import { Doc } from '../../../utils/narrativeData';
+import { Doc, KBaseCache } from '../../../utils/narrativeData';
 
 // Utils
 import { keepParamsLinkTo } from '../utils';
@@ -22,16 +22,17 @@ const PAGE_SIZE = 20;
 const NEW_NARR_URL = Runtime.getConfig().host_root + '/#narrativemanager/new';
 
 interface State {
-  // Whether we are loading data from the server
-  loading: boolean;
-  // List of objects of narrative details
-  items: Array<Doc>;
-  totalItems: number;
   // Currently activated narrative details
   activeIdx: number;
+  cache: KBaseCache;
+  // List of objects of narrative details
+  items: Array<Doc>;
+  // Whether we are loading data from the server
+  loading: boolean;
   pages: number;
   // Parameters to send to searchNarratives
   searchParams: SearchOptions;
+  totalItems: number;
 }
 
 interface Props {
@@ -45,6 +46,8 @@ interface Props {
   view: string;
 }
 
+const upaKey = (id: number, obj: number, ver: number) => `${id}/${obj}/${ver}`;
+
 // This is a parent component to everything in the narrative browser (tabs,
 // filters, search results, details, etc)
 export class NarrativeList extends Component<Props, State> {
@@ -53,13 +56,15 @@ export class NarrativeList extends Component<Props, State> {
     const { category, limit } = this.props;
     const sortDefault = Object.values(sorts)[0];
     this.state = {
-      totalItems: 0,
-      loading: false,
-      // List of narrative data
-      items: [],
       // Currently active narrative result, selected on the left and shown on the right
       // This is unused if the items array is empty.
       activeIdx: 0,
+      cache: {
+        objects: {},
+      },
+      // List of narrative data
+      items: [],
+      loading: false,
       // parameters to send to the searchNarratives function
       pages: parseInt((limit / PAGE_SIZE).toString()),
       searchParams: {
@@ -68,6 +73,7 @@ export class NarrativeList extends Component<Props, State> {
         category: category,
         pageSize: limit || PAGE_SIZE,
       },
+      totalItems: 0,
     };
   }
 
@@ -118,32 +124,34 @@ export class NarrativeList extends Component<Props, State> {
     }
     this.setState({ loading: true });
     const requestedId = this.props.id;
-    const resp = await searchNarratives(searchParams);
+    const cache = this.state.cache;
+    if (!('search' in cache)) cache.search = {};
+    const resp = await searchNarratives(searchParams, cache.search);
     // TODO handle error from server
-    if (resp && resp.hits) {
-      const total = resp.count;
-      const items = resp.hits;
-      // Is the requested id in these results?
-      const requestedItemArr = items
-        .map<[number, Doc]>((item, idx) => [idx, item])
-        .filter(([idx, item]) => item.access_group === requestedId);
-      let requestedItemIdx = 0;
-      if (requestedItemArr.length === 1) {
-        requestedItemIdx = requestedItemArr[0][0];
-      }
-      // If we are loading a subsequent page, append to items. Otherwise, replace them.
-      this.setState({
-        activeIdx: requestedItemIdx,
-        loading: false,
-        items,
-        totalItems: total,
-      });
+    if (!resp || !resp.hits) return;
+    const total = resp.count;
+    const items = resp.hits;
+    // Is the requested id in these results?
+    const requestedItemArr = items
+      .map<[number, Doc]>((item, idx) => [idx, item])
+      .filter(([idx, item]) => item.access_group === requestedId);
+    let requestedItemIdx = 0;
+    if (requestedItemArr.length === 1) {
+      requestedItemIdx = requestedItemArr[0][0];
     }
+    // If we are loading a subsequent page, append to items. Otherwise, replace them.
+    this.setState({
+      activeIdx: requestedItemIdx,
+      cache,
+      items,
+      loading: false,
+      totalItems: total,
+    });
   }
 
   render() {
     const { category, id, obj, sort, view, ver } = this.props;
-    const upa = `${id}/${obj}/${ver}`;
+    const upa = upaKey(id, obj, ver);
     const keepSort = (link: string) => keepParamsLinkTo(['sort'], link);
     const tabs = Object.entries({
       own: {
@@ -164,6 +172,7 @@ export class NarrativeList extends Component<Props, State> {
       },
     });
 
+    const activeItem = this.state.items[this.state.activeIdx];
     return (
       <div className="bg-light-gray w-100">
         <div
@@ -209,11 +218,16 @@ export class NarrativeList extends Component<Props, State> {
               totalItems={this.state.totalItems}
             />
 
-            <NarrativeDetails
-              activeItem={this.state.items[this.state.activeIdx]}
-              view={view}
-              updateSearch={() => this.performSearch()}
-            />
+            {activeItem ? (
+              <NarrativeDetails
+                activeItem={activeItem}
+                cache={this.state.cache}
+                view={view}
+                updateSearch={() => this.performSearch()}
+              />
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>

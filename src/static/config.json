@@ -6,7 +6,7 @@
         "workspace": "/ws",
         "search": "/searchapi2/rpc",
         "service_wizard": "/service_wizard",
-        "user_profile": "/user_profile",
+        "user_profile": "/user_profile/rpc",
         "groups": "/groups"
     },
     "view_routes": {
