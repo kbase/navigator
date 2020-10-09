@@ -2,8 +2,9 @@
  * @jest-environment jsdom
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
-enableFetchMocks();
 import { fetchNarrative, getCurrentUserPermission } from '../narrativeData';
+
+enableFetchMocks();
 
 describe('narrativeData tests', () => {
   const mockWSGetObjects2Ok = (narr: object) => {
@@ -30,15 +31,31 @@ describe('narrativeData tests', () => {
     });
   };
 
-  it('Should return a narrative with the happy case', async () => {
-    const dummyNarr = {
-      data: [{
-        data: {}
-      }],
+  it('Should return a narrative if it exists in the cache', async () => {
+    const dummyResponse = {
+      data: [
+        {
+          data: {},
+        },
+      ],
     };
-    mockWSGetObjects2Ok(dummyNarr);
+    const narrObj = await fetchNarrative('123/45/6', {
+      '123/45/6': {},
+    });
+    expect(JSON.stringify(narrObj)).toEqual(JSON.stringify(dummyResponse));
+  });
+
+  it('Should return a narrative with the happy case', async () => {
+    const dummyResponse = {
+      data: [
+        {
+          data: {},
+        },
+      ],
+    };
+    mockWSGetObjects2Ok(dummyResponse);
     const narrObj = await fetchNarrative('123/45/6');
-    expect(narrObj).toEqual(dummyNarr);
+    expect(narrObj).toEqual(dummyResponse);
   });
 
   it('Should return a set of user permissions with the happy case', async () => {

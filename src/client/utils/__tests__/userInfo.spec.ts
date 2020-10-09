@@ -3,43 +3,48 @@
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
 import { fetchProfile, fetchProfiles } from '../userInfo';
+
 enableFetchMocks();
 
 const mockProfile = (userId: string, userName: string) => ({
   id: '12345',
   version: '1.1',
-  result: [[{
-    user: {
-      username: userId,
-      realname: userName,
-    },
-    profile: {
-      metadata: { created: '2015-01-14T00:32:40.885Z' },
-      userdata: {
-        researchStatement: 'KBase!',
-        jobTitle: 'Person',
-        affiliations: [
-          {
-            organization: 'Lawrence Berkeley National Laboratory',
-            started: 2012,
-            title: 'Software Developer',
-            ended: 'Present',
+  result: [
+    [
+      {
+        user: {
+          username: userId,
+          realname: userName,
+        },
+        profile: {
+          metadata: { created: '2015-01-14T00:32:40.885Z' },
+          userdata: {
+            researchStatement: 'KBase!',
+            jobTitle: 'Person',
+            affiliations: [
+              {
+                organization: 'Lawrence Berkeley National Laboratory',
+                started: 2012,
+                title: 'Software Developer',
+                ended: 'Present',
+              },
+            ],
+            state: 'California',
+            country: 'United States',
+            city: 'Oakland',
+            postalCode: '',
+            fundingSource: '',
+            gravatarDefault: 'identicon',
+            avatarOption: '',
           },
-        ],
-        state: 'California',
-        country: 'United States',
-        city: 'Oakland',
-        postalCode: '',
-        fundingSource: '',
-        gravatarDefault: 'identicon',
-        avatarOption: '',
+          synced: {
+            gravatarHash: '294da295adeac456edf84b40d8e714d6',
+          },
+          preferences: {},
+        },
       },
-      synced: {
-        gravatarHash: '294da295adeac456edf84b40d8e714d6',
-      },
-      preferences: {},
-    },
-  }]]
+    ],
+  ],
 });
 
 describe('fetchProfile tests', () => {
@@ -82,6 +87,16 @@ describe('fetchProfile tests', () => {
     expect(profile).toBeNull();
   });
 
+  test('fetchProfile should throw an error', async () => {
+    fetchMock.mockOnce(async req => {
+      return {
+        status: 200,
+        body: '{}',
+      };
+    });
+    await expect(() => fetchProfile(userId)).rejects.toThrow();
+  });
+
   test('fetchProfile should throw an error if it does not receive valid JSON', async () => {
     fetchMock.mockOnce(async req => {
       return {
@@ -104,19 +119,20 @@ describe('fetchProfile tests', () => {
         body: JSON.stringify({
           id: '12345',
           version: '1.1',
-          result: [[{
-            [userId]: null,
-            profileNoUser: {},
-            profileNoUserName: { user: {} },
-          }]]
-        })
+          result: [
+            [
+              {
+                [userId]: null,
+                profileNoUser: {},
+                profileNoUserName: { user: {} },
+              },
+            ],
+          ],
+        }),
       };
     });
     const cache = {};
-    await fetchProfiles(
-      [userId, 'profileNoUser', 'profileNoUserName'],
-      cache,
-    );
+    await fetchProfiles([userId, 'profileNoUser', 'profileNoUserName'], cache);
     expect(JSON.stringify(cache)).toBe('{}');
   });
 });

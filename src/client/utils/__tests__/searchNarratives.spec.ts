@@ -12,6 +12,7 @@ import { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
 // as of now eslint cannot detect when imported interfaces are used
 import searchNarratives, {
+  sortsLookup,
   SearchOptions, // eslint-disable-line no-unused-vars
 } from '../searchNarratives';
 
@@ -132,6 +133,24 @@ describe('searchNarratives tests', () => {
       pageSize: 10,
     });
     expect(results.count).toEqual(10);
+    expect(results.count).toEqual(results.hits.length);
+  });
+
+  it('searchNarratives should consult the cache first', async () => {
+    const searchParams = {
+      term: '',
+      category: 'own',
+      sort: 'Recently updated',
+      skip: 0,
+      pageSize: 10,
+    };
+    const results = await searchNarratives(searchParams, {
+      [JSON.stringify(searchParams)]: {
+        count: 1,
+        hits: ['sample result'],
+      },
+    });
+    expect(results.count).toEqual(1);
     expect(results.count).toEqual(results.hits.length);
   });
 
@@ -294,12 +313,7 @@ describe('searchNarratives tests', () => {
   });
 
   it('searchNarratives should sort results automatically by some criteria', async () => {
-    const sortings = [
-      'Recently created',
-      'Oldest',
-      'Least recently updated',
-      'Recently updated',
-    ];
+    const sortings = Object.keys(sortsLookup);
     mockSearchOk(
       { term: 'narr', sort: '', category: '', skip: 0, pageSize: 10 },
       TEST_USER

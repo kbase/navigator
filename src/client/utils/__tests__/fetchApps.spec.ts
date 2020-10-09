@@ -5,9 +5,10 @@
 // This isn't really used anywhere, so it just tests the happy path for now.
 
 import { enableFetchMocks } from 'jest-fetch-mock';
-enableFetchMocks();
 import { fetchApps } from '../fetchApps';
 import Runtime from '../runtime';
+
+enableFetchMocks();
 
 describe('fetchApps tests', () => {
   beforeEach(() => {});
@@ -55,6 +56,14 @@ describe('fetchApps tests', () => {
                 ver: '1.0.0',
                 categories: ['apps'],
               },
+              {
+                id: 'AnotherModule/another_app',
+                module_name: 'AnotherModule',
+                git_commit_hash: 'zyxwvuts',
+                name: 'ANOTHER APP',
+                ver: '1.0.1',
+                categories: ['apps', 'another category'],
+              },
             ],
           ],
         });
@@ -74,6 +83,6 @@ describe('fetchApps tests', () => {
     const appInfos = await fetchApps();
     expect(appInfos.runs).toBeDefined();
     expect(appInfos.details).toBeDefined();
-    expect(appInfos.categories).toEqual(['apps']);
+    expect(appInfos.categories).toEqual(['apps', 'another category']);
   });
 });

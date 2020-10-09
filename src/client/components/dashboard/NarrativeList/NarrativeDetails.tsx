@@ -208,21 +208,23 @@ export class NarrativeDetails extends React.Component<Props, State> {
   }
 
   async componentDidMount() {
+    const detailsHeaderComponent = await detailsHeader(
+      this.state.activeItem,
+      this.state.cache
+    );
     this.setState({
-      detailsHeader: await detailsHeader(
-        this.state.activeItem,
-        this.state.cache
-      ),
+      detailsHeader: detailsHeaderComponent,
     });
   }
 
   async componentDidUpdate(prevProps: Props) {
     if (prevProps.activeItem === this.props.activeItem) return;
+    const detailsHeaderComponent = await detailsHeader(
+      this.props.activeItem,
+      this.props.cache
+    );
     this.setState({
-      detailsHeader: await detailsHeader(
-        this.props.activeItem,
-        this.props.cache
-      ),
+      detailsHeader: detailsHeaderComponent,
     });
   }
 
