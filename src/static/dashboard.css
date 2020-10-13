@@ -25,6 +25,10 @@
   width:calc(100% / 3);
 }
 
+.narrative-details a {
+  text-decoration: none;
+}
+
 .narrative-details-key {
   padding: var(--tachyon-spacing-medium) auto;
 }
@@ -50,7 +54,6 @@
 #narrative-shared-more a.label {
   color: #00f;
   cursor: pointer;
-  text-decoration: underline;
 }
 .narrative-item {
   color: var(--tachyon-black-70);
