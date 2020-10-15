@@ -91,8 +91,10 @@ export class AppCellIcon extends Component<AppIconProps, AppIconState> {
       return (
         <span>
           <img
+            height="40"
             src={iconInfo.url}
             style={{ maxWidth: '2.5em', maxHeight: '2.5em', margin: 0 }}
+            width="40"
           />
         </span>
       );

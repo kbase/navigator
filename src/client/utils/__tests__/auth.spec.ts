@@ -34,6 +34,30 @@ describe('getUsername tests', () => {
       done();
     });
   });
+
+  it('Should return a username if there is a token', done => {
+    fetchMock.mockOnce(async req => {
+      return {
+        status: 200,
+        body: JSON.stringify({ user: 'some user' }),
+      };
+    });
+    getUsername(username => {
+      expect(username).toBe('some user');
+      done();
+    });
+  });
+
+  it('Should log a message if there is some other error', done => {
+    fetchMock.mockOnce(async req => {
+      return {
+        status: 200,
+        body: '',
+      };
+    });
+    expect(getUsername(username => {})).toBeUndefined();
+    done();
+  });
 });
 
 describe('getUsernames tests', () => {

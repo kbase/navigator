@@ -1,30 +1,36 @@
-export {};
+import { KBaseServiceClient } from '@kbase/narrative-utils';
+// as of now eslint cannot detect when imported interfaces are used
+import { KBaseCache } from './narrativeData'; // eslint-disable-line no-unused-vars
 import Runtime from '../utils/runtime';
-import { DynamicServiceClient } from '../api/serviceWizard';
 
-export async function fetchProfileAPI(username: string) {
-  const token = Runtime.token();
-  if (!token) {
-    throw new Error('Tried to fetch profile info without a token.');
+export async function fetchProfiles(usernames: string[], cache: KBaseCache) {
+  if (usernames.every(username => username in cache)) {
+    return usernames.map(username => cache[username]);
   }
-  const serviceWizardClient = new DynamicServiceClient({
-    moduleName: 'bff',
-    wizardUrl: Runtime.getConfig().service_routes.service_wizard,
-    version: 'beta',
+  const client = new KBaseServiceClient({
+    module: 'UserProfile',
+    url: Runtime.getConfig().service_routes.user_profile,
+    authToken: Runtime.token(),
   });
-
-  const bffServiceUrl = await serviceWizardClient.getServiceUrl();
-  const url = bffServiceUrl + '/fetchUserProfile/' + username;
-  const response = await fetch(url, {
-    method: 'GET',
-  });
-  if (response.status !== 200) {
-    console.warn(response.status, response);
-  } else {
-    try {
-      return await response.json();
-    } catch (err) {
-      console.error('profile fetch failed', response);
+  const profiles = await client.call('get_user_profile', [usernames]);
+  profiles.forEach((profile: any) => {
+    if (profile && profile.user && profile.user.username) {
+      cache[profile.user.username] = profile;
     }
+  });
+  return profiles;
+}
+
+export async function fetchProfile(username: string, cache: KBaseCache = {}) {
+  let profileArr;
+  try {
+    profileArr = await fetchProfiles([username], cache);
+  } catch (err) {
+    if ('code' in err && err.code !== 200) {
+      return null;
+    }
+    throw err;
   }
+  const profile = profileArr[0];
+  return profile;
 }

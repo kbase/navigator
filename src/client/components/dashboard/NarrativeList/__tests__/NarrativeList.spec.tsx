@@ -4,8 +4,10 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import { createBrowserHistory } from 'history';
-
+import { enableFetchMocks } from 'jest-fetch-mock';
 import { NarrativeList } from '../';
+
+enableFetchMocks();
 
 describe('NarrativeList tests', () => {
   test('NarrativeList renders', () => {

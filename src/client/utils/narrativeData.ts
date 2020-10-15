@@ -49,13 +49,28 @@ export interface Doc {
   version: number;
 }
 
-export function fetchNarrative(upa: string) {
+/**
+ * The KBaseCache interface
+ */
+export interface KBaseCache {
+  [key: string]: any;
+}
+
+export async function fetchNarrative(upa: string, cache: KBaseCache = {}) {
+  if (upa in cache) {
+    return { data: [{ data: cache[upa] }] };
+  }
   const client = new KBaseServiceClient({
     module: 'Workspace',
     url: Runtime.getConfig().service_routes.workspace,
     authToken: Runtime.token(),
   });
-  return client.call('get_objects2', [{ objects: [{ ref: upa }] }]);
+  const response = await client.call('get_objects2', [
+    { objects: [{ ref: upa }] },
+  ]);
+  const itemUpdate = response.data[0].data;
+  cache[upa] = itemUpdate;
+  return response;
 }
 
 /**

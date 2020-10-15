@@ -71,7 +71,6 @@ export async function fetchApps(tag = 'release') {
     return acc;
   }, {});
   let detailsJson = await details.json();
-  console.log(detailsJson);
   detailsJson = detailsJson.result[0];
   // Reduce all the details data into an array of category names
   const categories: Array<string> = detailsJson.reduce(

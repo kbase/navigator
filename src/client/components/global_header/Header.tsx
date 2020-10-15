@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Runtime from '../../utils/runtime';
 import { removeCookie } from '../../utils/cookies';
 import { AccountDropdown } from './AccountDropdown';
-import { fetchProfileAPI } from '../../utils/userInfo';
+import { fetchProfile } from '../../utils/userInfo';
 
 import { getUsername, getToken } from '../../utils/auth';
 
@@ -94,7 +94,7 @@ export class Header extends Component<Props, State> {
     if (!username || !username.length) {
       return;
     }
-    const res = await fetchProfileAPI(username);
+    const res = await fetchProfile(username);
     if (res) {
       const avatarOption = res.profile.userdata.avatarOption;
       const gravatarHash = res.profile.synced.gravatarHash;
