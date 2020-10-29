@@ -64,7 +64,7 @@ export class Filters extends Component<Props, State> {
       queryParams.set('sort', sortSlug);
     }
     if (updateLocation) {
-      const prefix = '/dashboard/' + (category === 'own' ? '' : `${category}/`);
+      const prefix = '/' + (category === 'own' ? '' : `${category}/`);
       const newLocation = `${prefix}?${queryParams.toString()}`;
       this.props.history.push(newLocation);
     }

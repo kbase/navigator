@@ -156,19 +156,19 @@ export class NarrativeList extends Component<Props, State> {
     const tabs = Object.entries({
       own: {
         name: 'My Narratives',
-        link: keepSort('/dashboard/'),
+        link: keepSort('/'),
       },
       shared: {
         name: 'Shared With Me',
-        link: keepSort('/dashboard/shared/'),
+        link: keepSort('/shared/'),
       },
       tutorials: {
         name: 'Tutorials',
-        link: keepSort('/dashboard/tutorials/'),
+        link: keepSort('/tutorials/'),
       },
       public: {
         name: 'Public',
-        link: keepSort('/dashboard/public/'),
+        link: keepSort('/public/'),
       },
     });
 

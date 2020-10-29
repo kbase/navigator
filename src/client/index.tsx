@@ -30,10 +30,9 @@ document.querySelectorAll('[data-hl-nav]').forEach((node: Element) => {
 // Highlight dashboard for root path
 // For legacy nav:
 document.querySelectorAll('[data-hl-legacy-nav]').forEach(node => {
-  const HTMLEle: HTMLElement = node as HTMLElement;
   const path = history.location.pathname;
   if (path === node.getAttribute('data-hl-legacy-nav')) {
-    HTMLEle.style.backgroundColor = '#e4e3e4';
+    node.classList.add('active');
   }
 });
 
@@ -61,14 +60,10 @@ export const Page: React.FC = () => (
   <div className="ph4 bg-light-gray">
     <Router basename={prefix}>
       <Switch>
-        <Route exact path={'/dashboard/'} component={Dashboard} />
-        <Route exact path={'/dashboard/:id/:obj/:ver'} component={Dashboard} />
-        <Route exact path={'/dashboard/:category'} component={Dashboard} />
-        <Route
-          exact
-          path={'/dashboard/:category/:id/:obj/:ver'}
-          component={Dashboard}
-        />
+        <Route exact path={'/'} component={Dashboard} />
+        <Route exact path={'/:id/:obj/:ver'} component={Dashboard} />
+        <Route exact path={'/:category'} component={Dashboard} />
+        <Route exact path={'/:category/:id/:obj/:ver'} component={Dashboard} />
         <Route path="/search">
           <Todo text="Search" />
         </Route>
