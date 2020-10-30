@@ -31,8 +31,8 @@ document.querySelectorAll('[data-hl-nav]').forEach((node: Element) => {
 // For legacy nav:
 document.querySelectorAll('[data-hl-legacy-nav]').forEach(node => {
   const path = history.location.pathname;
-  if (path === node.getAttribute('data-hl-legacy-nav')) {
-    node.classList.add('active');
+  if (path === node.getAttribute('data-hl-legacy-nav') && node.parentElement) {
+    node.parentElement.classList.add('active');
   }
 });
 
