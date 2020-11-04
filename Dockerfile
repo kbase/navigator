@@ -25,3 +25,10 @@ RUN apk --update add --virtual build-dependencies python3-dev build-base && \
 ENV PYTHONPATH=/app
 
 CMD ["python", "/app/src/server.py"]
+
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.vcs-url="https://github.com/kbaseIncubator/dashboard-redesign.git" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.schema-version="1.1.8" \
+      us.kbase.vcs-branch=$BRANCH \
+      maintainer="Dakota Blair dblair@bnl.gov"

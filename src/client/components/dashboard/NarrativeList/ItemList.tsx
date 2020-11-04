@@ -64,7 +64,7 @@ export class ItemList extends Component<Props, State> {
     const keepParams = (link: string) =>
       keepParamsLinkTo(['limit', 'sort', 'view'], link);
     const { category } = this.props;
-    const prefix = '/dashboard/' + (category === 'own' ? '' : `${category}/`);
+    const prefix = '/' + (category === 'own' ? '' : `${category}/`);
     // Action to select an item to view details
     return (
       <Link

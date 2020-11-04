@@ -1,45 +1,45 @@
-<div class='fixed left-0 h-100 flex flex-column justify-between z-1 legacy-nav'>
-  <ul class='list pa0 ma0'>
-    <li class='legacy-nav-item'>
-      <a data-hl-legacy-nav='/dashboard' href='{{ url_for('dashboard') }}' class='dib no-underline black-80 w-100'>
-        <i class="fa fa-files-o fa-2x tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
-        <div style='font-size:14px; padding-bottom: 4px;'>Narratives</div>
+<div class="legacy-nav">
+  <ul>
+    <li class="legacy-nav-item">
+      <a data-hl-legacy-nav="/" href="{{ url_for('narratives') }}">
+        <i class="fa fa-files-o fa-2x icon"></i>
+        <div class="title">Narratives</div>
       </a>
     </li>
-    <li class='legacy-nav-item'>
-      <a data-hl-legacy-nav='/orgs' href='{{ app.config.KBASE_UI_ROOT + '/#/orgs' }}' class='dib no-underline black-80 w-100'>
-        <i class="dib fa fa-users fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
-        <div style='font-size:14px; padding-bottom: 4px;'>Orgs</div>
+    <li class="legacy-nav-item">
+      <a data-hl-legacy-nav="/orgs" href="{{ app.config.KBASE_UI_ROOT + '/#/orgs' }}">
+        <i class="fa fa-users fa-2x icon"></i>
+        <div class="title">Orgs</div>
       </a>
     </li>
-    <li class='legacy-nav-item'>
-      <a data-hl-legacy-nav='/catalog' href='{{ app.config.KBASE_UI_ROOT + '/#/catalog/apps' }}' class='dib no-underline black-80 w-100'>
-        <i class="dib fa fa-book fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
-        <div style='font-size:14px; padding-bottom: 4px;'>Catalog</div>
+    <li class="legacy-nav-item">
+      <a data-hl-legacy-nav="/catalog" href="{{ app.config.KBASE_UI_ROOT + '/#/catalog/apps' }}">
+        <i class="fa fa-book fa-2x icon"></i>
+        <div class="title">Catalog</div>
       </a>
     </li>
-    <li class='legacy-nav-item'>
-    <a data-hl-legacy-nav='/search' href='{{ app.config.KBASE_UI_ROOT + '/#/search' }}' class='dib no-underline black-80 w-100'>
-        <i class="fa fa-search fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
-        <div style='font-size:14px; padding-bottom: 4px;'>Search</div>
+    <li class="legacy-nav-item">
+    <a data-hl-legacy-nav="/search" href="{{ app.config.KBASE_UI_ROOT + '/#/search' }}">
+        <i class="fa fa-search fa-2x icon"></i>
+        <div class="title">Search</div>
       </a>
     </li>
-    <li class='legacy-nav-item'>
-      <a data-hl-legacy-nav='/notifications' href='{{ app.config.KBASE_UI_ROOT + '/#/jobbrowser' }}' class='dib no-underline black-80 w-100'>
-        <i class="fa fa-suitcase fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
-        <div style='font-size:14px; padding-bottom: 4px;'>Jobs</div>
+    <li class="legacy-nav-item">
+      <a data-hl-legacy-nav="/notifications" href="{{ app.config.KBASE_UI_ROOT + '/#/jobbrowser' }}">
+        <i class="fa fa-suitcase fa-2x icon"></i>
+        <div class="title">Jobs</div>
       </a>
     </li>
-    <li class='legacy-nav-item'>
-      <a data-hl-legacy-nav='/account' href='{{ app.config.KBASE_UI_ROOT + '/#/auth2/account' }}' class='dib no-underline black-80 w-100'>
-        <i class="fa fa-drivers-license fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
-        <div style='font-size:14px; padding-bottom: 4px;'>Account</div>
+    <li class="legacy-nav-item">
+      <a data-hl-legacy-nav="/account" href="{{ app.config.KBASE_UI_ROOT + '/#/auth2/account' }}">
+        <i class="fa fa-drivers-license fa-2x icon"></i>
+        <div class="title">Account</div>
       </a>
     </li>
-    <li class='legacy-nav-item'>
-      <a data-hl-legacy-nav='/feeds' href='{{ app.config.KBASE_UI_ROOT + '/#/feeds' }}' class='dib no-underline black-80 w-100'>
-        <i class="fa fa-bullhorn fa-2x dib tc" style='display: block;font-size: 42px; margin:3px 0px'></i>
-        <div style='font-size:14px; padding-bottom: 4px;'>Feeds</div>
+    <li class="legacy-nav-item">
+      <a data-hl-legacy-nav="/feeds" href="{{ app.config.KBASE_UI_ROOT + '/#/feeds' }}">
+        <i class="fa fa-bullhorn fa-2x icon"></i>
+        <div class="title">Feeds</div>
       </a>
     </li>
   </ul>

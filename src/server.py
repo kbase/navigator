@@ -34,29 +34,24 @@ async def js(req):
 
 
 @app.route('/', methods=['GET'])
-async def root(request):
-    return sanic.response.redirect(_url_for('dashboard'))
+@app.route('/<suffix:path>', methods=['GET'])
+async def narratives(request, suffix=None):
+    """Narratives"""
+    opts = {'template': 'layout-legacy.html'}
+    return _render_template('narratives/index.html', opts)
 
 
 @app.route('/newnav', methods=['GET'])
 async def newnav_root(request):
-    return sanic.response.redirect(_url_for('dashboard_newnav'))
+    return sanic.response.redirect(_url_for('narratives_newnav'))
 
 
-@app.route('/newnav/dashboard', methods=['GET'])
-@app.route('/newnav/dashboard/<suffix:path>', methods=['GET'])
-async def dashboard_newnav(request, suffix=None):
-    """Dashboard with new nav."""
+@app.route('/newnav/narratives', methods=['GET'])
+@app.route('/newnav/narratives/<suffix:path>', methods=['GET'])
+async def narratives_newnav(request, suffix=None):
+    """Narratives (previously Dashboard) with new nav."""
     opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
-    return _render_template('dashboard/index.html', opts)
-
-
-@app.route('/dashboard', methods=['GET'])
-@app.route('/dashboard/<suffix:path>', methods=['GET'])
-async def dashboard(request, suffix=None):
-    """Dashboard."""
-    opts = {'template': 'layout-legacy.html'}
-    return _render_template('dashboard/index.html', opts)
+    return _render_template('narratives/index.html', opts)
 
 
 @app.route('/newnav/notifications', methods=['GET'])
