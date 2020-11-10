@@ -1,4 +1,4 @@
-[![Testing Status](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg)](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/kbaseIncubator/dashboard-redesign/badge.svg?branch=master)](https://coveralls.io/github/kbaseIncubator/dashboard-redesign?branch=master)
+[![Testing Status](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg)](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/kbaseIncubator/dashboard-redesign/badge.svg?branch=main)](https://coveralls.io/github/kbaseIncubator/dashboard-redesign?branch=main)
 
 # KBase Prototype React + Python UI
 
