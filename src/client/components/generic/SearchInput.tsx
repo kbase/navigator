@@ -30,6 +30,11 @@ export class SearchInput extends Component<Props, State> {
     this.handleInput = this.handleInput.bind(this);
   }
 
+  componentDidUpdate(prevProps: Props) {
+    const initializeCondition = prevProps.value !== this.props.value;
+    if (initializeCondition) this.setState({ value: '' });
+  }
+
   setVal(value: string) {
     if (this.props.onSetVal) {
       this.props.onSetVal(value);
