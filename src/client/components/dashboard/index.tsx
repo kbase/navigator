@@ -47,6 +47,7 @@ export class Dashboard extends Component<Props, State> {
     const queryParams = new URLSearchParams(this.props.location.search);
     const paramLimit = queryParams.get('limit');
     const limit = paramLimit ? parseInt(paramLimit) : 0;
+    const search = queryParams.get('search') || '';
     const sort = queryParams.get('sort') || sortSlugDefault;
     const view = queryParams.get('view') || 'data';
     if (this.state.loading) return <>Loading...</>;
@@ -58,6 +59,7 @@ export class Dashboard extends Component<Props, State> {
           id={paramId}
           limit={limit}
           obj={paramObj}
+          search={search}
           sort={sort}
           ver={paramVer}
           view={view}

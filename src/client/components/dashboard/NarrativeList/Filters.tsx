@@ -19,6 +19,7 @@ interface Props {
   history: History;
   loading: boolean;
   onSetSearch: (searchParams: SearchParams) => void;
+  search: string;
   sort: string;
 }
 
@@ -34,10 +35,11 @@ export class Filters extends Component<Props, State> {
     }
     this.state = {
       searchParams: {
-        term: '',
+        term: props.search,
         sort: sort,
       },
     };
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidMount() {
@@ -45,8 +47,17 @@ export class Filters extends Component<Props, State> {
   }
 
   // Handle an onSetVal event from SearchInput
-  handleSearch(val: string): void {
+  handleSearch(val: string, updateLocation: boolean = true): void {
     const searchParams = this.state.searchParams;
+    if (updateLocation) {
+      const queryParams = new URLSearchParams(location.search);
+      if (!val) {
+        queryParams.delete('search');
+      } else {
+        queryParams.set('search', val);
+      }
+      this.props.history.push(`?${queryParams.toString()}`);
+    }
     searchParams.term = val;
     if (this.props.onSetSearch) {
       this.props.onSetSearch(searchParams);
@@ -56,14 +67,14 @@ export class Filters extends Component<Props, State> {
   // Handle an onSelect event from FilterDropdown
   handleFilter(val: string, updateLocation: boolean = true): void {
     const { category } = this.props;
-    const queryParams = new URLSearchParams(location.search);
-    const sortSlug = sortsLookup[val];
-    if (sortSlug === sortSlugDefault) {
-      queryParams.delete('sort');
-    } else {
-      queryParams.set('sort', sortSlug);
-    }
     if (updateLocation) {
+      const queryParams = new URLSearchParams(location.search);
+      const sortSlug = sortsLookup[val];
+      if (sortSlug === sortSlugDefault) {
+        queryParams.delete('sort');
+      } else {
+        queryParams.set('sort', sortSlug);
+      }
       const prefix = '/' + (category === 'own' ? '' : `${category}/`);
       const newLocation = `${prefix}?${queryParams.toString()}`;
       this.props.history.push(newLocation);
@@ -87,8 +98,9 @@ export class Filters extends Component<Props, State> {
         <div className="pv3">
           <SearchInput
             loading={Boolean(this.props.loading)}
-            onSetVal={this.handleSearch.bind(this)}
+            onSetVal={this.handleSearch}
             placeholder="Search Narratives"
+            value={this.props.search}
           />
         </div>
 

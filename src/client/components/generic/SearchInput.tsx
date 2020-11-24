@@ -7,6 +7,7 @@ const DEBOUNCE = 250;
 interface Props {
   onSetVal: (value: string) => void;
   loading: boolean;
+  value?: string;
   placeholder?: string;
 }
 
@@ -24,12 +25,12 @@ export class SearchInput extends Component<Props, State> {
     super(props);
     this.inputID = 'search-input' + String(Math.floor(Math.random() * 1000000));
     this.state = {
-      value: '',
+      value: props.value || '',
     };
+    this.handleInput = this.handleInput.bind(this);
   }
 
   setVal(value: string) {
-    this.setState({ value });
     if (this.props.onSetVal) {
       this.props.onSetVal(value);
     }
@@ -37,7 +38,8 @@ export class SearchInput extends Component<Props, State> {
 
   // From an input event, call setVal at most every DEBOUNCE milliseconds
   handleInput(ev: React.FormEvent<HTMLInputElement>) {
-    const value = ev.currentTarget.value.trim();
+    const value = ev.currentTarget.value;
+    this.setState({ value });
     const callback = () => {
       this.setVal(value);
     };
@@ -64,7 +66,8 @@ export class SearchInput extends Component<Props, State> {
           type="text"
           id={this.inputID}
           placeholder={this.props.placeholder || 'Search'}
-          onInput={this.handleInput.bind(this)}
+          onChange={this.handleInput}
+          value={this.state.value || this.props.value || ''}
           style={{ paddingLeft: '2rem' }}
         />
       </div>

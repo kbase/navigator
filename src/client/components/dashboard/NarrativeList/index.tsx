@@ -41,6 +41,7 @@ interface Props {
   id: number;
   limit: number;
   obj: number;
+  search: string;
   sort: string;
   ver: number;
   view: string;
@@ -53,7 +54,7 @@ const upaKey = (id: number, obj: number, ver: number) => `${id}/${obj}/${ver}`;
 export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { category, limit } = this.props;
+    const { category, limit, search } = this.props;
     const sortDefault = Object.values(sorts)[0];
     this.state = {
       // Currently active narrative result, selected on the left and shown on the right
@@ -68,7 +69,7 @@ export class NarrativeList extends Component<Props, State> {
       // parameters to send to the searchNarratives function
       pages: parseInt((limit / PAGE_SIZE).toString()),
       searchParams: {
-        term: '',
+        term: search,
         sort: sortDefault,
         category: category,
         pageSize: limit || PAGE_SIZE,
@@ -86,14 +87,15 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   async componentDidUpdate(prevProps: Props) {
-    const { category } = this.props;
+    const { category, search } = this.props;
     const pageSize = this.props.limit || PAGE_SIZE;
     const sort = sorts[this.props.sort];
-    const nextSearchParams = { term: '', sort, category, pageSize };
+    const nextSearchParams = { term: search, sort, category, pageSize };
     const performSearchCondition =
       prevProps.category !== this.props.category ||
       prevProps.id !== this.props.id ||
       prevProps.limit !== this.props.limit ||
+      prevProps.search !== this.props.search ||
       prevProps.sort !== this.props.sort;
     if (performSearchCondition) {
       await this.performSearch(nextSearchParams);
@@ -201,6 +203,7 @@ export class NarrativeList extends Component<Props, State> {
             history={this.props.history}
             loading={this.state.loading}
             onSetSearch={this.handleSearch.bind(this)}
+            search={this.props.search}
             sort={sort}
           />
 
