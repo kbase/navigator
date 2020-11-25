@@ -3,10 +3,24 @@
   --tachyon-black-20: rgba(0,0,0,.2);
   --tachyon-black-30: rgba(0,0,0,.3);
   --tachyon-black-70: rgba(0,0,0,.7);
+  --tachyon-dark-green: #137752;
   --tachyon-green: #19a974;
+  --tachyon-light-gray: #eee;
   --tachyon-lightest-blue: #cdecff;
   --tachyon-spacing-medium: 1rem;
+  --tachyon-spacing-small: .5rem;
   --white: #fff;
+}
+
+.button {
+  background-color: var(--tachyon-dark-green);
+  border-radius: .25em;
+  color: var(--white);
+  cursor: pointer;
+  display: inline-block;
+  height: 2.25rem;
+  padding: var(--tachyon-spacing-small);
+  text-decoration: none;
 }
 
 .dataview a, .dataview a:visited {
@@ -14,15 +28,37 @@
   text-decoration: none;
 }
 
+.filters {
+  align-items: center;
+  background-color: var(--tachyon-light-gray);
+  display: flex;
+}
+
+/* .clickable and .inactive are the same as tachyon's .dim (for now) */
+.clickable, .inactive {
+  opacity: 1;
+  transition: opacity .15s ease-in;
+}
+
+.clickable:focus, .clickable:hover, .inactive:focus, .inactive:hover {
+  opacity: .5;
+  transition: opacity .15s ease-in;
+}
+
+.clickable:active, .inactive:active {
+  opacity: .8;
+  transition: opacity .15s ease-out;
+}
+
 .narrative-details {
   display: flex;
-  font-size:.875rem;
+  font-size: .875rem;
   justify-content: space-between;
 }
 
 .narrative-details .col {
   overflow: hidden;
-  width:calc(100% / 3);
+  width: calc(100% / 3);
 }
 
 .narrative-details a {
@@ -35,6 +71,10 @@
 
 .narrative-details-value {
   font-weight: bold;
+}
+
+.narrative-new {
+  margin-top: 1rem;
 }
 
 #narrative-shared-less,
@@ -55,6 +95,7 @@
   color: #00f;
   cursor: pointer;
 }
+
 .narrative-item {
   color: var(--tachyon-black-70);
   text-decoration: none;
@@ -78,8 +119,14 @@
 .narrative-item-outer.inactive {
   background-color: var(--white);
   color: var(--tachyon-black-70);
-  opacity:1;
-  transition: opacity .15s ease-in;
+}
+
+.refresh {
+  border: none;
+}
+
+.refresh .loading {
+  animation: fa-spin 2s infinite linear;
 }
 
 .subtab, .tab {
@@ -97,21 +144,6 @@
 
 .subtab.active {
   color: var(--tachyon-green);
-}
-
-.subtab.inactive, .tab.inactive {
-  opacity: 1;
-  transition: opacity .15s ease-in;
-}
-
-.subtab.inactive:active, .tab.inactive:active {
-  opacity: .8;
-  transition: opacity .15s ease-out;
-}
-
-.subtab.inactive:focus, .subtab.inactive:hover,
-.tab.inactive:focus, .tab.inactive:hover {
-  opacity: .5;
 }
 
 .subtab-container {

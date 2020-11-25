@@ -106,11 +106,14 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Handle an onSetSearch callback from Filters
-  handleSearch(searchP: { term: string; sort: string }): void {
+  async handleSearch(
+    searchP: { term: string; sort: string },
+    invalidateCache: boolean = false
+  ): Promise<void> {
     const searchParams = this.state.searchParams;
     searchParams.term = searchP.term;
     searchParams.sort = searchP.sort;
-    this.performSearch(searchParams);
+    await this.performSearch(searchParams, invalidateCache);
   }
 
   // Handle an onSelectItem callback from ItemList
@@ -120,14 +123,18 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Perform a search and return the Promise for the fetch
-  async performSearch(searchParams?: SearchOptions) {
+  async performSearch(
+    searchParams?: SearchOptions,
+    invalidateCache: boolean = false
+  ) {
     if (!searchParams) {
       searchParams = this.state.searchParams;
     }
     this.setState({ loading: true });
     const requestedId = this.props.id;
     const cache = this.state.cache;
-    if (!('search' in cache)) cache.search = {};
+    const initializeCacheCondition = invalidateCache || !('search' in cache);
+    if (initializeCacheCondition) cache.search = {};
     const resp = await searchNarratives(searchParams, cache.search);
     // TODO handle error from server
     if (!resp || !resp.hits) return;
@@ -187,11 +194,7 @@ export class NarrativeList extends Component<Props, State> {
           </div>
 
           {/* New narrative button */}
-          <a
-            className="pointer dim dib pa2 white br2 bg-dark-green dib no-underline"
-            style={{ marginTop: '1rem', height: '2.25rem' }}
-            href={NEW_NARR_URL}
-          >
+          <a className="button clickable narrative-new" href={NEW_NARR_URL}>
             <i className="mr1 fa fa-plus"></i> New Narrative
           </a>
         </div>
