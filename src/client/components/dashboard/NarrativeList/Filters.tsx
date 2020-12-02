@@ -43,32 +43,24 @@ export class Filters extends Component<Props, State> {
   }
 
   getSearchParamsFromProps(props: Props) {
-    let sort = sortSlugDefault;
-    if (props.sort) {
-      sort = sorts[props.sort];
-    }
     return {
       term: props.search,
-      sort: sort,
+      sort: sorts[props.sort],
     };
   }
 
   // Handle an onSetVal event from SearchInput
-  handleSearch(val: string, updateLocation: boolean = true): void {
+  handleSearch(val: string): void {
     const searchParams = this.state.searchParams;
-    if (updateLocation) {
-      const queryParams = new URLSearchParams(location.search);
-      if (!val) {
-        queryParams.delete('search');
-      } else {
-        queryParams.set('search', val);
-      }
-      this.props.history.push(`?${queryParams.toString()}`);
+    const queryParams = new URLSearchParams(location.search);
+    if (!val) {
+      queryParams.delete('search');
+    } else {
+      queryParams.set('search', val);
     }
+    this.props.history.push(`?${queryParams.toString()}`);
     searchParams.term = val;
-    if (this.props.onSetSearch) {
-      this.props.onSetSearch(searchParams);
-    }
+    this.props.onSetSearch(searchParams);
   }
 
   // Handle an onSelect event from FilterDropdown
