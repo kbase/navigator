@@ -41,6 +41,7 @@ interface Props {
   id: number;
   limit: number;
   obj: number;
+  search: string;
   sort: string;
   ver: number;
   view: string;
@@ -53,7 +54,7 @@ const upaKey = (id: number, obj: number, ver: number) => `${id}/${obj}/${ver}`;
 export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { category, limit } = this.props;
+    const { category, limit, search } = this.props;
     const sortDefault = Object.values(sorts)[0];
     this.state = {
       // Currently active narrative result, selected on the left and shown on the right
@@ -68,7 +69,7 @@ export class NarrativeList extends Component<Props, State> {
       // parameters to send to the searchNarratives function
       pages: parseInt((limit / PAGE_SIZE).toString()),
       searchParams: {
-        term: '',
+        term: search,
         sort: sortDefault,
         category: category,
         pageSize: limit || PAGE_SIZE,
@@ -86,14 +87,15 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   async componentDidUpdate(prevProps: Props) {
-    const { category } = this.props;
+    const { category, search } = this.props;
     const pageSize = this.props.limit || PAGE_SIZE;
     const sort = sorts[this.props.sort];
-    const nextSearchParams = { term: '', sort, category, pageSize };
+    const nextSearchParams = { term: search, sort, category, pageSize };
     const performSearchCondition =
       prevProps.category !== this.props.category ||
       prevProps.id !== this.props.id ||
       prevProps.limit !== this.props.limit ||
+      prevProps.search !== this.props.search ||
       prevProps.sort !== this.props.sort;
     if (performSearchCondition) {
       await this.performSearch(nextSearchParams);
@@ -104,11 +106,14 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Handle an onSetSearch callback from Filters
-  handleSearch(searchP: { term: string; sort: string }): void {
+  async handleSearch(
+    searchP: { term: string; sort: string },
+    invalidateCache: boolean = false
+  ): Promise<void> {
     const searchParams = this.state.searchParams;
     searchParams.term = searchP.term;
     searchParams.sort = searchP.sort;
-    this.performSearch(searchParams);
+    await this.performSearch(searchParams, invalidateCache);
   }
 
   // Handle an onSelectItem callback from ItemList
@@ -118,14 +123,18 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Perform a search and return the Promise for the fetch
-  async performSearch(searchParams?: SearchOptions) {
+  async performSearch(
+    searchParams?: SearchOptions,
+    invalidateCache: boolean = false
+  ) {
     if (!searchParams) {
       searchParams = this.state.searchParams;
     }
     this.setState({ loading: true });
     const requestedId = this.props.id;
     const cache = this.state.cache;
-    if (!('search' in cache)) cache.search = {};
+    const initializeCacheCondition = invalidateCache || !('search' in cache);
+    if (initializeCacheCondition) cache.search = {};
     const resp = await searchNarratives(searchParams, cache.search);
     // TODO handle error from server
     if (!resp || !resp.hits) return;
@@ -185,11 +194,7 @@ export class NarrativeList extends Component<Props, State> {
           </div>
 
           {/* New narrative button */}
-          <a
-            className="pointer dim dib pa2 white br2 bg-dark-green dib no-underline"
-            style={{ marginTop: '1rem', height: '2.25rem' }}
-            href={NEW_NARR_URL}
-          >
+          <a className="button clickable narrative-new" href={NEW_NARR_URL}>
             <i className="mr1 fa fa-plus"></i> New Narrative
           </a>
         </div>
@@ -201,6 +206,7 @@ export class NarrativeList extends Component<Props, State> {
             history={this.props.history}
             loading={this.state.loading}
             onSetSearch={this.handleSearch.bind(this)}
+            search={this.props.search}
             sort={sort}
           />
 

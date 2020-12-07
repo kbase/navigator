@@ -62,7 +62,7 @@ export class ItemList extends Component<Props, State> {
     const css = itemClasses[status];
     const upa = `${item.access_group}/${item.obj_id}/${item.version}`;
     const keepParams = (link: string) =>
-      keepParamsLinkTo(['limit', 'sort', 'view'], link);
+      keepParamsLinkTo(['limit', 'search', 'sort', 'view'], link);
     const { category } = this.props;
     const prefix = '/' + (category === 'own' ? '' : `${category}/`);
     // Action to select an item to view details

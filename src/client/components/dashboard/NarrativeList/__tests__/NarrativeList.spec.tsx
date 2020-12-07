@@ -18,6 +18,7 @@ describe('NarrativeList tests', () => {
         id={1}
         limit={20}
         obj={1}
+        search={''}
         sort={'-updated'}
         ver={1}
         view={'preview'}

@@ -11,6 +11,7 @@ interface SearchParams {
   sort: string;
 }
 interface State {
+  loading: boolean;
   searchParams: SearchParams;
 }
 
@@ -18,7 +19,8 @@ interface Props {
   category: string;
   history: History;
   loading: boolean;
-  onSetSearch: (searchParams: SearchParams) => void;
+  onSetSearch: (searchParams: SearchParams, invalidateCache?: boolean) => void;
+  search: string;
   sort: string;
 }
 
@@ -28,42 +30,50 @@ const sortSlugDefault = Object.keys(sorts)[0];
 export class Filters extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    let sort = sortSlugDefault;
-    if (props.sort) {
-      sort = sorts[props.sort];
-    }
     this.state = {
-      searchParams: {
-        term: '',
-        sort: sort,
-      },
+      loading: false,
+      searchParams: this.getSearchParamsFromProps(props),
     };
+    this.handleSearch = this.handleSearch.bind(this);
+    this.handleRefresh = this.handleRefresh.bind(this);
   }
 
   componentDidMount() {
     this.handleFilter(this.state.searchParams.sort, false);
   }
 
+  getSearchParamsFromProps(props: Props) {
+    return {
+      term: props.search,
+      sort: sorts[props.sort],
+    };
+  }
+
   // Handle an onSetVal event from SearchInput
   handleSearch(val: string): void {
     const searchParams = this.state.searchParams;
-    searchParams.term = val;
-    if (this.props.onSetSearch) {
-      this.props.onSetSearch(searchParams);
+    const queryParams = new URLSearchParams(location.search);
+    if (!val) {
+      queryParams.delete('search');
+    } else {
+      queryParams.set('search', val);
     }
+    this.props.history.push(`?${queryParams.toString()}`);
+    searchParams.term = val;
+    this.props.onSetSearch(searchParams);
   }
 
   // Handle an onSelect event from FilterDropdown
   handleFilter(val: string, updateLocation: boolean = true): void {
     const { category } = this.props;
-    const queryParams = new URLSearchParams(location.search);
-    const sortSlug = sortsLookup[val];
-    if (sortSlug === sortSlugDefault) {
-      queryParams.delete('sort');
-    } else {
-      queryParams.set('sort', sortSlug);
-    }
     if (updateLocation) {
+      const queryParams = new URLSearchParams(location.search);
+      const sortSlug = sortsLookup[val];
+      if (sortSlug === sortSlugDefault) {
+        queryParams.delete('sort');
+      } else {
+        queryParams.set('sort', sortSlug);
+      }
       const prefix = '/' + (category === 'own' ? '' : `${category}/`);
       const newLocation = `${prefix}?${queryParams.toString()}`;
       this.props.history.push(newLocation);
@@ -76,19 +86,36 @@ export class Filters extends Component<Props, State> {
     }
   }
 
+  async handleRefresh(evt: any) {
+    const searchParams = this.getSearchParamsFromProps(this.props);
+    if (this.props.onSetSearch) {
+      this.setState({ loading: true });
+      await this.props.onSetSearch(searchParams, true);
+    }
+    this.setState({
+      loading: false,
+      searchParams,
+    });
+  }
+
   render() {
     const dropdownItems = Object.values(sorts);
     const searchParams = this.state.searchParams;
     const selectedSort = sorts[this.props.sort] || searchParams.sort;
     const selectedIdx = dropdownItems.indexOf(selectedSort);
+    const refreshIconClasses = [
+      'fa fa-refresh',
+      this.state.loading ? ' loading' : '',
+    ].join('');
     return (
-      <div className="bg-light-gray flex">
+      <div className="filters">
         {/* Left-aligned actions (eg. search) */}
         <div className="pv3">
           <SearchInput
-            loading={Boolean(this.props.loading)}
-            onSetVal={this.handleSearch.bind(this)}
+            loading={this.props.loading}
+            onSetVal={this.handleSearch}
             placeholder="Search Narratives"
+            value={this.props.search}
           />
         </div>
 
@@ -101,6 +128,10 @@ export class Filters extends Component<Props, State> {
             items={dropdownItems}
           />
         </div>
+        <button className="button refresh" onClick={this.handleRefresh}>
+          Refresh &nbsp;
+          <i className={refreshIconClasses}></i>
+        </button>
       </div>
     );
   }
