@@ -22,7 +22,7 @@ jobs:
 
     - name: Set up environment variables
       run: |
-        echo "::set-output name=date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+        echo name=$(date -u +'%Y-%m-%dT%H:%M:%SZ') >> $GITHUB_ENV
 
     - uses: docker/build-push-action@v1
       with:
