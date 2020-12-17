@@ -70,27 +70,40 @@ export class AccountDropdown extends Component<Props, State> {
           ></i>
         </button>
         <ul
-          className="dropdown-menu tc right-0"
-          style={{ left: 'auto' }}
+          className="dropdown-menu"
           role="menu"
           hidden={this.state.dropdownHidden}
         >
           <li>
-            <div className="dib">
-              <div className="black">{this.props.realname}</div>
-              <div className="black i">{this.props.username}</div>
+            <div className="user-label">
+              <div className="realname">{this.props.realname}</div>
+              <div className="username">{this.props.username}</div>
             </div>
           </li>
-          <hr className="hr-global-header" />
+          <li className="divider" />
           <li>
-            <a onClick={() => this.props.onSignOut()} className="pointer">
-              <div className="dib" style={{ width: '34px' }}>
-                <i
-                  className="fa fa-sign-out"
-                  style={{ fontSize: '150%', marginRight: '10px' }}
-                ></i>
+            <a href="/#people" className="menu-item">
+              <div className="icon">
+                <span className="fa fa-user"></span>
               </div>
-              <span className="black">Sign Out</span>
+              <div className="label">Your Profile</div>
+            </a>
+          </li>
+          <li>
+            <a href="/#account" className="menu-item">
+              <div className="icon">
+                <span className="fa fa-drivers-license"></span>
+              </div>
+              <div className="label">Your Account</div>
+            </a>
+          </li>
+          <li className="divider" />
+          <li>
+            <a onClick={() => this.props.onSignOut()} className="menu-item">
+              <div className="icon">
+                <i className="fa fa-sign-out"></i>
+              </div>
+              <span className="label">Sign Out</span>
             </a>
           </li>
         </ul>
