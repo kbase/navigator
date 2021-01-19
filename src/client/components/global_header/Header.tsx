@@ -98,7 +98,8 @@ export class Header extends Component<Props, State> {
     if (res) {
       const avatarOption = res.profile.userdata.avatarOption;
       const gravatarHash = res.profile.synced.gravatarHash;
-      const gravatarDefault = res.profile.userdata.gravatarDefault;
+      const gravatarDefault =
+        res.profile.userdata.gravatarDefault || 'identicon';
       const username = res.user.username;
       const realname = res.user.realname;
       this.setState({
