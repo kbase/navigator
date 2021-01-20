@@ -26,9 +26,12 @@ ENV PYTHONPATH=/app
 
 CMD ["python", "/app/src/server.py"]
 
-LABEL org.label-schema.build-date=$BUILD_DATE \
-      org.label-schema.vcs-url="https://github.com/kbaseIncubator/dashboard-redesign.git" \
-      org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.schema-version="1.1.8" \
-      us.kbase.vcs-branch=$BRANCH \
-      maintainer="Dakota Blair dblair@bnl.gov"
+ARG BUILD_DATE
+ARG BRANCH
+ARG VCS_REF
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.vcs-url="https://github.com/kbaseIncubator/dashboard-redesign.git"
+LABEL org.label-schema.vcs-ref=$VCS_REF
+LABEL org.label-schema.schema-version="1.1.8"
+LABEL us.kbase.vcs-branch=$BRANCH
+LABEL maintainer="Dakota Blair dblair@bnl.gov"

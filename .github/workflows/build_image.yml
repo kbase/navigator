@@ -25,5 +25,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: kbase/proto-ui
-        build_args: BUILD_DATE=${{ env.DATE }},VCS_REF=${{ github.sha }},BRANCH=${{ github.ref }}
+        build_args: BUILD_DATE=${{ env.BUILD_DATE }},VCS_REF=${{ github.sha }},BRANCH=${{ github.ref }}
         tag_with_ref: true

@@ -16,6 +16,7 @@ class ServerConf:
         self.load_conf()
 
     def load_conf(self):
+        self.access_logging = 'ACCESS_LOGGING' in os.environ
         self.app_root_path = '/app'
         self.development = 'DEVELOPMENT' in os.environ
         self.server_port = os.environ.get('SANIC_PORT', 5000)
