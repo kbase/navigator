@@ -154,7 +154,7 @@ if __name__ == '__main__':
         host='0.0.0.0',  # nosec
         port=_CONF.server_port,
         workers=_CONF.n_workers,
-        access_log=_CONF.development,
+        access_log=_CONF.access_logging or _CONF.development,
         debug=_CONF.development,
         auto_reload=False  # handled by entr in development
     )
