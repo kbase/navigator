@@ -45,7 +45,6 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
 
   async doRename() {
     if (this.state.newName === this.currentName) {
-      console.log('not doing rename!');
       if (this.props.cancelFn) {
         this.props.cancelFn();
         return;

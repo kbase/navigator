@@ -137,7 +137,9 @@ export class NarrativeList extends Component<Props, State> {
     if (initializeCacheCondition) cache.search = {};
     const resp = await searchNarratives(searchParams, cache.search);
     // TODO handle error from server
-    if (!resp || !resp.hits) return;
+    if (!resp || !resp.hits) {
+      return;
+    }
     const total = resp.count;
     const items = resp.hits;
     // Is the requested id in these results?
@@ -194,7 +196,12 @@ export class NarrativeList extends Component<Props, State> {
           </div>
 
           {/* New narrative button */}
-          <a className="button clickable narrative-new" href={NEW_NARR_URL}>
+          <a
+            className="button clickable narrative-new"
+            href={NEW_NARR_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <i className="mr1 fa fa-plus"></i> New Narrative
           </a>
         </div>
