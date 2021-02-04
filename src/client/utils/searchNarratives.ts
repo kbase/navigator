@@ -135,6 +135,13 @@ export default async function searchNarratives(
 ): Promise<SearchResults> {
   const { term, category, sort, skip, pageSize } = options;
   const key = JSON.stringify(options);
+  // TODO: no, should not cache. Why? Search should be fast enough.
+  // There is no cache invalidation, so cached results  are persistent,
+  // and will not reflect actual changes in search results.
+  // If anything  caches, it should be the search service, which is closer to the
+  // source of truth about cache invalidation. 
+  // The only true way to invalidate the cache is via workspace events, and 
+  // probably other related services, like user profile, auth.
   if (key in cache) {
     return cache[key];
   }
@@ -203,7 +210,8 @@ export default async function searchNarratives(
   } else {
     throw new Error('Unknown sorting method');
   }
-  const result = await (await makeRequest(params)).result;
+
+  const { result } = await makeRequest(params);
   cache[key] = result;
   return result;
 }
@@ -214,29 +222,36 @@ export default async function searchNarratives(
  *   sort parameter, auth (boolean, true if we're looking up personal data), and pageSize
  */
 async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
-  const headers: { [key: string]: string } = {
+  const headers: { [key: string]: string; } = {
     'Content-Type': 'application/json',
   };
   if (!params.access || !params.access.only_public) {
     // Requires an auth token
     const token = getToken();
     if (!token) {
+      // TODO: improve error message -- remember, the user sees this!
+      // Actually, should never even get here.
       throw new Error(
         'Auth token not available for an authenticated search lookup!'
       );
     }
     headers.Authorization = token;
   }
+
   const result = await fetch(Runtime.getConfig().service_routes.search, {
     method: 'POST',
     headers,
     body: JSON.stringify({
       jsonrpc: '2.0',
-      id: Number(new Date()),
+      id: Date.now(),
       method: 'search_workspace',
       params,
     }),
   });
+  // TODO: No, this is jsonrpc, so you should ignore the status and just look
+  // at the rpc  result, with an "error" property indicating an error, and
+  // properties of that  indicating the nature of the error, the most important
+  // of which is the "code" and "message".
   if (!result.ok) {
     throw new Error('An error occurred while searching - ' + result.status);
   }
