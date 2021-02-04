@@ -58,7 +58,7 @@ const menuItems: Array<MenuItem> = [
 export default class ControlMenu extends Component<
   ControlMenuItemProps,
   State
-  > {
+> {
   constructor(props: ControlMenuItemProps) {
     super(props);
     this.state = {

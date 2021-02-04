@@ -7,7 +7,13 @@ import Runtime from '../../../../utils/runtime';
 import { KBaseServiceClient } from '@kbase/narrative-utils';
 import { getCurrentUserPermission } from '../../../../utils/narrativeData';
 
-type ComponentStatus = 'none' | 'loading' | 'ready' | 'deleting' | 'error' | 'success';
+type ComponentStatus =
+  | 'none'
+  | 'loading'
+  | 'ready'
+  | 'deleting'
+  | 'error'
+  | 'success';
 
 interface ComponentStateBase {
   status: ComponentStatus;
@@ -30,7 +36,7 @@ interface ComponentStateDeleting extends ComponentStateBase {
 }
 
 interface ComponentStateError extends ComponentStateBase {
-  status: 'error',
+  status: 'error';
   error: {
     message: string | Array<string>;
   };
@@ -40,20 +46,28 @@ interface ComponentStateSuccess extends ComponentStateBase {
   status: 'success';
 }
 
-type ComponentState = ComponentStateNone | ComponentStateLoading | ComponentStateReady | ComponentStateDeleting | ComponentStateError | ComponentStateSuccess;
+type ComponentState =
+  | ComponentStateNone
+  | ComponentStateLoading
+  | ComponentStateReady
+  | ComponentStateDeleting
+  | ComponentStateError
+  | ComponentStateSuccess;
 
-
-export default class DeleteNarrative extends Component<ControlMenuItemProps, ComponentState> {
+export default class DeleteNarrative extends Component<
+  ControlMenuItemProps,
+  ComponentState
+> {
   constructor(props: ControlMenuItemProps) {
     super(props);
     this.state = {
-      status: 'none'
+      status: 'none',
     };
   }
 
   async componentDidMount() {
     this.setState({
-      status: 'loading'
+      status: 'loading',
     });
     try {
       const perm = await getCurrentUserPermission(
@@ -61,18 +75,18 @@ export default class DeleteNarrative extends Component<ControlMenuItemProps, Com
       );
       if (perm === 'a') {
         this.setState({
-          status: 'ready'
+          status: 'ready',
         });
       } else {
         this.setState({
           status: 'error',
           error: {
-            message: 'You do not have permission to delete this Narrative.'
-          }
+            message: 'You do not have permission to delete this Narrative.',
+          },
         });
       }
     } catch (ex) {
-      // TODO: the underlying exception does not provide a message! 
+      // TODO: the underlying exception does not provide a message!
       // This comes from a KBase jsonrpc client.
       this.setState({
         status: 'error',
@@ -80,16 +94,16 @@ export default class DeleteNarrative extends Component<ControlMenuItemProps, Com
           message: [
             'This Narrative has already been deleted.',
             'The display may take up to 30 seconds to reflect a prior Narrative deletion.',
-            'You may click the Refresh button to immediately conduct a fresh search, but the deleted narrative may still persist for up to 30 seconds.'
-          ]
-        }
+            'You may click the Refresh button to immediately conduct a fresh search, but the deleted narrative may still persist for up to 30 seconds.',
+          ],
+        },
       });
     }
   }
 
   async doDelete() {
     this.setState({
-      status: 'deleting'
+      status: 'deleting',
     });
 
     const workspaceClient = new KBaseServiceClient({
@@ -102,14 +116,14 @@ export default class DeleteNarrative extends Component<ControlMenuItemProps, Com
         { id: this.props.narrative.access_group },
       ]);
       this.setState({
-        status: 'success'
+        status: 'success',
       });
     } catch (error) {
       this.setState({
         status: 'error',
         error: {
-          message: error.message
-        }
+          message: error.message,
+        },
       });
     }
   }
@@ -119,7 +133,7 @@ export default class DeleteNarrative extends Component<ControlMenuItemProps, Com
       if (typeof message === 'string') {
         return <p>{message}</p>;
       } else {
-        return message.map((message) => {
+        return message.map(message => {
           return <p>{message}</p>;
         });
       }
@@ -130,23 +144,23 @@ export default class DeleteNarrative extends Component<ControlMenuItemProps, Com
         this.props.cancelFn();
       }
     };
-    return <div>
-      <div style={{ fontWeight: 'bold', color: 'red' }}>Error</div>
-      <p>
-        {messageContent}
-      </p>
-      <div style={{ textAlign: 'center' }}>
-        <DashboardButton onClick={done}>
-          Close
-      </DashboardButton>
+    return (
+      <div>
+        <div style={{ fontWeight: 'bold', color: 'red' }}>Error</div>
+        <p>{messageContent}</p>
+        <div style={{ textAlign: 'center' }}>
+          <DashboardButton onClick={done}>Close</DashboardButton>
+        </div>
       </div>
-    </div>;
+    );
   }
 
   renderLoading(message: string) {
-    return <div style={{ textAlign: 'center' }}>
-      <LoadingSpinner loading={true} />
-    </div>;
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <LoadingSpinner loading={true} />
+      </div>
+    );
   }
 
   renderSuccess() {
@@ -156,37 +170,41 @@ export default class DeleteNarrative extends Component<ControlMenuItemProps, Com
         this.props.cancelFn();
       }
     };
-    return <div style={{ textAlign: 'center' }}>
-      <p>The Narrative has been successfully deleted.</p>
-      <p>It may take up to 30 seconds for this to be reflected in the display.</p>
-      <DashboardButton onClick={done}>
-        Close
-      </DashboardButton>
-    </div>;
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <p>The Narrative has been successfully deleted.</p>
+        <p>
+          It may take up to 30 seconds for this to be reflected in the display.
+        </p>
+        <DashboardButton onClick={done}>Close</DashboardButton>
+      </div>
+    );
   }
 
   renderConfirmation() {
-    return <React.Fragment>
-      <div className="pb2">
-        <p>
-          Deleting a Narrative will permanently remove it and all
-          its data.
-        </p>
-        <p style={{ fontWeight: 'bold' }}>This action cannot be undone!</p>
-      </div>
-      <div className="pb2">Continue?</div>
-      <div>
-        <DashboardButton
-          onClick={() => this.doDelete()}
-          bgcolor={'red'}
-          textcolor={'white'}>
-          Delete
-        </DashboardButton>
-        <DashboardButton onClick={this.props.cancelFn}>
-          Cancel
-        </DashboardButton>
-      </div>
-    </React.Fragment>;
+    return (
+      <React.Fragment>
+        <div className="pb2">
+          <p>
+            Deleting a Narrative will permanently remove it and all its data.
+          </p>
+          <p style={{ fontWeight: 'bold' }}>This action cannot be undone!</p>
+        </div>
+        <div className="pb2">Continue?</div>
+        <div>
+          <DashboardButton
+            onClick={() => this.doDelete()}
+            bgcolor={'red'}
+            textcolor={'white'}
+          >
+            Delete
+          </DashboardButton>
+          <DashboardButton onClick={this.props.cancelFn}>
+            Cancel
+          </DashboardButton>
+        </div>
+      </React.Fragment>
+    );
   }
 
   render() {
