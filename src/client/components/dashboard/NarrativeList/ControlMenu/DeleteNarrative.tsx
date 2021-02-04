@@ -86,7 +86,7 @@ export default class DeleteNarrative extends Component<
         });
       }
     } catch (ex) {
-      // TODO: the underlying exception does not provide a message!
+      // TODO: [SCT-2923] the underlying exception does not provide a message!
       // This comes from a KBase jsonrpc client.
       this.setState({
         status: 'error',
@@ -145,13 +145,13 @@ export default class DeleteNarrative extends Component<
       }
     };
     return (
-      <div>
+      <>
         <div style={{ fontWeight: 'bold', color: 'red' }}>Error</div>
-        <p>{messageContent}</p>
+        {messageContent}
         <div style={{ textAlign: 'center' }}>
           <DashboardButton onClick={done}>Close</DashboardButton>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -183,7 +183,7 @@ export default class DeleteNarrative extends Component<
 
   renderConfirmation() {
     return (
-      <React.Fragment>
+      <>
         <div className="pb2">
           <p>
             Deleting a Narrative will permanently remove it and all its data.
@@ -203,7 +203,7 @@ export default class DeleteNarrative extends Component<
             Cancel
           </DashboardButton>
         </div>
-      </React.Fragment>
+      </>
     );
   }
 
