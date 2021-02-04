@@ -200,6 +200,7 @@ export class NarrativeList extends Component<Props, State> {
             className="button clickable narrative-new"
             href={NEW_NARR_URL}
             target="_blank"
+            rel="noopener noreferrer"
           >
             <i className="mr1 fa fa-plus"></i> New Narrative
           </a>
