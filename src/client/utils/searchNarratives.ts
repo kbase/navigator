@@ -135,13 +135,6 @@ export default async function searchNarratives(
 ): Promise<SearchResults> {
   const { term, category, sort, skip, pageSize } = options;
   const key = JSON.stringify(options);
-  // TODO: no, should not cache. Why? Search should be fast enough.
-  // There is no cache invalidation, so cached results  are persistent,
-  // and will not reflect actual changes in search results.
-  // If anything  caches, it should be the search service, which is closer to the
-  // source of truth about cache invalidation. 
-  // The only true way to invalidate the cache is via workspace events, and 
-  // probably other related services, like user profile, auth.
   if (key in cache) {
     return cache[key];
   }
@@ -229,7 +222,7 @@ async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
     // Requires an auth token
     const token = getToken();
     if (!token) {
-      // TODO: improve error message -- remember, the user sees this!
+      // TODO: [SCT-2924] improve error message -- remember, the user sees this!
       // Actually, should never even get here.
       throw new Error(
         'Auth token not available for an authenticated search lookup!'
@@ -248,10 +241,15 @@ async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
       params,
     }),
   });
-  // TODO: No, this is jsonrpc, so you should ignore the status and just look
+  // TODO: [SCT-2925] JSON-RPC does not make any guarantees of an error status code.
+  // I know that KBase does typically issue 500 for rpc errors, but even this is
+  // not guaranteed. One should ignore the status and just look
   // at the rpc  result, with an "error" property indicating an error, and
   // properties of that  indicating the nature of the error, the most important
   // of which is the "code" and "message".
+  // And, reporting the status to the user is not very useful, rather better to pick
+  // up the error message, and even better to process the entire error object which 
+  // typically has useful additional information.
   if (!result.ok) {
     throw new Error('An error occurred while searching - ' + result.status);
   }
