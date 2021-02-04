@@ -3,7 +3,7 @@ import { findDOMNode } from 'react-dom';
 // as of now eslint cannot detect when imported interfaces are used
 import ControlMenuItemProps from './ControlMenuItemProps'; // eslint-disable-line no-unused-vars
 import Modal from '../../../generic/Modal';
-import DeleteItem from './DeleteItem';
+import DeleteNarrative from './DeleteNarrative';
 import CopyItem from './CopyItem';
 import LinkOrgItem from './LinkOrgItem';
 import RenameItem from './RenameItem';
@@ -51,14 +51,14 @@ const menuItems: Array<MenuItem> = [
     title: 'Delete',
     icon: 'fa fa-trash-o',
     dialogTitle: 'Delete Narrative?',
-    menuComponent: DeleteItem,
+    menuComponent: DeleteNarrative,
   },
 ];
 
 export default class ControlMenu extends Component<
   ControlMenuItemProps,
   State
-> {
+  > {
   constructor(props: ControlMenuItemProps) {
     super(props);
     this.state = {
@@ -142,6 +142,7 @@ export default class ControlMenu extends Component<
       <div className="cursor tr">
         <span
           className="black-20 dim fa fa-2x fa-cog"
+          style={{ cursor: 'pointer' }}
           onClick={e => this.menuClicked()}
         ></span>
         {menu}
@@ -155,7 +156,7 @@ export default class ControlMenu extends Component<
       <div
         key={item.title}
         className="flex pa2 cursor hover-bg-light-gray"
-        style={{ flexFlow: 'row nowrap' }}
+        style={{ flexFlow: 'row nowrap', cursor: 'pointer' }}
         onClick={e => {
           this.menuItemClicked(item);
         }}
