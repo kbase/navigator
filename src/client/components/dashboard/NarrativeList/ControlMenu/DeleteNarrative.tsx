@@ -165,13 +165,13 @@ export default class DeleteNarrative extends Component<ControlMenuItemProps, Com
     </div>;
   }
 
-  renderDialog() {
+  renderConfirmation() {
     return <React.Fragment>
       <div className="pb2">
         <p>
           Deleting a Narrative will permanently remove it and all
           its data.
-                </p>
+        </p>
         <p style={{ fontWeight: 'bold' }}>This action cannot be undone!</p>
       </div>
       <div className="pb2">Continue?</div>
@@ -195,7 +195,7 @@ export default class DeleteNarrative extends Component<ControlMenuItemProps, Com
       case 'loading':
         return this.renderLoading('Loading');
       case 'ready':
-        return this.renderDialog();
+        return this.renderConfirmation();
       case 'deleting':
         return this.renderLoading('Deleting');
       case 'success':
