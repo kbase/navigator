@@ -41,7 +41,6 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
           newName: this.state.newName,
         },
       ]);
-      console.log(newNarrative);
       this.props.doneFn();
       if (this.props.cancelFn) {
         this.props.cancelFn();

@@ -194,7 +194,6 @@ interface LinkedOrgProps extends GroupInfo {
 }
 
 const LinkedOrg = (props: LinkedOrgProps) => {
-  console.log(props);
   return (
     <div className="pl2 pt2">
       <a
