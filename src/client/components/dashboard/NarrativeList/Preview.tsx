@@ -3,13 +3,12 @@ import marked from 'marked';
 import React, { Component } from 'react';
 
 import { TypeIcon, AppCellIcon, DefaultIcon } from '../../generic/Icon';
-import { Doc, fetchNarrative, KBaseCache } from '../../../utils/narrativeData';
+import { Doc, fetchNarrative } from '../../../utils/narrativeData';
 import Runtime from '../../../utils/runtime';
 
 const DOMPurify = createDOMPurify(window);
 
 interface Props {
-  cache: KBaseCache;
   narrative: Doc;
 }
 
@@ -55,15 +54,14 @@ export default class Preview extends Component<Props, State> {
 
   async fetchNarrativeObject() {
     this.setState({ isLoading: true });
-    const { cache, narrative } = this.props;
+    const { narrative } = this.props;
     /* eslint-disable camelcase */
     const { access_group, obj_id, version } = narrative;
     const upa = `${access_group}/${obj_id}/${version}`;
     /* eslint-enable camelcase */
     let narrResponse = null;
-    if (!('objects' in cache)) cache.objects = {};
     try {
-      narrResponse = await fetchNarrative(upa, cache.objects);
+      narrResponse = await fetchNarrative(upa);
     } catch (error) {
       this.setState({ isLoading: false, error: error });
     }

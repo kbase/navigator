@@ -56,7 +56,6 @@ describe('NarrativeDetails tests', () => {
     const wrapper = shallow(
       <NarrativeDetails
         activeItem={mockDoc}
-        cache={{}}
         updateSearch={() => {}}
         view={'preview'}
       />

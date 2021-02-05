@@ -21,7 +21,7 @@ const mockFilters = (search: string = '') =>
       category={'public'}
       history={createBrowserHistory()}
       loading={false}
-      onSetSearch={(searchParams, invalidateCache = false) => {}}
+      onSetSearch={searchParams => {}}
       search={search}
       sort={'-updated'}
     />

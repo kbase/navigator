@@ -6,7 +6,7 @@ import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
 import { NarrativeDetails } from './NarrativeDetails';
-import { Doc, KBaseCache } from '../../../utils/narrativeData';
+import { Doc } from '../../../utils/narrativeData';
 
 // Utils
 import { keepParamsLinkTo } from '../utils';
@@ -24,7 +24,6 @@ const NEW_NARR_URL = Runtime.getConfig().host_root + '/#narrativemanager/new';
 interface State {
   // Currently activated narrative details
   activeIdx: number;
-  cache: KBaseCache;
   // List of objects of narrative details
   items: Array<Doc>;
   // Whether we are loading data from the server
@@ -60,9 +59,7 @@ export class NarrativeList extends Component<Props, State> {
       // Currently active narrative result, selected on the left and shown on the right
       // This is unused if the items array is empty.
       activeIdx: 0,
-      cache: {
-        objects: {},
-      },
+
       // List of narrative data
       items: [],
       loading: false,
@@ -106,14 +103,11 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Handle an onSetSearch callback from Filters
-  async handleSearch(
-    searchP: { term: string; sort: string },
-    invalidateCache: boolean = false
-  ): Promise<void> {
+  async handleSearch(searchP: { term: string; sort: string }): Promise<void> {
     const searchParams = this.state.searchParams;
     searchParams.term = searchP.term;
     searchParams.sort = searchP.sort;
-    await this.performSearch(searchParams, invalidateCache);
+    await this.performSearch(searchParams);
   }
 
   // Handle an onSelectItem callback from ItemList
@@ -123,19 +117,14 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   // Perform a search and return the Promise for the fetch
-  async performSearch(
-    searchParams?: SearchOptions,
-    invalidateCache: boolean = false
-  ) {
+  async performSearch(searchParams?: SearchOptions) {
     if (!searchParams) {
       searchParams = this.state.searchParams;
     }
     this.setState({ loading: true });
     const requestedId = this.props.id;
-    const cache = this.state.cache;
-    const initializeCacheCondition = invalidateCache || !('search' in cache);
-    if (initializeCacheCondition) cache.search = {};
-    const resp = await searchNarratives(searchParams, cache.search);
+
+    const resp = await searchNarratives(searchParams);
     // TODO handle error from server
     if (!resp || !resp.hits) {
       return;
@@ -153,7 +142,6 @@ export class NarrativeList extends Component<Props, State> {
     // If we are loading a subsequent page, append to items. Otherwise, replace them.
     this.setState({
       activeIdx: requestedItemIdx,
-      cache,
       items,
       loading: false,
       totalItems: total,
@@ -234,7 +222,6 @@ export class NarrativeList extends Component<Props, State> {
             {activeItem ? (
               <NarrativeDetails
                 activeItem={activeItem}
-                cache={this.state.cache}
                 view={view}
                 updateSearch={() => this.performSearch()}
               />

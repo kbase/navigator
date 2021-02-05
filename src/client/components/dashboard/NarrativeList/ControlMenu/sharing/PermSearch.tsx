@@ -37,7 +37,6 @@ export default class PermSearch extends Component<PermSearchProps> {
     if (term.length < 2) {
       return new Promise(resolve => resolve(''));
     }
-    console.log(this.props.currentUser);
     return searchUsernames(term).then(usernames => {
       return Object.keys(usernames)
         .filter(userId => userId !== this.props.currentUser)
@@ -60,7 +59,6 @@ export default class PermSearch extends Component<PermSearchProps> {
       this.setState({ selectedUsers: [] });
     } else {
       const selectedUsers = selected.map(s => s.value);
-      console.log(selectedUsers);
       this.setState({ selectedUsers });
     }
   };
@@ -81,7 +79,6 @@ export default class PermSearch extends Component<PermSearchProps> {
       <div className="flex flex-row flex-nowrap">
         <AsyncSelect
           isMulti
-          cacheOptions
           defaultOptions
           loadOptions={this.searchUsers.bind(this)}
           placeholder={'Share with...'}

@@ -2,11 +2,15 @@
  * @jest-environment jsdom
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
-import { fetchNarrative, getCurrentUserPermission } from '../narrativeData';
+import { fetchNarrative, getCurrentUserPermission, cache } from '../narrativeData';
 
 enableFetchMocks();
 
 describe('narrativeData tests', () => {
+  beforeEach(() => {
+    cache.clear();
+  });
+
   const mockWSGetObjects2Ok = (narr: object) => {
     fetchMock.mockOnce(async req => {
       return JSON.stringify({
@@ -17,7 +21,7 @@ describe('narrativeData tests', () => {
     });
   };
 
-  const mockGetPermissionsMassOk = (perms: { [key: string]: string }) => {
+  const mockGetPermissionsMassOk = (perms: { [key: string]: string; }) => {
     fetchMock.mockOnce(async req => {
       return JSON.stringify({
         id: '12345',
@@ -32,17 +36,12 @@ describe('narrativeData tests', () => {
   };
 
   it('Should return a narrative if it exists in the cache', async () => {
-    const dummyResponse = {
-      data: [
-        {
-          data: {},
-        },
-      ],
+    const narrativeObject = {
     };
-    const narrObj = await fetchNarrative('123/45/6', {
-      '123/45/6': {},
-    });
-    expect(JSON.stringify(narrObj)).toEqual(JSON.stringify(dummyResponse));
+    const upa = '123/45/6';
+    cache.set(upa, narrativeObject);
+    const narrObj = await fetchNarrative(upa);
+    expect(narrObj).toEqual(narrativeObject);
   });
 
   it('Should return a narrative with the happy case', async () => {

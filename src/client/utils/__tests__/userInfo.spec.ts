@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
-import { fetchProfile, fetchProfiles } from '../userInfo';
+import { fetchProfile, fetchProfiles, cache } from '../userInfo';
 
 enableFetchMocks();
 
@@ -54,6 +54,7 @@ describe('fetchProfile tests', () => {
   const someMockProfile = mockProfile(userId, userName);
 
   beforeEach(() => {
+    cache.clear();
     document.cookie = `kbase_session=${token}`;
   });
 
@@ -108,8 +109,8 @@ describe('fetchProfile tests', () => {
   });
 
   test('fetchProfile should consult the cache first', async () => {
-    const cache = { [userId]: someMockProfile };
-    expect(await fetchProfile(userId, cache)).toBe(someMockProfile);
+    cache.set(userId, someMockProfile);
+    expect(await fetchProfile(userId)).toBe(someMockProfile);
   });
 
   test('fetchProfiles should not cache if profile is broken', async () => {
@@ -132,7 +133,7 @@ describe('fetchProfile tests', () => {
       };
     });
     const cache = {};
-    await fetchProfiles([userId, 'profileNoUser', 'profileNoUserName'], cache);
+    await fetchProfiles([userId, 'profileNoUser', 'profileNoUserName']);
     expect(JSON.stringify(cache)).toBe('{}');
   });
 });

@@ -19,7 +19,7 @@ interface Props {
   category: string;
   history: History;
   loading: boolean;
-  onSetSearch: (searchParams: SearchParams, invalidateCache?: boolean) => void;
+  onSetSearch: (searchParams: SearchParams) => void;
   search: string;
   sort: string;
 }
@@ -90,7 +90,7 @@ export class Filters extends Component<Props, State> {
     const searchParams = this.getSearchParamsFromProps(this.props);
     if (this.props.onSetSearch) {
       this.setState({ loading: true });
-      await this.props.onSetSearch(searchParams, true);
+      await this.props.onSetSearch(searchParams);
     }
     this.setState({
       loading: false,

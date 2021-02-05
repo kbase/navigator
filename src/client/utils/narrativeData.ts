@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import { KBaseServiceClient } from '@kbase/narrative-utils';
 import Runtime from '../utils/runtime';
+import Cache from './Cache';
 
 /**
  * Interfaces that represent Narrative data returned from the search service.
@@ -49,16 +50,15 @@ export interface Doc {
   version: number;
 }
 
-/**
- * The KBaseCache interface
- */
-export interface KBaseCache {
-  [key: string]: any;
-}
 
-export async function fetchNarrative(upa: string, cache: KBaseCache = {}) {
-  if (upa in cache) {
-    return { data: [{ data: cache[upa] }] };
+// TODO: should type NarrativeObject
+type NarrativeObject = any;
+
+export const cache = new Cache<NarrativeObject>();
+
+export async function fetchNarrative(upa: string) {
+  if (cache.has(upa)) {
+    return cache.get(upa);
   }
   const client = new KBaseServiceClient({
     module: 'Workspace',
@@ -68,8 +68,8 @@ export async function fetchNarrative(upa: string, cache: KBaseCache = {}) {
   const response = await client.call('get_objects2', [
     { objects: [{ ref: upa }] },
   ]);
-  const itemUpdate = response.data[0].data;
-  cache[upa] = itemUpdate;
+  const narrativeObject = response.data[0].data as NarrativeObject;
+  cache.set(upa, narrativeObject);
   return response;
 }
 

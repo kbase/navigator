@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import { getToken } from './auth';
 // as of now eslint cannot detect when imported interfaces are used
-import { Doc, KBaseCache } from './narrativeData'; // eslint-disable-line no-unused-vars
+import { Doc } from './narrativeData'; // eslint-disable-line no-unused-vars
 import Runtime from '../utils/runtime';
 
 // Interface to the searchNarratives function
@@ -126,18 +126,13 @@ export const sortsLookup = Object.fromEntries(
  *  2. if any search results in a 401 from the server (typically a present, but
  *       invalid, token), this also throws an AuthError.
  * @param {SearchOptions} options
- * @param {KBaseCache} cache
  * @return {Promise<SearchResults>}
  */
 export default async function searchNarratives(
-  options: SearchOptions,
-  cache: KBaseCache = {}
+  options: SearchOptions
 ): Promise<SearchResults> {
   const { term, category, sort, skip, pageSize } = options;
   const key = JSON.stringify(options);
-  if (key in cache) {
-    return cache[key];
-  }
   const params: SearchParams = {
     types: ['KBaseNarrative.Narrative'],
     paging: {
@@ -205,7 +200,6 @@ export default async function searchNarratives(
   }
 
   const { result } = await makeRequest(params);
-  cache[key] = result;
   return result;
 }
 

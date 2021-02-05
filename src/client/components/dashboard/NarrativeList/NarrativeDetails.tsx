@@ -4,7 +4,7 @@ import React from 'react';
 import SubTabs from '../../generic/SubTabs';
 
 // Utils
-import { Doc, KBaseCache } from '../../../utils/narrativeData';
+import { Doc } from '../../../utils/narrativeData';
 import { readableDate } from '../../../utils/readableDate';
 import { fetchProfile, fetchProfiles } from '../../../utils/userInfo';
 import Runtime from '../../../utils/runtime';
@@ -128,19 +128,17 @@ const detailsSharedWith = (users: string[], profiles: any) => {
  *  - created date
  *  - data objects
  * @param {Doc} data - a representation of a narrative
- * @param {KBaseCache} cache - service data cache
  * @return {JSX}
  */
-const detailsHeader = async (data: Doc, cache: KBaseCache) => {
+const detailsHeader = async (data: Doc) => {
   if (!data) return <></>;
   const sharedWith = data.shared_users.filter(
     (user: string) => user !== Runtime.username()
   );
   const cellTypeCounts = countCellTypes(data.cells);
   const [gold, silver, bronze] = countDataTypes(data);
-  if (!('profiles' in cache)) cache.profiles = {};
-  const authorProfile = await fetchProfile(data.creator, cache.profiles);
-  const sharedWithProfiles = await fetchProfiles(sharedWith, cache.profiles);
+  const authorProfile = await fetchProfile(data.creator);
+  const sharedWithProfiles = await fetchProfiles(sharedWith);
   const authorName = authorProfile.user.realname;
   const sharedWithLinks = detailsSharedWith(sharedWith, sharedWithProfiles);
   return (
@@ -184,14 +182,12 @@ const detailsHeader = async (data: Doc, cache: KBaseCache) => {
 
 interface Props {
   activeItem: Doc;
-  cache: KBaseCache;
   updateSearch: () => void;
   view: string;
 }
 
 interface State {
   activeItem: Doc;
-  cache: KBaseCache;
   detailsHeader: JSX.Element;
 }
 
@@ -199,19 +195,15 @@ interface State {
 export class NarrativeDetails extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { activeItem, cache } = this.props;
+    const { activeItem } = this.props;
     this.state = {
       activeItem: activeItem,
-      cache: cache,
       detailsHeader: <></>,
     };
   }
 
   async componentDidMount() {
-    const detailsHeaderComponent = await detailsHeader(
-      this.state.activeItem,
-      this.state.cache
-    );
+    const detailsHeaderComponent = await detailsHeader(this.state.activeItem);
     this.setState({
       detailsHeader: detailsHeaderComponent,
     });
@@ -219,17 +211,14 @@ export class NarrativeDetails extends React.Component<Props, State> {
 
   async componentDidUpdate(prevProps: Props) {
     if (prevProps.activeItem === this.props.activeItem) return;
-    const detailsHeaderComponent = await detailsHeader(
-      this.props.activeItem,
-      this.props.cache
-    );
+    const detailsHeaderComponent = await detailsHeader(this.props.activeItem);
     this.setState({
       detailsHeader: detailsHeaderComponent,
     });
   }
 
   render() {
-    const { activeItem, cache, updateSearch, view } = this.props;
+    const { activeItem, updateSearch, view } = this.props;
     if (!activeItem) {
       return <div></div>;
     }
@@ -241,7 +230,7 @@ export class NarrativeDetails extends React.Component<Props, State> {
     // Choose which content to show based on selected tab
     switch (view) {
       case 'preview':
-        content = <Preview cache={cache} narrative={activeItem} />;
+        content = <Preview narrative={activeItem} />;
         break;
       case 'data':
       default:

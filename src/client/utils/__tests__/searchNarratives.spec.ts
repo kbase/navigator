@@ -136,27 +136,9 @@ describe('searchNarratives tests', () => {
     expect(results.count).toEqual(results.hits.length);
   });
 
-  it('searchNarratives should consult the cache first', async () => {
-    const searchParams = {
-      term: '',
-      category: 'own',
-      sort: 'Recently updated',
-      skip: 0,
-      pageSize: 10,
-    };
-    const results = await searchNarratives(searchParams, {
-      [JSON.stringify(searchParams)]: {
-        count: 1,
-        hits: ['sample result'],
-      },
-    });
-    expect(results.count).toEqual(1);
-    expect(results.count).toEqual(results.hits.length);
-  });
-
   it(
     'searchNarratives should fail to return own narratives when a token is ' +
-      'not present',
+    'not present',
     async () => {
       mockSearchOk(
         { term: '', sort: '', category: '', skip: 0, pageSize: 10 },
@@ -227,7 +209,7 @@ describe('searchNarratives tests', () => {
 
   it(
     'searchNarratives should fail to return shared narratives when a token is ' +
-      'not present',
+    'not present',
     async () => {
       mockSearchOk(
         { term: '', sort: '', category: 'shared', skip: 0, pageSize: 10 },
