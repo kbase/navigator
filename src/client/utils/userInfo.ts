@@ -43,7 +43,6 @@ export async function fetchProfile(username: string) {
   try {
     profileArr = await fetchProfiles([username]);
   } catch (err) {
-    console.log("GOT",);
     if ('code' in err && err.code !== 200) {
       return null;
     }
