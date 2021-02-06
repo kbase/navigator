@@ -54,7 +54,7 @@ describe('Cache tests', () => {
   });
 
   test('Cache entry should not exist after it has expired', (done) => {
-    const cache = new Cache<string>(100);
+    const cache = new Cache<string>({ ttl: 100 });
     cache.set('foo', 'bar');
     expect(cache.has('foo')).toBe(true);
     window.setTimeout(() => {
@@ -64,7 +64,7 @@ describe('Cache tests', () => {
   });
 
   test('Cache entry should exist after it has not expired', (done) => {
-    const cache = new Cache<string>(1000);
+    const cache = new Cache<string>({ ttl: 1000 });
     cache.set('foo', 'bar');
     expect(cache.has('foo')).toBe(true);
     window.setTimeout(() => {
@@ -86,7 +86,7 @@ describe('Cache tests', () => {
     const cache = new Cache<string>();
 
     for (let i = 0; i > 100; i += 1) {
-      const cache = new Cache<string>(i);
+      const cache = new Cache<string>({ ttl: i });
       cache.set('foo', 'bar');
       expect(cache.has('foo')).toBe(true);
     }
@@ -95,9 +95,21 @@ describe('Cache tests', () => {
   test('Caching with a ttl of 0 or less should always fail with immediate fetch', () => {
     const cache = new Cache<string>();
     for (let i = -1; i > -100; i -= 1) {
-      const cache = new Cache<string>(i);
+      const cache = new Cache<string>({ ttl: i });
       cache.set('foo', 'bar');
       expect(cache.has('foo')).toBe(false);
     }
   });
+
+  test('Cache entry should auto expire', (done) => {
+    const cache = new Cache<string>({ ttl: 100, monitorInterval: 100 });
+    cache.set('foo', 'bar');
+    expect(cache.has('foo')).toBe(true);
+    window.setTimeout(() => {
+      // can't get entry, it will be removed if expired.
+      expect(cache.size()).toBe(0);
+      done();
+    }, 1000);
+  });
+
 });

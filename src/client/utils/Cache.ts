@@ -8,14 +8,24 @@ interface CacheRecord<T> {
 }
 
 // Default expiration for cache items.
-const DEFAULT_EXPIRES_AFTER = 5 * 60 * 1000;
+const DEFAULT_TTL = 5 * 60 * 1000;
+const DEFAULT_MONITOR_INTERVAL = 60000;
+
+interface CacheConstructorParams {
+    ttl?: number;
+    monitorInterval?: number;
+}
 
 export default class Cache<T> {
     private cache: CacheData<CacheRecord<T>>;
-    private expireAfter: number;
-    constructor(expireAfter?: number) {
+    private ttl: number;
+    private monitorInterval: number;
+    monitorTimer: number | null;
+    constructor({ ttl, monitorInterval }: CacheConstructorParams = {}) {
         this.cache = {};
-        this.expireAfter = expireAfter || DEFAULT_EXPIRES_AFTER;
+        this.ttl = ttl || DEFAULT_TTL;
+        this.monitorInterval = monitorInterval || DEFAULT_MONITOR_INTERVAL;
+        this.monitorTimer = null;
     }
 
     has(key: string) {
@@ -28,6 +38,28 @@ export default class Cache<T> {
             value: data,
             createdAt: Date.now()
         };
+        this.monitorCache();
+    }
+
+    monitorCache() {
+        if (Object.keys(this.cache).length === 0) {
+            return;
+        }
+        if (this.monitorTimer !== null) {
+            return;
+        }
+        const monitor = () => {
+            this.monitorTimer = window.setTimeout(() => {
+                Object.keys(this.cache).forEach((key) => {
+                    this.evaluateKey(key);
+                });
+                if (Object.keys(this.cache).length > 0) {
+                    monitor();
+                }
+                this.monitorTimer = null;
+            }, this.monitorInterval);
+        };
+        monitor();
     }
 
     evaluateKey(key: string) {
@@ -35,7 +67,7 @@ export default class Cache<T> {
             return;
         }
         const cacheRecord = this.cache[key];
-        if ((cacheRecord.createdAt + this.expireAfter) < Date.now()) {
+        if ((cacheRecord.createdAt + this.ttl) < Date.now()) {
             delete this.cache[key];
         }
     }
@@ -53,10 +85,12 @@ export default class Cache<T> {
         if (key in this.cache) {
             delete this.cache[key];
         }
+        this.monitorCache();
     }
 
     clear() {
         this.cache = {};
+        this.monitorCache();
     }
 
     size() {
