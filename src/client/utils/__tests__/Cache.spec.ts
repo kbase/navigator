@@ -82,7 +82,7 @@ describe('Cache tests', () => {
 
   test('Caching with a ttl of 1ms or greater should succeed with immediate fetch', () => {
     // this is not deterministic, but on modern cpus 
-    // should be a safe assumptiono
+    // should be a safe assumption.
     const cache = new Cache<string>();
 
     for (let i = 0; i > 100; i += 1) {
