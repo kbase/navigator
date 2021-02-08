@@ -139,7 +139,7 @@ const detailsHeader = async (data: Doc, cache: KBaseCache) => {
   const cellTypeCounts = countCellTypes(data.cells);
   const [gold, silver, bronze] = countDataTypes(data);
   if (!('profiles' in cache)) cache.profiles = {};
-  const authorProfile = await fetchProfile(data.creator, cache.profiles);
+  const authorProfile = await fetchProfile(data.owner, cache.profiles);
   const sharedWithProfiles = await fetchProfiles(sharedWith, cache.profiles);
   const authorName = authorProfile.user.realname;
   const sharedWithLinks = detailsSharedWith(sharedWith, sharedWithProfiles);
@@ -147,7 +147,7 @@ const detailsHeader = async (data: Doc, cache: KBaseCache) => {
     <>
       <div className="narrative-details">
         <div className="col">
-          {detailsHeaderItem('Author', [profileLink(data.creator, authorName)])}
+          {detailsHeaderItem('Author', [profileLink(data.owner, authorName)])}
           {detailsHeaderItem('Created on', readableDate(data.creation_date))}
           {detailsHeaderItem('Last saved', readableDate(data.timestamp))}
           {detailsHeaderItem(
@@ -175,8 +175,8 @@ const detailsHeader = async (data: Doc, cache: KBaseCache) => {
         {data.is_public || !sharedWith.length ? (
           <></>
         ) : (
-          detailsHeaderItem('Shared with', sharedWithLinks)
-        )}
+            detailsHeaderItem('Shared with', sharedWithLinks)
+          )}
       </div>
     </>
   );
@@ -234,9 +234,8 @@ export class NarrativeDetails extends React.Component<Props, State> {
       return <div></div>;
     }
     const wsid = activeItem.access_group;
-    const narrativeHref = `${
-      Runtime.getConfig().view_routes.narrative
-    }/${wsid}`;
+    const narrativeHref = `${Runtime.getConfig().view_routes.narrative
+      }/${wsid}`;
     let content: JSX.Element | string = '';
     // Choose which content to show based on selected tab
     switch (view) {
