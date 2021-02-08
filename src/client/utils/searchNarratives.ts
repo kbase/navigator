@@ -161,13 +161,13 @@ export default async function searchNarratives(
   switch (category) {
     case 'own':
       params.filters.fields.push({
-        field: 'creator',
+        field: 'owner',
         term: username,
       });
       break;
     case 'shared':
       params.filters.fields.push({
-        field: 'creator',
+        field: 'owner',
         not_term: username,
       });
       params.filters.fields.push({
