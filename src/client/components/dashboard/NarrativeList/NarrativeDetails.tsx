@@ -139,7 +139,7 @@ const detailsHeader = async (data: Doc, cache: KBaseCache) => {
   const cellTypeCounts = countCellTypes(data.cells);
   const [gold, silver, bronze] = countDataTypes(data);
   if (!('profiles' in cache)) cache.profiles = {};
-  const authorProfile = await fetchProfile(data.owner, cache.profiles);
+  const authorProfile = await fetchProfile(data.creator, cache.profiles);
   const sharedWithProfiles = await fetchProfiles(sharedWith, cache.profiles);
   const authorName = authorProfile.user.realname;
   const sharedWithLinks = detailsSharedWith(sharedWith, sharedWithProfiles);
@@ -147,7 +147,7 @@ const detailsHeader = async (data: Doc, cache: KBaseCache) => {
     <>
       <div className="narrative-details">
         <div className="col">
-          {detailsHeaderItem('Author', [profileLink(data.owner, authorName)])}
+          {detailsHeaderItem('Author', [profileLink(data.creator, authorName)])}
           {detailsHeaderItem('Created on', readableDate(data.creation_date))}
           {detailsHeaderItem('Last saved', readableDate(data.timestamp))}
           {detailsHeaderItem(
