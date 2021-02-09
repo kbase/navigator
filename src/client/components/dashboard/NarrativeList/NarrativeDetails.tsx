@@ -175,8 +175,8 @@ const detailsHeader = async (data: Doc, cache: KBaseCache) => {
         {data.is_public || !sharedWith.length ? (
           <></>
         ) : (
-            detailsHeaderItem('Shared with', sharedWithLinks)
-          )}
+          detailsHeaderItem('Shared with', sharedWithLinks)
+        )}
       </div>
     </>
   );
@@ -234,8 +234,9 @@ export class NarrativeDetails extends React.Component<Props, State> {
       return <div></div>;
     }
     const wsid = activeItem.access_group;
-    const narrativeHref = `${Runtime.getConfig().view_routes.narrative
-      }/${wsid}`;
+    const narrativeHref = `${
+      Runtime.getConfig().view_routes.narrative
+    }/${wsid}`;
     let content: JSX.Element | string = '';
     // Choose which content to show based on selected tab
     switch (view) {
