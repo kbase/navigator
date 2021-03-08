@@ -60,7 +60,7 @@ function makeAuthCall(operation: string): Promise<any> {
     throw new Error('Auth token not available.');
   }
   const headers = { Authorization: token };
-  return fetch(CONFIG.service_routes.auth + operation, {
+  return fetch(`${CONFIG.service_routes.auth}/api/V2${operation}`, {
     method: 'GET',
     headers,
   }).then(resp => resp.json());
