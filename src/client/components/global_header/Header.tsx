@@ -139,14 +139,14 @@ export class Header extends Component<Props, State> {
     }
     const headers = {
       Authorization: token,
-      Accept: 'application/json'
+      Accept: 'application/json',
     };
     fetch(Runtime.getConfig().service_routes.auth + '/logout', {
       method: 'POST',
       headers,
     })
-      .then((resp) => {
-        if(resp.ok){
+      .then(resp => {
+        if (resp.ok) {
           // Remove the cookie
           removeCookie('kbase_session');
           // Redirect to the legacy signed-out page
