@@ -21,68 +21,67 @@ enableFetchMocks();
 describe('Header tests', () => {
   it('<Header> should render', () =>
     expect(shallow(<Header title="title" />)).toBeTruthy());
-});
 
-describe('Test Sign-Out', () => {
-  let tokenMock: jest.SpyInstance<string, []>;
-  let purgeMock: jest.SpyInstance<void, [string]>;
-  let logoutMock: FetchMock | undefined;
+  describe('Logout tests', () => {
+    let getTokenMock: jest.SpyInstance<string, []>;
+    let removeCookieMock: jest.SpyInstance<void, [string]>;
+    let logoutMock: FetchMock | undefined;
+    let header: Header;
 
-  const setLogoutMock = (respFunc: MockResponseInitFunction) => {
-    logoutMock = fetchMock.doMockIf(
-      Runtime.getConfig().service_routes.auth + '/logout',
-      respFunc
-    );
-  };
+    const setLogoutMock = (respFunc: MockResponseInitFunction) => {
+      logoutMock = fetchMock.doMockIf(
+        Runtime.getConfig().service_routes.auth + '/logout',
+        respFunc
+      );
+    };
 
-  beforeAll(() => {
-    tokenMock = jest.spyOn(auth, 'getToken').mockReturnValue('someToken');
-    purgeMock = jest.spyOn(cookies, 'removeCookie');
-  });
-
-  afterEach(() => {
-    purgeMock.mockClear();
-    if (logoutMock) {
-      logoutMock.mockRestore();
-      logoutMock = undefined;
-    }
-  });
-
-  afterAll(() => {
-    tokenMock.mockRestore();
-    purgeMock.mockRestore();
-  });
-
-  it('200 should trigger token purge', async () => {
-    const header = shallow<Header>(<Header title="title" />).instance();
-    setLogoutMock(async () => ({
-      status: 200,
-    }));
-
-    header.signOut();
-    await new Promise(setImmediate); // yield to event loop to allow pending promises to resolve
-    expect(purgeMock).toBeCalledWith('kbase_session');
-  });
-
-  it('404 should not trigger token purge', async () => {
-    const header = shallow<Header>(<Header title="title" />).instance();
-    setLogoutMock(async () => ({
-      status: 404,
-    }));
-
-    header.signOut();
-    await new Promise(setImmediate);
-    expect(purgeMock).not.toBeCalledWith('kbase_session');
-  });
-
-  it('Fetch failure (i.e. CORS failure) should not trigger token purge', async () => {
-    const header = shallow<Header>(<Header title="title" />).instance();
-    setLogoutMock(async () => {
-      throw new Error('test error');
+    beforeAll(() => {
+      getTokenMock = jest.spyOn(auth, 'getToken').mockReturnValue('someToken');
+      removeCookieMock = jest.spyOn(cookies, 'removeCookie');
+      header = shallow<Header>(<Header title="title" />).instance();
     });
 
-    header.signOut();
-    await new Promise(setImmediate);
-    expect(purgeMock).not.toBeCalledWith('kbase_session');
+    afterEach(() => {
+      removeCookieMock.mockClear();
+      if (logoutMock) {
+        logoutMock.mockRestore();
+        logoutMock = undefined;
+      }
+    });
+
+    afterAll(() => {
+      getTokenMock.mockRestore();
+      removeCookieMock.mockRestore();
+    });
+
+    it('200 should trigger token purge', async () => {
+      setLogoutMock(async () => ({
+        status: 200,
+      }));
+
+      header.signOut();
+      await new Promise(setImmediate); // yield to event loop to allow pending promises to resolve
+      expect(removeCookieMock).toBeCalledWith('kbase_session');
+    });
+
+    it('404 should not trigger token purge', async () => {
+      setLogoutMock(async () => ({
+        status: 404,
+      }));
+
+      header.signOut();
+      await new Promise(setImmediate);
+      expect(removeCookieMock).not.toBeCalledWith('kbase_session');
+    });
+
+    it('Fetch failure (i.e. CORS failure) should not trigger token purge', async () => {
+      setLogoutMock(async () => {
+        throw new Error('test error');
+      });
+
+      header.signOut();
+      await new Promise(setImmediate);
+      expect(removeCookieMock).not.toBeCalledWith('kbase_session');
+    });
   });
 });
