@@ -139,17 +139,22 @@ export class Header extends Component<Props, State> {
     }
     const headers = {
       Authorization: token,
+      Accept: 'application/json',
     };
     fetch(Runtime.getConfig().service_routes.auth + '/logout', {
       method: 'POST',
       headers,
     })
-      .then(() => {
-        // Remove the cookie
-        removeCookie('kbase_session');
-        // Redirect to the legacy signed-out page
-        window.location.href =
-          Runtime.getConfig().host_root + '/#auth2/signedout';
+      .then(resp => {
+        if (resp.ok) {
+          // Remove the cookie
+          removeCookie('kbase_session');
+          // Redirect to the legacy signed-out page
+          window.location.href =
+            Runtime.getConfig().host_root + '/#auth2/signedout';
+        } else {
+          throw new Error(`${resp.status}: Failed to log out`);
+        }
       })
       .catch(err => {
         console.error('Error signing out: ' + err);

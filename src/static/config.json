@@ -1,6 +1,6 @@
 {
     "service_routes": {
-        "auth": "/auth/api/V2",
+        "auth": "/auth",
         "narrative_method_store": "/narrative_method_store",
         "catalog": "/catalog",
         "workspace": "/ws",

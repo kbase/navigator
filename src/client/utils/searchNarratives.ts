@@ -215,7 +215,7 @@ export default async function searchNarratives(
  *   sort parameter, auth (boolean, true if we're looking up personal data), and pageSize
  */
 async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
-  const headers: { [key: string]: string; } = {
+  const headers: { [key: string]: string } = {
     'Content-Type': 'application/json',
   };
   if (!params.access || !params.access.only_public) {
@@ -248,7 +248,7 @@ async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
   // properties of that  indicating the nature of the error, the most important
   // of which is the "code" and "message".
   // And, reporting the status to the user is not very useful, rather better to pick
-  // up the error message, and even better to process the entire error object which 
+  // up the error message, and even better to process the entire error object which
   // typically has useful additional information.
   if (!result.ok) {
     throw new Error('An error occurred while searching - ' + result.status);
