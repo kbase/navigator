@@ -10,6 +10,7 @@ export class Unauthorized extends Component {
       <section className="mt4">
         <h1>Signed out</h1>
         <p>
+          <meta httpEquiv="refresh" content={`0;URL='${SIGNIN_LINK}'`} />
           <a href={SIGNIN_LINK}>Sign in or sign up</a>
         </p>
         {/* <SignIn /> */}
