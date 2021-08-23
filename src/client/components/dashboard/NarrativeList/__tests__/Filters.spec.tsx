@@ -63,11 +63,15 @@ describe('Filters tests', () => {
     wrapper.find('input.ba').simulate('change', { target: { value: 'test' } });
     // This setTimeout is to simulate a pause in user's typing
     // see DEBOUNCE in SearchInput
-    await new Promise((resolve) => window.setTimeout(() => resolve(), 500));
+    await new Promise<void>((resolve) =>
+      window.setTimeout(() => resolve(), 500)
+    );
     const wrapperVal = mockFilters('test');
     wrapperVal
       .find('input.ba')
       .simulate('change', { target: { value: 'test test' } });
-    await new Promise((resolve) => window.setTimeout(() => resolve(), 500));
+    await new Promise<void>((resolve) =>
+      window.setTimeout(() => resolve(), 500)
+    );
   });
 });
