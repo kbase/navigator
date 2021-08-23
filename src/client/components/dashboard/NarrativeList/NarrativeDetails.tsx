@@ -249,7 +249,7 @@ export class NarrativeDetails extends React.Component<Props, State> {
         break;
     }
     const keepParams = (link: string) =>
-      keepParamsLinkTo(['limit', 'sort'], link);
+      keepParamsLinkTo(['limit', 'sort', 'search'], link);
     const tabs = Object.entries({
       data: {
         name: 'Data',
