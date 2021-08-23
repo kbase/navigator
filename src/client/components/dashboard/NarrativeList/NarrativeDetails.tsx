@@ -54,9 +54,7 @@ function countDataTypes(data: any) {
     }
     counts[key] = counts[key] + 1;
   });
-  const dataPlaces = Object.entries(counts)
-    .sort(sortCountDesc)
-    .slice(0, 3);
+  const dataPlaces = Object.entries(counts).sort(sortCountDesc).slice(0, 3);
   const out = [<></>, <></>, <></>];
   return out.map((el, ix) => {
     if (ix in dataPlaces) {

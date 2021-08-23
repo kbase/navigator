@@ -74,7 +74,7 @@ export default class LinkOrgItem extends Component<
     for (const org of linkedOrgs) {
       linkedOrgIds.add(org.id);
     }
-    userOrgs = userOrgs.filter(org => {
+    userOrgs = userOrgs.filter((org) => {
       return !linkedOrgIds.has(org.id);
     });
 
@@ -245,7 +245,7 @@ class OrgSelect extends Component<OrgListProps, OrgListState> {
 
   render() {
     const selectStyles: Partial<Styles> = {
-      menuPortal: base => ({ ...base, zIndex: 9999 }),
+      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     };
 
     return (
@@ -257,7 +257,7 @@ class OrgSelect extends Component<OrgListProps, OrgListState> {
           placeholder={'Organizations you belong to...'}
           styles={{
             ...selectStyles,
-            container: base => ({ ...base, flex: 2 }),
+            container: (base) => ({ ...base, flex: 2 }),
           }}
           menuPortalTarget={document.body}
           className="basic-single"

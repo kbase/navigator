@@ -31,7 +31,7 @@ describe('AppCatalog tests', () => {
     version: '1.1',
     result: [[]],
   };
-  fetchMock.mockIf(/services/, async req => {
+  fetchMock.mockIf(/services/, async (req) => {
     if (req.url.endsWith('catalog')) {
       return {
         body: JSON.stringify(mockCatalogResponse),

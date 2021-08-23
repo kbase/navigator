@@ -69,7 +69,7 @@ export class AppCatalog extends Component<Props, State> {
   // Fetch the app data
   fetchData() {
     this.setState({ loading: true });
-    fetchApps(this.tag).then(result => {
+    fetchApps(this.tag).then((result) => {
       const data = mungeData(result);
       this.setState({
         rawData: data,
@@ -82,7 +82,7 @@ export class AppCatalog extends Component<Props, State> {
 
   // Load more button click; show more results
   appendPage() {
-    this.setState(prevState => ({ currentPage: prevState.currentPage + 1 }));
+    this.setState((prevState) => ({ currentPage: prevState.currentPage + 1 }));
   }
 
   // Handle input to the search box. In-memory search with no network request.
@@ -109,7 +109,7 @@ export class AppCatalog extends Component<Props, State> {
       const catMatch = cat === 'any' || item.categories.indexOf(cat) !== -1;
       return searchMatch && catMatch;
     });
-    results = sortBy(results, item => {
+    results = sortBy(results, (item) => {
       return this.runsDesc ? -item.runs : item.runs;
     });
     this.setState({ results, currentPage: 0 });
@@ -161,7 +161,7 @@ export class AppCatalog extends Component<Props, State> {
                 style={{ top: '0.65rem', left: '0.5rem' }}
               ></i>
               <SearchInput
-                onSetVal={val => this.handleSearchInput(val)}
+                onSetVal={(val) => this.handleSearchInput(val)}
                 loading={false}
               />
             </div>
@@ -223,7 +223,7 @@ function categoryDropdownView(component: AppCatalog) {
     <fieldset className="bn pa0 ml3">
       <select
         className="br2 bn bg-light-gray pa2 black-80"
-        onChange={ev => component.handleCategoryChange(ev)}
+        onChange={(ev) => component.handleCategoryChange(ev)}
       >
         <option value="any">Any category</option>
         {cats.map(optionView)}
@@ -335,6 +335,6 @@ function mungeData(inpData: CombinedResult): Array<SDKApp> {
       icon: data.icon,
     };
   });
-  ret = sortBy(ret, d => -d.runs);
+  ret = sortBy(ret, (d) => -d.runs);
   return ret;
 }

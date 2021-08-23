@@ -90,7 +90,7 @@ export default class ControlMenu extends Component<
   }
 
   menuClicked() {
-    this.setState(prevState => ({ showMenu: !prevState.showMenu }));
+    this.setState((prevState) => ({ showMenu: !prevState.showMenu }));
   }
 
   hideMenu() {
@@ -143,7 +143,7 @@ export default class ControlMenu extends Component<
         <span
           className="black-20 dim fa fa-2x fa-cog"
           style={{ cursor: 'pointer' }}
-          onClick={e => this.menuClicked()}
+          onClick={(e) => this.menuClicked()}
         ></span>
         {menu}
         {modal}
@@ -157,7 +157,7 @@ export default class ControlMenu extends Component<
         key={item.title}
         className="flex pa2 cursor hover-bg-light-gray"
         style={{ flexFlow: 'row nowrap', cursor: 'pointer' }}
-        onClick={e => {
+        onClick={(e) => {
           this.menuItemClicked(item);
         }}
       >

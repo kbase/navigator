@@ -84,7 +84,7 @@ export default class SharingItem extends Component<
     }, [] as string[]);
     // get user infos from auth
     const userNames: { [key: string]: string } = await getUsernames(userList);
-    userList.forEach(u => {
+    userList.forEach((u) => {
       const userPerm: UserPerms = {
         userId: u,
         userName: userNames[u],
@@ -113,7 +113,7 @@ export default class SharingItem extends Component<
         },
       ])
       .then(() => {
-        this.setState(prevState => ({
+        this.setState((prevState) => ({
           isLoading: false,
           perms: {
             isGlobal: !isGlobal,
@@ -122,7 +122,7 @@ export default class SharingItem extends Component<
           },
         }));
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
       });
   }
@@ -154,7 +154,7 @@ export default class SharingItem extends Component<
       .then(() => {
         this.updateSharedUserInfo();
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }
 
   render() {

@@ -80,7 +80,7 @@ export class NarrativeList extends Component<Props, State> {
 
   componentDidMount() {
     // FIXME this is redundant with client/index.tsx
-    getUsername(username => {
+    getUsername((username) => {
       window._env.username = username;
       this.performSearch();
     });

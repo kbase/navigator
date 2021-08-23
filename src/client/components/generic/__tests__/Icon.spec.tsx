@@ -48,7 +48,7 @@ describe('AppIcon tests', () => {
     );
 
     const currentEventLoopEnd = () =>
-      new Promise(resolve => setImmediate(resolve));
+      new Promise((resolve) => setImmediate(resolve));
     await currentEventLoopEnd();
     wrapper.update();
     expect(wrapper.find('span.fa-spinner').length).toEqual(0);

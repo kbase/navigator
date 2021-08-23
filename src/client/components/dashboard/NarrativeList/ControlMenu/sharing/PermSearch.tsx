@@ -35,13 +35,13 @@ export default class PermSearch extends Component<PermSearchProps> {
     callback: (options: OptionsType<any>) => void | Promise<any>
   ) {
     if (term.length < 2) {
-      return new Promise(resolve => resolve(''));
+      return new Promise((resolve) => resolve(''));
     }
     console.log(this.props.currentUser);
-    return searchUsernames(term).then(usernames => {
+    return searchUsernames(term).then((usernames) => {
       return Object.keys(usernames)
-        .filter(userId => userId !== this.props.currentUser)
-        .map(userId => ({
+        .filter((userId) => userId !== this.props.currentUser)
+        .map((userId) => ({
           value: userId,
           label: `${usernames[userId]} (${userId})`,
         }))
@@ -59,7 +59,7 @@ export default class PermSearch extends Component<PermSearchProps> {
     if (!selected) {
       this.setState({ selectedUsers: [] });
     } else {
-      const selectedUsers = selected.map(s => s.value);
+      const selectedUsers = selected.map((s) => s.value);
       console.log(selectedUsers);
       this.setState({ selectedUsers });
     }
@@ -75,7 +75,7 @@ export default class PermSearch extends Component<PermSearchProps> {
 
   render() {
     const selectStyles: Partial<Styles> = {
-      menuPortal: base => ({ ...base, zIndex: 9999 }),
+      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     };
     return (
       <div className="flex flex-row flex-nowrap">
@@ -87,7 +87,7 @@ export default class PermSearch extends Component<PermSearchProps> {
           placeholder={'Share with...'}
           styles={{
             ...selectStyles,
-            container: base => ({ ...base, flex: 2 }),
+            container: (base) => ({ ...base, flex: 2 }),
           }}
           menuPortalTarget={document.body}
           onInputChange={this.handleInputChange}
@@ -98,7 +98,7 @@ export default class PermSearch extends Component<PermSearchProps> {
           options={this.permOptions}
           styles={{
             ...selectStyles,
-            container: base => ({ ...base, flex: 1 }),
+            container: (base) => ({ ...base, flex: 1 }),
           }}
           menuPortalTarget={document.body}
           onChange={this.handlePermChange}

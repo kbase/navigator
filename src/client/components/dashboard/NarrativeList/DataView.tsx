@@ -12,12 +12,12 @@ export default function DataView(props: Props) {
   const { accessGroup } = props;
   const rows = props.dataObjects
     .slice(0, 50)
-    .map(obj => {
+    .map((obj) => {
       obj.readableType = getWSTypeName(obj.obj_type);
       return obj;
     })
     .sort((a, b) => a.readableType.localeCompare(b.readableType))
-    .map(obj => dataViewRow(accessGroup, obj));
+    .map((obj) => dataViewRow(accessGroup, obj));
   return (
     <div className="pt3">
       {rows.length ? rows : 'This Narrative has no data.'}

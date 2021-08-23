@@ -68,18 +68,9 @@ test('FilterDropdown should close on document click', () => {
 test('FilterDropdown supports item selection', () => {
   const wrapper = mockDropdown(true);
   items.forEach((item, idx) => {
-    wrapper
-      .find('div div a')
-      .at(idx)
-      .simulate('click', dummyEvent);
+    wrapper.find('div div a').at(idx).simulate('click', dummyEvent);
     wrapper.find('div a').simulate('click', dummyEvent);
-    expect(
-      wrapper
-        .find('div div a')
-        .at(idx)
-        .find('i')
-        .hasClass('fa-check')
-    );
+    expect(wrapper.find('div div a').at(idx).find('i').hasClass('fa-check'));
   });
 });
 

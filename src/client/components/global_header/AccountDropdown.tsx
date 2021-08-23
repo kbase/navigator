@@ -24,7 +24,7 @@ export class AccountDropdown extends Component<Props, State> {
   }
 
   componentDidMount() {
-    this.bodyCloseHandler = ev => {
+    this.bodyCloseHandler = (ev) => {
       const elm = document.querySelector('.account-dropdown');
       const target = ev.target;
       if (!elm || !target) {
@@ -48,7 +48,9 @@ export class AccountDropdown extends Component<Props, State> {
   }
 
   toggleDropdown() {
-    this.setState(prevState => ({ dropdownHidden: !prevState.dropdownHidden }));
+    this.setState((prevState) => ({
+      dropdownHidden: !prevState.dropdownHidden,
+    }));
   }
 
   // View for the account drop down when signed in
@@ -57,7 +59,7 @@ export class AccountDropdown extends Component<Props, State> {
       <div className="account-dropdown">
         <button
           className="profile-dropdown flex pointer"
-          onClick={event => this.toggleDropdown()}
+          onClick={(event) => this.toggleDropdown()}
         >
           <img
             style={{ maxWidth: '40px' }}

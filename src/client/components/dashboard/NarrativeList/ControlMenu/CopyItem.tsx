@@ -77,7 +77,7 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
               className="w-100 pa2 mb2 br2 ba b--solid b--black-20"
               type="text"
               value={this.state.newName}
-              onChange={e => this.validateName(e)}
+              onChange={(e) => this.validateName(e)}
             ></input>
           </div>
           <div>
