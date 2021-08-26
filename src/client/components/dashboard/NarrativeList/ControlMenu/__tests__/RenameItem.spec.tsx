@@ -4,12 +4,30 @@
 
 import React from 'react';
 import { shallow } from 'enzyme';
+import { enableFetchMocks } from 'jest-fetch-mock';
 
 import RenameItem from '../RenameItem';
 import { Doc } from '../../../../../utils/narrativeData';
 
-describe('Preview tests', () => {
-  it('<RenameItem> should render', () => {
+enableFetchMocks();
+
+describe('RenameItem', () => {
+  it('should render', () => {
+    fetchMock.mockOnceIf('/services/ws', async (req: Request) => {
+      window._env.username = 'foo';
+      const response = {
+        version: '1.1',
+        result: [
+          {
+            foo: 'w',
+          },
+        ],
+      };
+      return Promise.resolve({
+        body: JSON.stringify(response),
+        status: 200,
+      });
+    });
     const narrative: Doc = {
       access_group: 1,
       cells: [],
