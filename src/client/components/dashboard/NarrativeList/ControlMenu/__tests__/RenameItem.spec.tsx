@@ -13,21 +13,28 @@ enableFetchMocks();
 
 describe('RenameItem', () => {
   it('should render', () => {
-    fetchMock.mockOnceIf('/services/ws', async (req: Request) => {
-      window._env.username = 'foo';
-      const response = {
-        version: '1.1',
-        result: [
-          {
-            foo: 'w',
-          },
-        ],
-      };
-      return Promise.resolve({
-        body: JSON.stringify(response),
-        status: 200,
-      });
-    });
+    fetchMock.mockOnceIf(
+      'https://ci.kbase.us/services/ws',
+      async (req: Request) => {
+        window._env.username = 'foo';
+        const response = {
+          version: '1.1',
+          result: [
+            {
+              perms: [
+                {
+                  foo: 'w',
+                },
+              ],
+            },
+          ],
+        };
+        return Promise.resolve({
+          body: JSON.stringify(response),
+          status: 200,
+        });
+      }
+    );
     const narrative: Doc = {
       access_group: 1,
       cells: [],
