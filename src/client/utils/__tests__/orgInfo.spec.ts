@@ -3,7 +3,12 @@
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
-import { getLinkedOrgs, lookupUserOrgs, linkNarrativeToOrg } from '../orgInfo';
+import {
+  getLinkedOrgs,
+  lookupUserOrgs,
+  linkNarrativeToOrg,
+  OrgAPIError,
+} from '../orgInfo';
 
 describe('Organizations API testing', () => {
   const authToken = 'someToken';
@@ -107,8 +112,13 @@ describe('Organizations API testing', () => {
     try {
       await linkNarrativeToOrg(123, 'someOrg');
     } catch (error) {
-      const res = await error.response.json();
-      expect(res.error.appcode).toEqual(40010);
+      expect(error).toBeInstanceOf(OrgAPIError);
+      if (error instanceof OrgAPIError) {
+        const res = await error.response.json();
+        expect(res.error.appcode).toEqual(40010);
+      } else {
+        fail('Expected error to be an OrgAPIError');
+      }
     }
   });
 });

@@ -1,4 +1,4 @@
-import { linkNarrativeToOrg } from '../../../../utils/orgInfo';
+import { linkNarrativeToOrg, OrgAPIError } from '../../../../utils/orgInfo';
 
 /**
  * Holds the state for the overall Link Organizations item popup.
@@ -18,23 +18,25 @@ export default class Model {
       }
       return 'requested';
     } catch (error) {
-      const errJson = await (async () => {
-        try {
-          return await error.response.json();
-        } catch (err) {
-          throw error;
-        }
-      })();
-      if (errJson.error) {
-        switch (errJson.error.appcode) {
-          case 40010:
-            throw new Error(
-              'A request has already been made to add this Narrative to this Organization. '
-            );
-          default:
-            throw new Error(
-              `An error (${errJson.error.appcode}) was made while processing your request.`
-            );
+      if (error instanceof OrgAPIError) {
+        const errJson = await (async () => {
+          try {
+            return await error.response.json();
+          } catch (err) {
+            throw error;
+          }
+        })();
+        if (errJson.error) {
+          switch (errJson.error.appcode) {
+            case 40010:
+              throw new Error(
+                'A request has already been made to add this Narrative to this Organization. '
+              );
+            default:
+              throw new Error(
+                `An error (${errJson.error.appcode}) was made while processing your request.`
+              );
+          }
         }
       }
       throw new Error('An error was made while processing your request');

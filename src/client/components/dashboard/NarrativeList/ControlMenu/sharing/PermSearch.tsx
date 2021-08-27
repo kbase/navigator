@@ -18,13 +18,18 @@ interface PermSearchState {
   perm: string;
 }
 
+export interface PermOption {
+  value: string;
+  label: string;
+}
+
 export default class PermSearch extends Component<PermSearchProps> {
   state: PermSearchState = {
     inputValue: '',
     selectedUsers: [],
     perm: 'r',
   };
-  private permOptions = [
+  private permOptions: Array<PermOption> = [
     { value: 'r', label: PERM_MAPPING['r'] },
     { value: 'w', label: PERM_MAPPING['w'] },
     { value: 'a', label: PERM_MAPPING['a'] },
@@ -72,7 +77,7 @@ export default class PermSearch extends Component<PermSearchProps> {
   };
 
   render() {
-    const selectStyles: Partial<Styles> = {
+    const selectStyles: Partial<Styles<PermOption, false>> = {
       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     };
     return (
@@ -88,8 +93,8 @@ export default class PermSearch extends Component<PermSearchProps> {
             container: (base) => ({ ...base, flex: 2 }),
           }}
           menuPortalTarget={document.body}
-          onInputChange={this.handleInputChange}
-          onChange={this.handleUserChange}
+          onInputChange={this.handleInputChange.bind(this)}
+          onChange={this.handleUserChange.bind(this)}
         />
         <Select
           defaultValue={this.permOptions[0]}

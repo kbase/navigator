@@ -37,7 +37,7 @@ export default class OrgSelect extends Component<OrgListProps, OrgListState> {
   };
 
   render() {
-    const selectStyles: Partial<Styles> = {
+    const selectStyles: Partial<Styles<OrgOption, false>> = {
       menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     };
 

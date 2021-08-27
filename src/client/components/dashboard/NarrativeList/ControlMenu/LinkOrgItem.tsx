@@ -89,10 +89,16 @@ export default class LinkOrgItem extends Component<
         },
       });
     } catch (ex) {
+      const message = (() => {
+        if (ex instanceof Error) {
+          return ex.message;
+        }
+        return 'Unknown error';
+      })();
       this.setState({
         loadProcess: {
           status: AsyncProcessStatus.ERROR,
-          message: ex.message,
+          message,
         },
       });
     }
@@ -120,10 +126,16 @@ export default class LinkOrgItem extends Component<
         }
       );
     } catch (ex) {
+      const message = (() => {
+        if (ex instanceof Error) {
+          return ex.message;
+        }
+        return 'Unknown error';
+      })();
       this.setState({
         linkProcess: {
           status: AsyncProcessStatus.ERROR,
-          message: ex.message,
+          message,
         },
       });
     }

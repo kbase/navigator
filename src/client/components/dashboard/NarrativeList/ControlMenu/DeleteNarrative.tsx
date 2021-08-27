@@ -119,10 +119,17 @@ export default class DeleteNarrative extends Component<
         status: 'success',
       });
     } catch (error) {
+      const message = (() => {
+        if (error instanceof Error) {
+          return error.message;
+        }
+        return 'Unknown error';
+      })();
+
       this.setState({
         status: 'error',
         error: {
-          message: error.message,
+          message,
         },
       });
     }
