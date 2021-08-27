@@ -163,7 +163,8 @@ export class NarrativeList extends Component<Props, State> {
   render() {
     const { category, id, obj, sort, view, ver } = this.props;
     const upa = upaKey(id, obj, ver);
-    const keepSort = (link: string) => keepParamsLinkTo(['sort'], link);
+    const keepSort = (link: string) =>
+      keepParamsLinkTo(['sort', 'search'], link);
     const tabs = Object.entries({
       own: {
         name: 'My Narratives',
