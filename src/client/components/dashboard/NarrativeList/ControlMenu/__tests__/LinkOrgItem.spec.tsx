@@ -12,45 +12,47 @@ import { Doc } from '../../../../../utils/narrativeData';
 enableFetchMocks();
 
 describe('LinkOrgItem', () => {
-  it('with no no member groups should render', () => {
-    // Note I added the mocking below to make this test pass, but using empty
-    // mock data only exercises that specific case.
+  test('with no no member groups should render', async () => {
+    // The app will have set these, probably when the global header is loaded.
+    // We can't set
+    // document.cookie = 'kbase_session=bar';
+    // because the token isn't processed by this component.
     window._env.username = 'foo';
     window._env.token = 'bar';
-    fetchMock.mockIf('https://ci.kbase.us/services', async (req: Request) => {
-      console.log('mock 1');
-      if (req.url.includes('/groups/')) {
-        console.log('mock 2');
-        if (req.url.endsWith('/group')) {
-          return Promise.resolve({
-            body: JSON.stringify([]),
-            status: 200,
-          });
-        } else if (req.url.endsWith('/member')) {
-          return Promise.resolve({
-            body: JSON.stringify([]),
-          });
-        }
-      } else if (req.url.endsWith('/ws')) {
-        console.log('mock ws');
 
-        return {
-          body: JSON.stringify({
-            version: '1.1',
-            result: [
-              {
-                perms: [
-                  {
-                    foo: 'w',
-                  },
-                ],
-              },
-            ],
-          }),
-        };
+    fetchMock.mockIf(
+      /https:\/\/ci.kbase.us\/services\/.*/,
+      async (req: Request) => {
+        if (req.url.includes('/groups/')) {
+          if (req.url.endsWith('group?resourcetype=workspace&resource=1')) {
+            return Promise.resolve({
+              body: JSON.stringify([]),
+              status: 200,
+            });
+          } else if (req.url.endsWith('/member')) {
+            return Promise.resolve({
+              body: JSON.stringify([]),
+            });
+          }
+        } else if (req.url.endsWith('/ws')) {
+          return {
+            body: JSON.stringify({
+              version: '1.1',
+              result: [
+                {
+                  perms: [
+                    {
+                      foo: 'a',
+                    },
+                  ],
+                },
+              ],
+            }),
+          };
+        }
+        throw new Error(`Not handled: ${req.url}`);
       }
-      throw new Error('Not handled');
-    });
+    );
     /*
     Note that the 'foo' in the perms above needs to match the test config user.
     The user used in getCurrentUserPermission is that returend by Runtime.username(),
@@ -86,6 +88,34 @@ describe('LinkOrgItem', () => {
       cancelFn: () => {},
       doneFn: () => {},
     };
-    expect(shallow(<LinkOrgItem {...props} />)).toBeTruthy();
+    const component = shallow(<LinkOrgItem {...props} />);
+
+    async function waitFor(
+      fun: () => boolean,
+      timeout: number
+    ): Promise<boolean> {
+      const started = Date.now();
+      return new Promise((resolve, reject) => {
+        const loop = () => {
+          if (fun()) {
+            resolve(true);
+          } else if (Date.now() - started > timeout) {
+            reject(new Error(`waitFor did not complete within ${timeout}ms`));
+          } else {
+            window.setTimeout(() => {
+              loop();
+            }, 100);
+          }
+        };
+        loop();
+      });
+    }
+    return expect(
+      waitFor(() => {
+        return component
+          .text()
+          .includes('This Narrative is not linked to any organizations.');
+      }, 1000)
+    ).resolves.toBeTruthy();
   });
 });

@@ -42,10 +42,27 @@ export async function lookupUserOrgs(): Promise<Array<GroupIdentity>> {
  * @param {number} wsId - a workspace id to link to the org
  * @param {string} orgId - the id of the org to link
  */
+interface AddResourceStatus {
+  complete: boolean;
+}
+
+interface GroupsRequest {
+  id: string;
+  groupid: string;
+  requester: string;
+  type: string;
+  resourcetype: string;
+  resource: string;
+  status: string;
+  createdate: number;
+  expiredate: number;
+  moddate: number;
+}
+
 export async function linkNarrativeToOrg(
   wsId: number,
   orgId: string
-): Promise<any> {
+): Promise<GroupsRequest & AddResourceStatus> {
   const call = `group/${orgId}/resource/workspace/${wsId}`;
   return makeOrgsCall(call, 'POST');
 }
@@ -77,12 +94,11 @@ async function makeOrgsCall(call: string, method: string): Promise<any> {
     headers,
     method: method,
   })
-    .then(res => {
+    .then((res) => {
       if (!res.ok) {
-        console.error(res);
         throw new OrgAPIError(res.statusText, res);
       }
       return res;
     })
-    .then(res => res.json());
+    .then((res) => res.json());
 }

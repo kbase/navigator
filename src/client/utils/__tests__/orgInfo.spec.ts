@@ -17,7 +17,7 @@ describe('Organizations API testing', () => {
   });
 
   it('getLinkedOrgs should fail with a bad workspace id', async () => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return {
         body: JSON.stringify({
           error: {
@@ -45,7 +45,7 @@ describe('Organizations API testing', () => {
         private: true,
       },
     ];
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return JSON.stringify(groupInfos);
     });
     const linkedOrgs = await getLinkedOrgs(123);
@@ -68,7 +68,7 @@ describe('Organizations API testing', () => {
         name: 'Group Two',
       },
     ];
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return JSON.stringify(groupIds);
     });
     const linkedOrgs = await lookupUserOrgs();
@@ -81,13 +81,13 @@ describe('Organizations API testing', () => {
   });
 
   it('linkNarrativeToOrg should return "complete" if the user is an org admin', async () => {
-    fetchMock.mockOnce(async req => JSON.stringify({ complete: true }));
+    fetchMock.mockOnce(async (req) => JSON.stringify({ complete: true }));
     const res = await linkNarrativeToOrg(123, 'someOrg');
     expect(res).toEqual({ complete: true });
   });
 
   it('linkNarrativeToOrg should return an error if a request has already been sent', async () => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return {
         body: JSON.stringify({
           error: {
