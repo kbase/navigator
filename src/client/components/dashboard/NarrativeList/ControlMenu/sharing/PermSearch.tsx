@@ -90,11 +90,11 @@ export default class PermSearch extends Component<PermSearchProps> {
           placeholder={'Share with...'}
           styles={{
             ...selectStyles,
-            container: (base) => ({ ...base, flex: 2 }),
+            container: (base: any) => ({ ...base, flex: 2 }),
           }}
           menuPortalTarget={document.body}
           onInputChange={this.handleInputChange.bind(this)}
-          onChange={this.handleUserChange.bind(this)}
+          onChange={this.handleUserChange.bind}
         />
         <Select
           defaultValue={this.permOptions[0]}
