@@ -14,6 +14,8 @@ none
 
 - Internal code cleanup
 - Updated node dependencies
+- Implement "Narratives Navigator" language (the name of this product) in the title
+- Implement "Navigator" with accompanying compass icon in the sidebar nav
 
 ### Deprecated
 
