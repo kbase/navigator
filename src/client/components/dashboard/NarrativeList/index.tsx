@@ -134,8 +134,11 @@ export class NarrativeList extends Component<Props, State> {
     const requestedId = this.props.id;
     const cache = this.state.cache;
     const initializeCacheCondition = invalidateCache || !('search' in cache);
-    if (initializeCacheCondition) cache.search = {};
+    if (initializeCacheCondition) {
+      cache.search = {};
+    }
     const resp = await searchNarratives(searchParams, cache.search);
+
     // TODO handle error from server
     if (!resp || !resp.hits) {
       return;
