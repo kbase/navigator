@@ -1,43 +1,61 @@
 <div class="legacy-nav">
   <ul>
-    <li class="legacy-nav-item">
+    <li class="legacy-nav-item selected">
       <a data-hl-legacy-nav="/" href="{{ url_for('narratives') }}">
-        <i class="fa fa-files-o fa-2x icon"></i>
-        <div class="title">Narratives</div>
+        <i class="fa fa-compass fa-2x icon"></i>
+        <div class="title">Navigator</div>
       </a>
     </li>
     <li class="legacy-nav-item">
-      <a data-hl-legacy-nav="/orgs" href="{{ app.config.KBASE_UI_ROOT + '/#/orgs' }}">
+      <a
+        data-hl-legacy-nav="/orgs"
+        href="{{ app.config.KBASE_UI_ROOT + '/#/orgs' }}"
+      >
         <i class="fa fa-users fa-2x icon"></i>
         <div class="title">Orgs</div>
       </a>
     </li>
     <li class="legacy-nav-item">
-      <a data-hl-legacy-nav="/catalog" href="{{ app.config.KBASE_UI_ROOT + '/#/catalog/apps' }}">
+      <a
+        data-hl-legacy-nav="/catalog"
+        href="{{ app.config.KBASE_UI_ROOT + '/#/catalog/apps' }}"
+      >
         <i class="fa fa-book fa-2x icon"></i>
         <div class="title">Catalog</div>
       </a>
     </li>
     <li class="legacy-nav-item">
-    <a data-hl-legacy-nav="/search" href="{{ app.config.KBASE_UI_ROOT + '/#/search' }}">
+      <a
+        data-hl-legacy-nav="/search"
+        href="{{ app.config.KBASE_UI_ROOT + '/#/search' }}"
+      >
         <i class="fa fa-search fa-2x icon"></i>
         <div class="title">Search</div>
       </a>
     </li>
     <li class="legacy-nav-item">
-      <a data-hl-legacy-nav="/notifications" href="{{ app.config.KBASE_UI_ROOT + '/#/jobbrowser' }}">
+      <a
+        data-hl-legacy-nav="/notifications"
+        href="{{ app.config.KBASE_UI_ROOT + '/#/jobbrowser' }}"
+      >
         <i class="fa fa-suitcase fa-2x icon"></i>
         <div class="title">Jobs</div>
       </a>
     </li>
     <li class="legacy-nav-item">
-      <a data-hl-legacy-nav="/account" href="{{ app.config.KBASE_UI_ROOT + '/#/auth2/account' }}">
+      <a
+        data-hl-legacy-nav="/account"
+        href="{{ app.config.KBASE_UI_ROOT + '/#/auth2/account' }}"
+      >
         <i class="fa fa-drivers-license fa-2x icon"></i>
         <div class="title">Account</div>
       </a>
     </li>
     <li class="legacy-nav-item">
-      <a data-hl-legacy-nav="/feeds" href="{{ app.config.KBASE_UI_ROOT + '/#/feeds' }}">
+      <a
+        data-hl-legacy-nav="/feeds"
+        href="{{ app.config.KBASE_UI_ROOT + '/#/feeds' }}"
+      >
         <i class="fa fa-bullhorn fa-2x icon"></i>
         <div class="title">Feeds</div>
       </a>
