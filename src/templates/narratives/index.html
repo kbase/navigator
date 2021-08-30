@@ -1,11 +1,15 @@
-{% extends template %}
+{% extends template %} 
 
-{# Browser window title #}
-{% block title %}Narratives{% endblock %}
-{% block titleheader %}Narratives{% endblock %}
-{# The UI works at width 1024 and up #}
-{% block additional_head %}<meta name="viewport" content="width=1024">{% endblock %}
+{# Browser window title #} 
+{% block title %}Narratives Navigator{% endblock %}
+
+{% block titleheader %}Narratives Navigator{% endblock%} 
+
+{# The UI works at width 1024 and up #} 
+{% block additional_head %}
+<meta name="viewport" content="width=1024" />
+{% endblock %} 
 
 {% block content %}
-  <div id='react-root'></div>
-{% endblock %} {# ends 'content' #}
+<div id="react-root"></div>
+{% endblock %} 
