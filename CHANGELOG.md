@@ -28,7 +28,7 @@ none
 
 ### Fixed
 
-- Fix disappearing search text when use the Data/Preview tab, or the "Load More" button 
+- Fix disappearing search text when use the Data/Preview tab, or the "Load More" button
 - add "-n" to entre, otherwise broken
 - Fix broken tests
 - Fixed Typscript usage (errors reported by latest TS)
