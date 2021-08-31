@@ -27,35 +27,35 @@ describe('getUsername tests', () => {
     document.cookie = `kbase_session=${token}`;
   });
 
-  it('Should return null if there is no token', done => {
+  it('Should return null if there is no token', (done) => {
     document.cookie = `kbase_session=`;
-    getUsername(username => {
+    getUsername((username) => {
       expect(username).toBeNull();
       done();
     });
   });
 
-  it('Should return a username if there is a token', done => {
-    fetchMock.mockOnce(async req => {
+  it('Should return a username if there is a token', (done) => {
+    fetchMock.mockOnce(async (req) => {
       return {
         status: 200,
         body: JSON.stringify({ user: 'some user' }),
       };
     });
-    getUsername(username => {
+    getUsername((username) => {
       expect(username).toBe('some user');
       done();
     });
   });
 
-  it('Should log a message if there is some other error', done => {
-    fetchMock.mockOnce(async req => {
+  it('Should log a message if there is some other error', (done) => {
+    fetchMock.mockOnce(async (req) => {
       return {
         status: 200,
         body: '',
       };
     });
-    expect(getUsername(username => {})).toBeUndefined();
+    expect(getUsername((username) => {})).toBeUndefined();
     done();
   });
 });
@@ -75,7 +75,7 @@ describe('getUsernames tests', () => {
   });
 
   it('Should return a username map', async () => {
-    fetchMock.doMock(async req => {
+    fetchMock.doMock(async (req) => {
       return JSON.stringify(usermap);
     });
     const users = await getUsernames(Object.keys(usermap));
@@ -98,7 +98,7 @@ describe('searchUsernames tests', () => {
   });
 
   it('Should return a username map', async () => {
-    fetchMock.doMock(async req => {
+    fetchMock.doMock(async (req) => {
       return JSON.stringify(usermap);
     });
     const users = await searchUsernames('user');
@@ -110,7 +110,7 @@ describe('searchUsernames tests', () => {
   });
 
   it('Should include optional fields with URL formatting', async () => {
-    fetchMock.doMock(async req => {
+    fetchMock.doMock(async (req) => {
       return JSON.stringify(usermap);
     });
     const users = await searchUsernames('us', ['a', 'b', 'c']);

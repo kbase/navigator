@@ -6,7 +6,7 @@
 export function getCookie(name: string): string {
   const vals = document.cookie
     .split(';')
-    .map(s => s.split('='))
+    .map((s) => s.split('='))
     .filter(([key, val]) => key.trim() === name);
   if (vals && vals.length && vals[0].length === 2) {
     return vals[0][1];

@@ -58,7 +58,7 @@ describe('fetchProfile tests', () => {
   });
 
   test('fetchProfile should return profile', async () => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return {
         status: 200,
         body: JSON.stringify(someMockProfile),
@@ -77,7 +77,7 @@ describe('fetchProfile tests', () => {
   });
 
   test('fetchProfile should return null with anything beside a 200', async () => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return {
         status: 404,
         body: 'Not Found',
@@ -88,7 +88,7 @@ describe('fetchProfile tests', () => {
   });
 
   test('fetchProfile should throw an error', async () => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return {
         status: 200,
         body: '{}',
@@ -98,7 +98,7 @@ describe('fetchProfile tests', () => {
   });
 
   test('fetchProfile should throw an error if it does not receive valid JSON', async () => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return {
         status: 200,
         body: 'NOT REAL JSON',
@@ -113,7 +113,7 @@ describe('fetchProfile tests', () => {
   });
 
   test('fetchProfiles should not cache if profile is broken', async () => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return {
         status: 200,
         body: JSON.stringify({

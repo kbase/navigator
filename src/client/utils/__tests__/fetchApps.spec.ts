@@ -16,7 +16,7 @@ describe('fetchApps tests', () => {
   const mockCatalogGetStatsOk = () => {
     fetchMock.doMockIf(
       Runtime.getConfig().service_routes.catalog,
-      async req => {
+      async (req) => {
         return JSON.stringify({
           id: '12345',
           version: '1.1',
@@ -42,7 +42,7 @@ describe('fetchApps tests', () => {
   const mockNMSListMethodsOk = () => {
     fetchMock.doMockIf(
       Runtime.getConfig().service_routes.narrative_method_store + '/rpc',
-      async req => {
+      async (req) => {
         return JSON.stringify({
           id: '67890',
           version: '1.1',

@@ -64,7 +64,7 @@ function mockSearchOk(
 ) {
   // mock should return up to the page size requested.
   // use a fake list of narratives.
-  fetchMock.mockResponse(async req => {
+  fetchMock.mockResponse(async (req) => {
     const authHeader = req.headers.get('Authorization');
     const reqBody = await req.json();
     const isPublic = reqBody.params.access && reqBody.params.access.only_public;

@@ -21,9 +21,7 @@
     "jsxPragma": true,
     "sourceType": "module"
   },
-  "plugins": [
-    "@babel"
-  ],
+  "plugins": ["@babel"],
   "settings": {
     "react": {
       "version": "latest"
@@ -33,22 +31,25 @@
   "rules": {
     "@babel/no-invalid-this": "error",
     "array-bracket-spacing": "off",
-    "arrow-parens": ["error", "as-needed"],
     "comma-dangle": "off",
     "indent": ["error", 2, { "SwitchCase": 1 }],
     "max-len": [1, 100, 4],
     "no-invalid-this": "off",
     "no-undef": "off",
     "object-curly-spacing": ["error", "always"],
-    "operator-linebreak": ["error", "after", {
-      "overrides": {
-        "?": "before",
-        ":": "before"
+    "operator-linebreak": [
+      "error",
+      "after",
+      {
+        "overrides": {
+          "?": "before",
+          ":": "before"
+        }
       }
-    }],
+    ],
     "quote-props": ["error", "as-needed"],
     "react/jsx-uses-vars": 2,
-    "react/no-unescaped-entities": ["error", {"forbid": ["}", ">", "\""]}],
+    "react/no-unescaped-entities": ["error", { "forbid": ["}", ">", "\""] }],
     "react/prop-types": 0,
     "require-jsdoc": "off"
   }
