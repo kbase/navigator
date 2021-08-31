@@ -24,4 +24,5 @@ __pycache__/
 coverage/
 
 # Editors
-.vscode/
+/.vscode/
+/.idea/
