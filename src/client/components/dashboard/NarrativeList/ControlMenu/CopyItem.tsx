@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// as of now eslint cannot detect when imported interfaces are used
-import ControlMenuItemProps from './ControlMenuItemProps'; // eslint-disable-line no-unused-vars
+import ControlMenuItemProps from './ControlMenuItemProps';
 import DashboardButton from '../../../generic/DashboardButton';
 import Runtime from '../../../../utils/runtime';
 import { DynamicServiceClient } from '../../../../api/serviceWizard';
@@ -34,7 +33,7 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
       authToken: Runtime.token(),
     });
     try {
-      const newNarrative = await narrativeService.call('copy_narrative', [
+      await narrativeService.call('copy_narrative', [
         {
           workspaceRef: `${wsId}/${objId}`,
           workspaceId: wsId,
