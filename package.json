@@ -1,5 +1,9 @@
 {
     "private": true,
+    "engines": {
+        "node": "16"
+    },
+    "engine-strict": true,
     "scripts": {
         "test": "tsc --project tsconfig.json --noEmit && prettier --check \"src/client/**/*.tsx\" && jest",
         "build": "yarn install && yarn run css && webpack --mode production",
