@@ -157,7 +157,9 @@ export default async function searchNarratives(
     fields: [],
   };
   const username = Runtime.username();
-  if (!username) return { count: 0, search_time: 0, hits: [] };
+  if (!username) {
+    return { count: 0, search_time: 0, hits: [] };
+  }
   switch (category) {
     case 'own':
       params.filters.fields.push({

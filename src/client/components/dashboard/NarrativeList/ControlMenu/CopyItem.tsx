@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// as of now eslint cannot detect when imported interfaces are used
-import ControlMenuItemProps from './ControlMenuItemProps'; // eslint-disable-line no-unused-vars
+import ControlMenuItemProps from './ControlMenuItemProps';
 import DashboardButton from '../../../generic/DashboardButton';
 import Runtime from '../../../../utils/runtime';
 import { DynamicServiceClient } from '../../../../api/serviceWizard';
@@ -34,14 +33,13 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
       authToken: Runtime.token(),
     });
     try {
-      const newNarrative = await narrativeService.call('copy_narrative', [
+      await narrativeService.call('copy_narrative', [
         {
           workspaceRef: `${wsId}/${objId}`,
           workspaceId: wsId,
           newName: this.state.newName,
         },
       ]);
-      console.log(newNarrative);
       this.props.doneFn();
       if (this.props.cancelFn) {
         this.props.cancelFn();
@@ -77,7 +75,7 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
               className="w-100 pa2 mb2 br2 ba b--solid b--black-20"
               type="text"
               value={this.state.newName}
-              onChange={e => this.validateName(e)}
+              onChange={(e) => this.validateName(e)}
             ></input>
           </div>
           <div>

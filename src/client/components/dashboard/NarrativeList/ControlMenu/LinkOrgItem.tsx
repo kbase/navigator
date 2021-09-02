@@ -1,52 +1,46 @@
 import React, { Component } from 'react';
-// as of now eslint cannot detect when imported interfaces are used
-import Select, { Styles } from 'react-select'; // eslint-disable-line no-unused-vars
 
 import ControlMenuItemProps from './ControlMenuItemProps'; // eslint-disable-line no-unused-vars
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
-import DashboardButton from '../../../generic/DashboardButton';
 import {
   getLinkedOrgs,
   GroupInfo,
   lookupUserOrgs,
   GroupIdentity,
-  linkNarrativeToOrg,
 } from '../../../../utils/orgInfo';
 import { getCurrentUserPermission } from '../../../../utils/narrativeData';
 import Runtime from '../../../../utils/runtime';
+import OrgSelect from './OrgSelect';
+import Model, { LinkOrgResult } from './Model';
+import {
+  AsyncProcess,
+  AsyncProcessError,
+  AsyncProcessStatus,
+  AsyncProcessSuccess,
+} from '../../../../utils/AsyncProcess';
 
-/**
- * Holds the state for the overall Link Organizations item popup.
- */
-interface RequestResult {
-  error: boolean;
-  text: string | null;
-  requestSent: boolean;
-}
-
-interface State {
-  isLoading: boolean;
+interface LinkOrgState {
   perm: string;
   linkedOrgs: Array<GroupInfo>;
   userOrgs: Array<GroupIdentity>;
-  request: RequestResult;
+}
+
+interface LinkOrgItemState {
+  loadProcess: AsyncProcess<LinkOrgState>;
+  linkProcess: AsyncProcess<LinkOrgResult>;
 }
 
 export default class LinkOrgItem extends Component<
   ControlMenuItemProps,
-  State
+  LinkOrgItemState
 > {
-  state = {
-    isLoading: true,
-    perm: 'n',
-    linkedOrgs: [],
-    userOrgs: [],
-    request: {
-      error: false,
-      text: null,
-      requestSent: false,
-    },
-  };
+  constructor(props: ControlMenuItemProps) {
+    super(props);
+    this.state = {
+      loadProcess: { status: AsyncProcessStatus.NONE },
+      linkProcess: { status: AsyncProcessStatus.NONE },
+    };
+  }
 
   /**
    * Once the componenent mounts, it should look up the user's permissions
@@ -62,129 +56,230 @@ export default class LinkOrgItem extends Component<
   }
 
   async updateState() {
-    const sharePerms = await getCurrentUserPermission(
-      this.props.narrative.access_group
-    );
-    const linkedOrgs = await getLinkedOrgs(this.props.narrative.access_group);
-    let userOrgs = await lookupUserOrgs();
-
-    // reduce the set of userOrgs down to those that are not already linked.
-    // Don't want to give the illusion of being able to link again.
-    const linkedOrgIds: Set<string> = new Set();
-    for (const org of linkedOrgs) {
-      linkedOrgIds.add(org.id);
-    }
-    userOrgs = userOrgs.filter(org => {
-      return !linkedOrgIds.has(org.id);
-    });
-
     this.setState({
-      perm: sharePerms,
-      linkedOrgs,
-      isLoading: false,
-      userOrgs,
+      loadProcess: {
+        status: AsyncProcessStatus.PENDING,
+      },
     });
+    try {
+      const perm = await getCurrentUserPermission(
+        this.props.narrative.access_group
+      );
+      const linkedOrgs = await getLinkedOrgs(this.props.narrative.access_group);
+
+      const linkedOrgIds: Set<string> = new Set();
+      for (const org of linkedOrgs) {
+        linkedOrgIds.add(org.id);
+      }
+
+      // reduce the set of userOrgs down to those that are not already linked.
+      // Don't want to give the illusion of being able to link again.
+      const userOrgs = (await lookupUserOrgs()).filter((org) => {
+        return !linkedOrgIds.has(org.id);
+      });
+
+      this.setState({
+        loadProcess: {
+          status: AsyncProcessStatus.SUCCESS,
+          value: {
+            perm,
+            linkedOrgs,
+            userOrgs,
+          },
+        },
+      });
+    } catch (ex) {
+      const message = (() => {
+        if (ex instanceof Error) {
+          return ex.message;
+        }
+        return 'Unknown error';
+      })();
+      this.setState({
+        loadProcess: {
+          status: AsyncProcessStatus.ERROR,
+          message,
+        },
+      });
+    }
   }
 
-  async linkOrg(orgId: string): Promise<void> {
-    this.setState({ isLoading: true });
-    const result: RequestResult = {
-      error: false,
-      text: null,
-      requestSent: false,
-    };
+  async doLinkOrg(orgId: string): Promise<void> {
+    this.setState({
+      linkProcess: {
+        status: AsyncProcessStatus.PENDING,
+      },
+    });
     try {
-      const request = await linkNarrativeToOrg(
-        this.props.narrative.access_group,
+      const result = await new Model(this.props.narrative.access_group).linkOrg(
         orgId
       );
-      result.error = false;
-      result.text = request.complete
-        ? null
-        : 'A request has been sent to the group admins.';
-      result.requestSent = !request.complete;
-    } catch (error) {
-      // default
-      result.text = 'An error was made while processing your request.';
-      try {
-        const errJson = await error.response.json();
-        if (errJson.error) {
-          result.error = true;
-          switch (errJson.error.appcode) {
-            case 40010:
-              result.text =
-                'A request has already been made to add this Narrative to the group.';
-              break;
-            default:
-              break;
-          }
-          result.requestSent = false;
+      this.setState(
+        {
+          linkProcess: {
+            status: AsyncProcessStatus.SUCCESS,
+            value: result,
+          },
+        },
+        () => {
+          this.updateState();
         }
-      } catch (err) {
-        // no op.
-        console.error(err);
-      }
+      );
+    } catch (ex) {
+      const message = (() => {
+        if (ex instanceof Error) {
+          return ex.message;
+        }
+        return 'Unknown error';
+      })();
+      this.setState({
+        linkProcess: {
+          status: AsyncProcessStatus.ERROR,
+          message,
+        },
+      });
     }
-    this.setState({
-      isLoading: false,
-      request: result,
-    });
-    return this.updateState();
   }
 
-  makeLinkedOrgsList() {
+  makeLinkedOrgsList(state: LinkOrgState) {
     let linkedOrgsText = 'This Narrative is not linked to any organizations.';
     let linkedOrgsList = null;
-    if (this.state.linkedOrgs.length > 0) {
-      linkedOrgsList = this.state.linkedOrgs.map((org: GroupInfo) => (
+    if (state.linkedOrgs.length > 0) {
+      linkedOrgsList = state.linkedOrgs.map((org: GroupInfo) => (
         <LinkedOrg {...org} key={org.id} />
       ));
       linkedOrgsText = 'Organizations this Narrative is linked to:';
     }
     return (
       <div className="pt2">
-        <div style={{ textAlign: 'center' }}>{linkedOrgsText}</div>
+        <div style={{ textAlign: 'center', marginTop: '1em' }}>
+          {linkedOrgsText}
+        </div>
         <div className="pt2">{linkedOrgsList}</div>
       </div>
     );
   }
 
-  render() {
-    if (this.state.isLoading) {
-      return (
-        <div style={{ width: '35rem', textAlign: 'center' }}>
-          <LoadingSpinner loading={true} />
-        </div>
-      );
-    } else if (this.state.perm !== 'a') {
+  renderPending() {
+    return (
+      <div style={{ width: '35rem', textAlign: 'center' }}>
+        <LoadingSpinner loading={true} />
+      </div>
+    );
+  }
+
+  renderLinkPending() {
+    return (
+      <div style={{ width: '35rem', textAlign: 'center' }}>
+        <LoadingSpinner loading={true} message="Linking..." />
+      </div>
+    );
+  }
+
+  renderLoadError(loadProcess: AsyncProcessError) {
+    return (
+      <div
+        className={`pa3 mb2 ba br2 b--gold bg-light-yellow`}
+        style={{ textAlign: 'center' }}
+      >
+        {loadProcess.message}
+      </div>
+    );
+  }
+
+  renderLoaded(loadProcess: AsyncProcessSuccess<LinkOrgState>) {
+    if (loadProcess.value.perm !== 'a') {
       return (
         <div style={{ textAlign: 'center' }}>
-          You don't have permission to request to add this Narrative to a group.
+          You don't have permission to request to add this Narrative to an
+          Organization.
         </div>
       );
-    } else {
-      const linkedOrgs = this.makeLinkedOrgsList();
-      let message = null;
-      if (this.state.request.error || this.state.request.requestSent) {
-        message = (
-          <div
-            className={`pa3 mb2 ba br2 b--gold bg-light-yellow`}
-            style={{ textAlign: 'center' }}
-          >
-            {this.state.request.text}
-          </div>
+    }
+    return (
+      <div style={{ width: '35rem', minHeight: '10rem' }}>
+        {this.renderLinkProcess()}
+        <OrgSelect
+          linkOrg={this.doLinkOrg.bind(this)}
+          orgs={loadProcess.value.userOrgs}
+        />
+        <div>{this.makeLinkedOrgsList(loadProcess.value)}</div>
+      </div>
+    );
+  }
+
+  renderErrorMessage(message: string) {
+    return (
+      <div
+        className={`pa3 mb2 ba br2 b--gold bg-light-yellow`}
+        style={{ textAlign: 'center' }}
+      >
+        {message}
+      </div>
+    );
+  }
+
+  renderWarningMessage(message: string) {
+    return (
+      <div
+        className={`pa3 mb2 ba br2 b--gold bg-light-yellow`}
+        style={{ textAlign: 'center' }}
+      >
+        {message}
+      </div>
+    );
+  }
+
+  renderSuccessMessage(message: string) {
+    return (
+      <div
+        className={`pa3 mb2 ba br2 b--green bg-light-green`}
+        style={{ textAlign: 'center' }}
+      >
+        {message}
+      </div>
+    );
+  }
+
+  renderLinkError(linkProcess: AsyncProcessError) {
+    return this.renderErrorMessage(linkProcess.message);
+  }
+
+  renderLinked(linkProcess: AsyncProcessSuccess<LinkOrgResult>) {
+    switch (linkProcess.value) {
+      case 'completed':
+        return this.renderSuccessMessage(
+          'The Narrative has been successfully linked.'
         );
-      }
-      return (
-        <div style={{ width: '35rem', minHeight: '10rem' }}>
-          {message}
-          <OrgSelect
-            linkOrg={this.linkOrg.bind(this)}
-            orgs={this.state.userOrgs}
-          />
-          <div>{linkedOrgs}</div>
-        </div>
-      );
+      case 'requested':
+        return this.renderSuccessMessage(
+          'A request to link this Narrative has been sent to the Organization admins.'
+        );
+    }
+  }
+
+  renderLinkProcess() {
+    switch (this.state.linkProcess.status) {
+      case AsyncProcessStatus.NONE:
+        return;
+      case AsyncProcessStatus.PENDING:
+        return this.renderLinkPending();
+      case AsyncProcessStatus.ERROR:
+        return this.renderLinkError(this.state.linkProcess);
+      case AsyncProcessStatus.SUCCESS:
+        return this.renderLinked(this.state.linkProcess);
+    }
+  }
+
+  render() {
+    switch (this.state.loadProcess.status) {
+      case AsyncProcessStatus.NONE:
+      case AsyncProcessStatus.PENDING:
+        return this.renderPending();
+      case AsyncProcessStatus.ERROR:
+        return this.renderLoadError(this.state.loadProcess);
+      case AsyncProcessStatus.SUCCESS:
+        return this.renderLoaded(this.state.loadProcess);
     }
   }
 }
@@ -194,7 +289,6 @@ interface LinkedOrgProps extends GroupInfo {
 }
 
 const LinkedOrg = (props: LinkedOrgProps) => {
-  console.log(props);
   return (
     <div className="pl2 pt2">
       <a
@@ -209,70 +303,3 @@ const LinkedOrg = (props: LinkedOrgProps) => {
     </div>
   );
 };
-
-interface OrgListProps {
-  linkOrg: (orgId: string) => void;
-  orgs: Array<GroupIdentity>;
-}
-
-interface OrgOption {
-  value: string;
-  label: string;
-}
-
-interface OrgListState {
-  selectedOrgId: string;
-}
-
-class OrgSelect extends Component<OrgListProps, OrgListState> {
-  private orgOptions: Array<OrgOption> = [];
-  constructor(props: OrgListProps) {
-    super(props);
-    for (const org of props.orgs) {
-      this.orgOptions.push({
-        value: org.id,
-        label: org.name,
-      });
-    }
-    this.state = {
-      selectedOrgId: '',
-    };
-  }
-
-  handleOrgChange = (selected: any) => {
-    this.setState({ selectedOrgId: selected?.value || '' });
-  };
-
-  render() {
-    const selectStyles: Partial<Styles> = {
-      menuPortal: base => ({ ...base, zIndex: 9999 }),
-    };
-
-    return (
-      <div className="flex flex-row flex-nowrap">
-        <Select
-          defaultOptions
-          isClearable
-          isSearchable
-          placeholder={'Organizations you belong to...'}
-          styles={{
-            ...selectStyles,
-            container: base => ({ ...base, flex: 2 }),
-          }}
-          menuPortalTarget={document.body}
-          className="basic-single"
-          classNamePrefix="select"
-          options={this.orgOptions}
-          onChange={this.handleOrgChange}
-        />
-        <DashboardButton
-          disabled={this.state.selectedOrgId.length === 0}
-          onClick={() => this.props.linkOrg(this.state.selectedOrgId)}
-          bgcolor={'lightblue'}
-        >
-          Link
-        </DashboardButton>
-      </div>
-    );
-  }
-}

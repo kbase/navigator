@@ -81,7 +81,7 @@ export default class Modal extends Component<Props, State> {
     const modal = (
       <div onClick={this.props.closeFn} className="" style={backdropStyle}>
         <div
-          onClick={e => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
           className="bg-white br2 w"
           style={outerModalStyle}
         >

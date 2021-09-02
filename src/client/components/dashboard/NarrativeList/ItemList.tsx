@@ -103,7 +103,7 @@ export class ItemList extends Component<Props, State> {
       );
     }
     const keepParams = (link: string) =>
-      keepParamsLinkTo(['sort', 'view'], link);
+      keepParamsLinkTo(['sort', 'view', 'search'], link);
     return (
       <Link
         className="tc pa3 dib pointer blue dim b"

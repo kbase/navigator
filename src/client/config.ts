@@ -43,7 +43,7 @@ export default class Config implements LoadedConfigFile {
     }
 
     this.service_routes = LOADED_CONFIG.service_routes;
-    Object.keys(this.service_routes).forEach(service => {
+    Object.keys(this.service_routes).forEach((service) => {
       let route = this.service_routes[service as keyof Urls];
       if (!route.startsWith('/')) {
         route = '/' + route;
@@ -52,7 +52,7 @@ export default class Config implements LoadedConfigFile {
     });
 
     this.view_routes = LOADED_CONFIG.view_routes;
-    Object.keys(this.view_routes).forEach(view => {
+    Object.keys(this.view_routes).forEach((view) => {
       let route = this.view_routes[view as keyof Routes];
       if (!route.startsWith('/')) {
         route = '/' + route;

@@ -60,7 +60,7 @@ export default class IconProvider {
   }
 
   private processLoadedTypes() {
-    Object.keys(ICON_DATA.data).forEach(t => {
+    Object.keys(ICON_DATA.data).forEach((t) => {
       this.typeIconInfos[t.toLowerCase()] = {
         isImage: false,
         color: ICON_DATA.color_mapping[t],
@@ -74,10 +74,15 @@ export default class IconProvider {
   }
 
   public typeIcon(objType: string): IconInfo {
+    // TODO: this really isn't valid. An object type should always be present,
+    // anything else is nonsensical.
     if (!objType) {
-      console.warn('Got objType: ', objType);
+      console.warn(
+        `[typeIcon] Using default type icon for object type "${objType}"`
+      );
       return this.defaultType;
     }
+    // TODO: use a regex
     if (objType.includes('.')) {
       objType = objType.split('.')[1];
     }

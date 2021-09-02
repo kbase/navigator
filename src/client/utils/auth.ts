@@ -27,18 +27,18 @@ export function getUsername(callBack: (username: string | null) => void) {
     callBack(null);
   } else {
     makeAuthCall('/token')
-      .then(json => {
+      .then((json) => {
         const username = json.user;
         callBack(username);
       })
-      .catch(reason => console.error(reason));
+      .catch((reason) => console.error(reason));
   }
 }
 
 export async function getUsernames(
   userIds: string[]
 ): Promise<{ [key: string]: string }> {
-  const encodedUsers = userIds.map(u => encodeURIComponent(u));
+  const encodedUsers = userIds.map((u) => encodeURIComponent(u));
   const operation = '/users/?list=' + encodedUsers.join(',');
   return makeAuthCall(operation);
 }
@@ -63,5 +63,5 @@ function makeAuthCall(operation: string): Promise<any> {
   return fetch(`${CONFIG.service_routes.auth}/api/V2${operation}`, {
     method: 'GET',
     headers,
-  }).then(resp => resp.json());
+  }).then((resp) => resp.json());
 }

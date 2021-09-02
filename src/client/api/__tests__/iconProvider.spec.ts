@@ -17,13 +17,13 @@ const defaultApp = {
 };
 
 test('Should have default type icons for happy inputs', () => {
-  ['SomeModule.SomeType-1.0', 'SomeModule.SomeType'].forEach(t => {
+  ['SomeModule.SomeType-1.0', 'SomeModule.SomeType'].forEach((t) => {
     expect(ip.typeIcon(t)).toEqual(defaultType);
   });
 });
 
 test('Should have default type icon for unhappy inputs, with a warning', () => {
-  ['foo', '', '3'].forEach(t => {
+  ['foo', '', '3'].forEach((t) => {
     expect(ip.typeIcon(t)).toEqual(defaultType);
   });
 });
@@ -39,14 +39,14 @@ test('Should have known type icons for known types', () => {
     'KBaseGenomes.Genome',
     'Genome',
     'kbasegenomes.genome',
-  ].forEach(t => {
+  ].forEach((t) => {
     expect(ip.typeIcon(t)).toEqual(genomeIcon);
   });
 });
 
 test('Should have default app icons for unknown apps', async () => {
   ['SomeModule/SomeApp', 'SomeModule.SomeApp', 'SomeApp', ''].forEach(
-    async app => {
+    async (app) => {
       const appIcon = await ip.appIcon(app, 'release' as AppTag);
       expect(appIcon).toEqual(defaultApp);
     }

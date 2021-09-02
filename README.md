@@ -14,8 +14,13 @@
 
 1. Install docker: https://docs.docker.com/install/
 1. Install docker-compose: https://docs.docker.com/compose/install/
-1. Install Node 10: https://github.com/nvm-sh/nvm
+1. Install Node 16: https://github.com/nvm-sh/nvm
 1. Install yarn: https://yarnpkg.com/en/docs/install
+
+#### macOS Install Notes
+
+- install `docker` and `docker-compose` via [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- best to install `node` and `yarn` - with [macports](https://www.macports.org) or [brew](https://brew.sh)
 
 ### Run the server
 
@@ -44,7 +49,7 @@ There are a few dockerfiles:
 
 ### Build image
 
-To build locally, first increment the semantic version in `scripts/local-build.sh` and then run that script.
+To build locally, first increment the semantic version in `dev/local-build.sh` and then run that script.
 
 Building for deployment is done via Github Actions. Once a branch is ready for deployment, do a release through Github. An action will be run that builds the Docker image and sends it to [Dockerhub](https://hub.docker.com/repository/docker/kbase/proto-ui). See [deployment.md](docs/deployment.md) for detailed instructions.
 

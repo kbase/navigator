@@ -29,7 +29,7 @@ document.querySelectorAll('[data-hl-nav]').forEach((node: Element) => {
 });
 // Highlight dashboard for root path
 // For legacy nav:
-document.querySelectorAll('[data-hl-legacy-nav]').forEach(node => {
+document.querySelectorAll('[data-hl-legacy-nav]').forEach((node) => {
   const path = history.location.pathname;
   if (path === node.getAttribute('data-hl-legacy-nav') && node.parentElement) {
     node.parentElement.classList.add('active');

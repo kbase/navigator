@@ -119,10 +119,17 @@ export default class DeleteNarrative extends Component<
         status: 'success',
       });
     } catch (error) {
+      const message = (() => {
+        if (error instanceof Error) {
+          return error.message;
+        }
+        return 'Unknown error';
+      })();
+
       this.setState({
         status: 'error',
         error: {
-          message: error.message,
+          message,
         },
       });
     }
@@ -133,8 +140,8 @@ export default class DeleteNarrative extends Component<
       if (typeof message === 'string') {
         return <p>{message}</p>;
       } else {
-        return message.map(message => {
-          return <p>{message}</p>;
+        return message.map((message, index) => {
+          return <p key={index}>{message}</p>;
         });
       }
     })();

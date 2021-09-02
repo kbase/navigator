@@ -54,9 +54,7 @@ function countDataTypes(data: any) {
     }
     counts[key] = counts[key] + 1;
   });
-  const dataPlaces = Object.entries(counts)
-    .sort(sortCountDesc)
-    .slice(0, 3);
+  const dataPlaces = Object.entries(counts).sort(sortCountDesc).slice(0, 3);
   const out = [<></>, <></>, <></>];
   return out.map((el, ix) => {
     if (ix in dataPlaces) {
@@ -251,7 +249,7 @@ export class NarrativeDetails extends React.Component<Props, State> {
         break;
     }
     const keepParams = (link: string) =>
-      keepParamsLinkTo(['limit', 'sort'], link);
+      keepParamsLinkTo(['limit', 'sort', 'search'], link);
     const tabs = Object.entries({
       data: {
         name: 'Data',

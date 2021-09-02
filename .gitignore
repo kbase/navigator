@@ -1,7 +1,11 @@
+# Javascript/Typescript
 node_modules
 
 # JS and CSS bundle/build output
 src/static/build/*
+
+# python
+/venv/
 
 # Environment variables
 .env
@@ -20,4 +24,5 @@ __pycache__/
 coverage/
 
 # Editors
-.vscode/
+/.vscode/
+/.idea/

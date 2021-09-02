@@ -64,7 +64,7 @@ export class Header extends Component<Props, State> {
       this.setState({ signedout: true });
       return;
     }
-    getUsername(username => {
+    getUsername((username) => {
       if (typeof username === 'string') {
         window._env.username = username;
         this.getUserInfo(window._env.username);
@@ -145,7 +145,7 @@ export class Header extends Component<Props, State> {
       method: 'POST',
       headers,
     })
-      .then(resp => {
+      .then((resp) => {
         if (resp.ok) {
           // Remove the cookie
           removeCookie('kbase_session');
@@ -156,7 +156,7 @@ export class Header extends Component<Props, State> {
           throw new Error(`${resp.status}: Failed to log out`);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('Error signing out: ' + err);
       });
   }
@@ -192,7 +192,7 @@ interface EnvBadgeProps {
   envIcon?: string;
 }
 
-const EnvBadge: React.SFC<EnvBadgeProps> = props => {
+const EnvBadge: React.SFC<EnvBadgeProps> = (props) => {
   return (
     <div
       className="tc"

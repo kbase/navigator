@@ -18,14 +18,14 @@ test('getWSTypeName should modify type strings', () => {
     'KBaseMatrices.AmpliconMatrix': 'Amplicon Matrix',
     'SomeModule.SomeStrangeLongWindedType-1.0': 'Some Strange Long Winded Type',
   };
-  Object.keys(testCases).forEach(wsType => {
+  Object.keys(testCases).forEach((wsType) => {
     expect(getWSTypeName(wsType)).toEqual(testCases[wsType]);
   });
 });
 
 test('getWSTypeName should throw an error with an illegal string', () => {
   const testCases = ['nope', 'also-nope', 'no.way.yo', '$bad.chars'];
-  Object.keys(testCases).forEach(wsType => {
+  Object.keys(testCases).forEach((wsType) => {
     expect(() => getWSTypeName(wsType)).toThrowError();
   });
 });

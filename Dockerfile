@@ -1,5 +1,5 @@
 # For installing npm dependencies and building static css/js
-FROM node:10-alpine
+FROM node:16-alpine3.14
 COPY ./webpack.config.js ./tsconfig.json ./package.json yarn.lock /app/
 COPY src /app/src
 WORKDIR /app

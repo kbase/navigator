@@ -1,11 +1,10 @@
-import { KBaseServiceClient } from '@kbase/narrative-utils';
-// as of now eslint cannot detect when imported interfaces are used
-import { KBaseCache } from './narrativeData'; // eslint-disable-line no-unused-vars
+import { KBaseJsonRpcError, KBaseServiceClient } from '@kbase/narrative-utils';
+import { KBaseCache } from './narrativeData';
 import Runtime from '../utils/runtime';
 
 export async function fetchProfiles(usernames: string[], cache: KBaseCache) {
-  if (usernames.every(username => username in cache)) {
-    return usernames.map(username => cache[username]);
+  if (usernames.every((username) => username in cache)) {
+    return usernames.map((username) => cache[username]);
   }
   const client = new KBaseServiceClient({
     module: 'UserProfile',
@@ -26,8 +25,10 @@ export async function fetchProfile(username: string, cache: KBaseCache = {}) {
   try {
     profileArr = await fetchProfiles([username], cache);
   } catch (err) {
-    if ('code' in err && err.code !== 200) {
-      return null;
+    if (err instanceof KBaseJsonRpcError) {
+      if ('code' in err && err.code !== 200) {
+        return null;
+      }
     }
     throw err;
   }

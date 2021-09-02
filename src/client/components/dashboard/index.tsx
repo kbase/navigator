@@ -39,8 +39,7 @@ export class Dashboard extends Component<Props, State> {
 
   render() {
     const { id, obj, ver } = this.props.match.params;
-    let category = this.props.match.params.category;
-    if (!category) category = 'own';
+    const category = this.props.match.params.category || 'own';
     const paramId = parseInt(id || '0');
     const paramObj = parseInt(obj || '0');
     const paramVer = parseInt(ver || '0');

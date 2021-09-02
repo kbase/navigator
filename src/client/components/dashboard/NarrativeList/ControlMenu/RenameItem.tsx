@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// as of now eslint cannot detect when imported interfaces are used
-import ControlMenuItemProps from './ControlMenuItemProps'; // eslint-disable-line no-unused-vars
+import ControlMenuItemProps from './ControlMenuItemProps';
 import DashboardButton from '../../../generic/DashboardButton';
 import Runtime from '../../../../utils/runtime';
 import { DynamicServiceClient } from '../../../../api/serviceWizard';
@@ -87,17 +86,17 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
     let loadingSpinner = null;
     let renameControls = null;
     if (this.state.isLoading) {
-      loadingSpinner = LoadingSpinner({ loading: true }); // eslint-disable-line new-cap
+      loadingSpinner = LoadingSpinner({ loading: true });
     } else if (this.state.canRename) {
       renameControls = (
         <React.Fragment>
-          <div className="pb2">Enter a new name for the Narrative.</div>
+          <div className="pb2">Enter a new name for the Narrative:</div>
           <div>
             <input
               className="w-100 pa2 mb2 br2 ba b--solid b--black-20"
               type="text"
               value={this.state.newName}
-              onChange={e => this.validateName(e)}
+              onChange={(e) => this.validateName(e)}
             ></input>
           </div>
           <div>

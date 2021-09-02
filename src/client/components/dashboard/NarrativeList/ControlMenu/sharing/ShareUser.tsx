@@ -51,7 +51,7 @@ interface PermDropdownProps {
 }
 
 function PermDropdown(props: PermDropdownProps): React.ReactElement {
-  const options = ['r', 'w', 'a'].map(o => (
+  const options = ['r', 'w', 'a'].map((o) => (
     <option key={o} value={o}>
       {PERM_MAPPING[o]}
     </option>
@@ -62,7 +62,7 @@ function PermDropdown(props: PermDropdownProps): React.ReactElement {
       dir="rtl"
       className="br2 b--black-20 pa1"
       defaultValue={props.curPerm}
-      onChange={e => props.updatePerms([props.userId], e.currentTarget.value)}
+      onChange={(e) => props.updatePerms([props.userId], e.currentTarget.value)}
     >
       {options}
     </select>

@@ -22,11 +22,7 @@ describe('TabHeader tests', () => {
     const wrapper = shallow(<TabHeader selected={'two'} tabs={tabs} />);
     expect(wrapper.find('ul').children().length).toEqual(tabs.length);
     expect(
-      wrapper
-        .find('ul')
-        .childAt(1)
-        .find('li')
-        .hasClass('active')
+      wrapper.find('ul').childAt(1).find('li').hasClass('active')
     ).toBeTruthy();
   });
 

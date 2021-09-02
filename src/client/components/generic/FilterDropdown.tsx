@@ -61,11 +61,11 @@ export class FilterDropdown extends Component<Props, State> {
       return;
     }
     this.addOrRemoveDocClickListener();
-    this.setState(prevState => ({ isOpen: !prevState.isOpen }));
+    this.setState((prevState) => ({ isOpen: !prevState.isOpen }));
   }
 
   addDocumentClickListener() {
-    this.docListener = ev => this.handleDocumentClick(ev);
+    this.docListener = (ev) => this.handleDocumentClick(ev);
     document.addEventListener('click', this.docListener, false);
   }
 
@@ -146,7 +146,7 @@ export class FilterDropdown extends Component<Props, State> {
       <div className="dib relative">
         <a
           className="dim dib pa2 br2 ba b--solid b--black-20 pointer bg-white"
-          onClick={ev => this.handleMouseDown(ev)}
+          onClick={(ev) => this.handleMouseDown(ev)}
         >
           {this.props.txt + ': ' + selected}
           <i className={iconClass}></i>

@@ -21,11 +21,7 @@ describe('SubTabs tests', () => {
     const wrapper = shallow(<SubTabs selected={'two'} tabs={tabs} />);
     expect(wrapper.find('ul').children().length).toEqual(tabs.length);
     expect(
-      wrapper
-        .find('ul')
-        .childAt(1)
-        .find('li')
-        .hasClass('active')
+      wrapper.find('ul').childAt(1).find('li').hasClass('active')
     ).toBeTruthy();
   });
 });

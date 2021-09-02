@@ -80,7 +80,7 @@ export class NarrativeList extends Component<Props, State> {
 
   componentDidMount() {
     // FIXME this is redundant with client/index.tsx
-    getUsername(username => {
+    getUsername((username) => {
       window._env.username = username;
       this.performSearch();
     });
@@ -134,8 +134,11 @@ export class NarrativeList extends Component<Props, State> {
     const requestedId = this.props.id;
     const cache = this.state.cache;
     const initializeCacheCondition = invalidateCache || !('search' in cache);
-    if (initializeCacheCondition) cache.search = {};
+    if (initializeCacheCondition) {
+      cache.search = {};
+    }
     const resp = await searchNarratives(searchParams, cache.search);
+
     // TODO handle error from server
     if (!resp || !resp.hits) {
       return;
@@ -163,7 +166,8 @@ export class NarrativeList extends Component<Props, State> {
   render() {
     const { category, id, obj, sort, view, ver } = this.props;
     const upa = upaKey(id, obj, ver);
-    const keepSort = (link: string) => keepParamsLinkTo(['sort'], link);
+    const keepSort = (link: string) =>
+      keepParamsLinkTo(['sort', 'search'], link);
     const tabs = Object.entries({
       own: {
         name: 'My Narratives',

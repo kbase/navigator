@@ -8,7 +8,7 @@ enableFetchMocks();
 
 describe('narrativeData tests', () => {
   const mockWSGetObjects2Ok = (narr: object) => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return JSON.stringify({
         id: '12345',
         version: '1.1',
@@ -18,7 +18,7 @@ describe('narrativeData tests', () => {
   };
 
   const mockGetPermissionsMassOk = (perms: { [key: string]: string }) => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return JSON.stringify({
         id: '12345',
         version: '1.1',

@@ -3,7 +3,12 @@
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
 enableFetchMocks();
-import { getLinkedOrgs, lookupUserOrgs, linkNarrativeToOrg } from '../orgInfo';
+import {
+  getLinkedOrgs,
+  lookupUserOrgs,
+  linkNarrativeToOrg,
+  OrgAPIError,
+} from '../orgInfo';
 
 describe('Organizations API testing', () => {
   const authToken = 'someToken';
@@ -17,7 +22,7 @@ describe('Organizations API testing', () => {
   });
 
   it('getLinkedOrgs should fail with a bad workspace id', async () => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return {
         body: JSON.stringify({
           error: {
@@ -45,7 +50,7 @@ describe('Organizations API testing', () => {
         private: true,
       },
     ];
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return JSON.stringify(groupInfos);
     });
     const linkedOrgs = await getLinkedOrgs(123);
@@ -68,7 +73,7 @@ describe('Organizations API testing', () => {
         name: 'Group Two',
       },
     ];
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return JSON.stringify(groupIds);
     });
     const linkedOrgs = await lookupUserOrgs();
@@ -81,13 +86,13 @@ describe('Organizations API testing', () => {
   });
 
   it('linkNarrativeToOrg should return "complete" if the user is an org admin', async () => {
-    fetchMock.mockOnce(async req => JSON.stringify({ complete: true }));
+    fetchMock.mockOnce(async (req) => JSON.stringify({ complete: true }));
     const res = await linkNarrativeToOrg(123, 'someOrg');
     expect(res).toEqual({ complete: true });
   });
 
   it('linkNarrativeToOrg should return an error if a request has already been sent', async () => {
-    fetchMock.mockOnce(async req => {
+    fetchMock.mockOnce(async (req) => {
       return {
         body: JSON.stringify({
           error: {
@@ -107,8 +112,13 @@ describe('Organizations API testing', () => {
     try {
       await linkNarrativeToOrg(123, 'someOrg');
     } catch (error) {
-      const res = await error.response.json();
-      expect(res.error.appcode).toEqual(40010);
+      expect(error).toBeInstanceOf(OrgAPIError);
+      if (error instanceof OrgAPIError) {
+        const res = await error.response.json();
+        expect(res.error.appcode).toEqual(40010);
+      } else {
+        fail('Expected error to be an OrgAPIError');
+      }
     }
   });
 });
