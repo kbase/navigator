@@ -17,31 +17,10 @@
     {% endblock %}
   </head>
 
-  <body class='flex flex-column' style='min-height: 100vh;'>
+  <body class='flex flex-column'>
 
-    {# Legacy header and side navgation #}
-    <header id='global-header' class='flex items-center global-header z-2'>
-
-      {% include "hamburger-menu.html" %}
-
-      <a href="https://kbase.us" class="dib logo-header">
-        <img src='{{url_for('static', filename='images/kbase_logo.png')}}' alt='KBase logo'>
-      </a>
-
-      <div
-        id='react-global-header'
-        class='flex'
-        style='height: 65px'
-        data-page-title="{% block titleheader %}{% endblock %}"
-      >
-      </div>
-
-    </header>
-    {% include 'legacy-nav.html' %}
     {# Page contents replaced by React #}
-    <div style='margin-left: 75px; min-width: 1024px;'>
-      {% block content %}{% endblock %}
-    </div>
+    {% block content %}{% endblock %}
 
     {% include 'js-globals.html' %}
     <script type='text/javascript'>
