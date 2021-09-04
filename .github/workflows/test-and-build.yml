@@ -6,9 +6,11 @@ on:
       - 'feature-*'
       - 'fix-*'
       - main
+  pull_request:
+    branches:
+      - main
   release:
-    types:
-      - created
+    types: [created]
 jobs:
   docker_build:
     runs-on: ubuntu-latest
