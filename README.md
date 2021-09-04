@@ -1,26 +1,26 @@
+# KBase Narratives Navigator
+
 [![Testing Status](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg)](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/kbaseIncubator/dashboard-redesign/badge.svg?branch=main)](https://coveralls.io/github/kbaseIncubator/dashboard-redesign?branch=main)
 
-# KBase Prototype React + Python UI
-
-* React
-* Webpack
-* Typescript
-* Tachyons
-* Backend: Sanic and jinja2
+- React
+- Webpack
+- Typescript
+- Tachyons
+- Backend: Sanic and jinja2
 
 ## Development
 
 ### Prerequisites
 
-1. Install docker: https://docs.docker.com/install/
-1. Install docker-compose: https://docs.docker.com/compose/install/
-1. Install Node 16: https://github.com/nvm-sh/nvm
-1. Install yarn: https://yarnpkg.com/en/docs/install
+1. Install docker: <https://docs.docker.com/install>
+2. Install docker-compose: <https://docs.docker.com/compose/install>
+3. Install Node 16: <https://github.com/nvm-sh/nvm>
+4. Install yarn: <https://yarnpkg.com/en/docs/install>
 
 #### macOS Install Notes
 
-- install `docker` and `docker-compose` via [Docker Desktop](https://www.docker.com/products/docker-desktop)
-- best to install `node` and `yarn` - with [macports](https://www.macports.org) or [brew](https://brew.sh)
+- install `docker` (includes `docker-compose`) via [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- install `node` and `yarn` - with [macports](https://www.macports.org) or [brew](https://brew.sh)
 
 ### Run the server
 
@@ -40,10 +40,10 @@ Run `make reset` to do a hard reset of your docker build, deleting containers an
 
 There are a few dockerfiles:
 
-* `Dockerfile` - production image
-* `dev/Dockerfile-python` - development python image
-* `dev/Dockerfile-node` - development js/css watcher
-* `docker-compose.yaml` - development docker-compose config
+- `Dockerfile` - production image
+- `dev/Dockerfile-python` - development python image
+- `dev/Dockerfile-node` - development js/css watcher
+- `docker-compose.yaml` - development docker-compose config
 
 ## Deployment
 
