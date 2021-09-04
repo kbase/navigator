@@ -94,4 +94,4 @@ jobs:
             VCS_REF=${{ github.sha }}
             BRANCH=${{ github.ref }}
             TAG=${{ github.ref }}
-          tags: ghcr.io/${{ github.repository_owner }}/navigator:${{ env.CI_ACTION_REF_NAME }}
+          tags: ghcr.io/${{ github.repository_owner }}/navigator:${{ env.CI_REF_NAME_SLUG }}
