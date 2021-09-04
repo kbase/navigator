@@ -1,10 +1,14 @@
 ---
-name: Build and Push Up Feature Branch Image
+name: Build and Push Up Feature or Fix Branch Image
 on:
   push:
     branches:
       - "feature-*"
       - "fix-*"
+      - main
+  release:
+    types:
+      - created
 jobs:
   docker_build:
     runs-on: ubuntu-latest
@@ -12,7 +16,7 @@ jobs:
       - name: Check out GitHub Repo
         uses: actions/checkout@v2
 
-      # Test first - yes we test even for feature and fix branches
+      # Test first 
 
       - uses: actions/setup-node@v2
         with:
@@ -25,6 +29,11 @@ jobs:
       - name: Run test
         run: |
           yarn test
+      
+      - name: Send to coveralls.io
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       
       # Build and push image
 
@@ -70,7 +79,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_TOKEN }}
-          
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
