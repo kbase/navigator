@@ -12,7 +12,7 @@ describe('cookie tests', () => {
   });
 
   test('getCookie should fetch a cookie', () => {
-    expect(getCookie('foo')).toEqual(cookieValue);
+    expect(getCookie(cookieName)).toEqual(cookieValue);
   });
 
   test('getCookie should throw an error for a missing cookie', () => {
