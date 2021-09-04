@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- add GHA workflow which supports test and build for all scenarios - feature and fix branches, pull requests, merges to master, and releases - and pushes to GHCR.
+- add GHA workflow which supports test and build for all scenarios - feature and fix branches, pull requests, merges to master, and releases - and pushes to GHCR. Also names the resulting image/package `navigator`, the new canonical name for this repo/product.
 
 ### Changed
 
