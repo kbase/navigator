@@ -1,8 +1,6 @@
-/* eslint-disable camelcase */
-import { getToken } from './auth';
-// as of now eslint cannot detect when imported interfaces are used
-import { Doc, KBaseCache } from './narrativeData'; // eslint-disable-line no-unused-vars
+import { Doc } from './NarrativeModel';
 import Runtime from '../utils/runtime';
+import { AuthInfo } from '../components/Auth';
 
 // Interface to the searchNarratives function
 export interface SearchOptions {
@@ -126,134 +124,134 @@ export const sortsLookup = Object.fromEntries(
  *  2. if any search results in a 401 from the server (typically a present, but
  *       invalid, token), this also throws an AuthError.
  * @param {SearchOptions} options
- * @param {KBaseCache} cache
  * @return {Promise<SearchResults>}
  */
-export default async function searchNarratives(
-  options: SearchOptions,
-  cache: KBaseCache = {}
-): Promise<SearchResults> {
-  const { term, category, sort, skip, pageSize } = options;
-  const key = JSON.stringify(options);
-  if (key in cache) {
-    return cache[key];
-  }
-  const params: SearchParams = {
-    types: ['KBaseNarrative.Narrative'],
-    paging: {
-      length: pageSize,
-      offset: skip || 0,
-    },
-    track_total_hits: false,
-  };
-  if (term) {
-    params.search = {
-      query: term,
-      fields: ['agg_fields'], // Search on all text fields
-    };
-  }
-  params.filters = {
-    operator: Operator.And,
-    fields: [],
-  };
-  const username = Runtime.username();
-  if (!username) {
-    return { count: 0, search_time: 0, hits: [] };
-  }
-  switch (category) {
-    case 'own':
-      params.filters.fields.push({
-        field: 'owner',
-        term: username,
-      });
-      break;
-    case 'shared':
-      params.filters.fields.push({
-        field: 'owner',
-        not_term: username,
-      });
-      params.filters.fields.push({
-        field: 'shared_users',
-        term: username,
-      });
-      break;
-    case 'public':
-      params.access = { only_public: true };
-      break;
-    case 'tutorials':
-      params.access = { only_public: true };
-      params.filters.fields.push({ field: 'is_narratorial', term: true });
-      break;
-    default:
-      throw new Error('Unknown search category');
+const cache: Map<string, any> = new Map();
+
+export class NarrativeSearch {
+  authInfo: AuthInfo;
+  constructor(authInfo: AuthInfo) {
+    this.authInfo = authInfo;
   }
 
-  params.sorts = [['_score', SortDir.Desc]];
-  const sortSlug = sortsLookup[sort];
-  if (sortSlug === '-created') {
-    params.sorts.unshift(['creation_date', SortDir.Desc]);
-  } else if (sortSlug === 'created') {
-    params.sorts.unshift(['creation_date', SortDir.Asc]);
-  } else if (sortSlug === 'updated') {
-    params.sorts.unshift(['timestamp', SortDir.Asc]);
-  } else if (sortSlug === '-updated') {
-    params.sorts.unshift(['timestamp', SortDir.Desc]);
-  } else if (sortSlug === 'lex') {
-    params.sorts.unshift(['narrative_title.raw', SortDir.Asc]);
-  } else if (sortSlug === '-lex') {
-    params.sorts.unshift(['narrative_title.raw', SortDir.Desc]);
-  } else {
-    throw new Error('Unknown sorting method');
+  clearCache() {
+    cache.clear();
   }
 
-  const { result } = await makeRequest(params);
-  cache[key] = result;
-  return result;
-}
-
-/**
- *
- * @param {SearchParams} params - this takes a query, number of documents to skip,
- *   sort parameter, auth (boolean, true if we're looking up personal data), and pageSize
- */
-async function makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
-  const headers: { [key: string]: string } = {
-    'Content-Type': 'application/json',
-  };
-  if (!params.access || !params.access.only_public) {
-    // Requires an auth token
-    const token = getToken();
-    if (!token) {
-      // TODO: [SCT-2924] improve error message -- remember, the user sees this!
-      // Actually, should never even get here.
-      throw new Error(
-        'Auth token not available for an authenticated search lookup!'
-      );
+  async searchNarratives(options: SearchOptions): Promise<SearchResults> {
+    const { term, category, sort, skip, pageSize } = options;
+    // TODO: should make this key deterministic; key order is not guaranteed.
+    const key = JSON.stringify(options);
+    if (cache.has(key)) {
+      return cache.get(key);
     }
-    headers.Authorization = token;
+    const params: SearchParams = {
+      types: ['KBaseNarrative.Narrative'],
+      paging: {
+        length: pageSize,
+        offset: skip || 0,
+      },
+      track_total_hits: false,
+    };
+    if (term) {
+      params.search = {
+        query: term,
+        fields: ['agg_fields'], // Search on all text fields
+      };
+    }
+    params.filters = {
+      operator: Operator.And,
+      fields: [],
+    };
+    // const username = await Runtime.username();
+    // if (!username) {
+    //   return { count: 0, search_time: 0, hits: [] };
+    // }
+    const username = this.authInfo.tokenInfo.user;
+    switch (category) {
+      case 'own':
+        params.filters.fields.push({
+          field: 'owner',
+          term: username,
+        });
+        break;
+      case 'shared':
+        params.filters.fields.push({
+          field: 'owner',
+          not_term: username,
+        });
+        params.filters.fields.push({
+          field: 'shared_users',
+          term: username,
+        });
+        break;
+      case 'public':
+        params.access = { only_public: true };
+        break;
+      case 'tutorials':
+        params.access = { only_public: true };
+        params.filters.fields.push({ field: 'is_narratorial', term: true });
+        break;
+      default:
+        throw new Error('Unknown search category');
+    }
+
+    params.sorts = [['_score', SortDir.Desc]];
+    const sortSlug = sortsLookup[sort];
+    if (sortSlug === '-created') {
+      params.sorts.unshift(['creation_date', SortDir.Desc]);
+    } else if (sortSlug === 'created') {
+      params.sorts.unshift(['creation_date', SortDir.Asc]);
+    } else if (sortSlug === 'updated') {
+      params.sorts.unshift(['timestamp', SortDir.Asc]);
+    } else if (sortSlug === '-updated') {
+      params.sorts.unshift(['timestamp', SortDir.Desc]);
+    } else if (sortSlug === 'lex') {
+      params.sorts.unshift(['narrative_title.raw', SortDir.Asc]);
+    } else if (sortSlug === '-lex') {
+      params.sorts.unshift(['narrative_title.raw', SortDir.Desc]);
+    } else {
+      throw new Error('Unknown sorting method');
+    }
+
+    const { result } = await this.makeRequest(params);
+    cache.set(key, result);
+    return result;
   }
 
-  const result = await fetch(Runtime.getConfig().service_routes.search, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: Date.now(),
-      method: 'search_workspace',
-      params,
-    }),
-  });
-  // TODO: [SCT-2925] JSON-RPC does not make any guarantees of an error status code.
-  // I know that KBase does typically issue 500 for rpc errors, but even this is
-  // not guaranteed. One should ignore the status and just look
-  // at the rpc  result, with an "error" property indicating an error, and
-  // properties of that  indicating the nature of the error, the most important
-  // of which is the "code" and "message".
-  // And, reporting the status to the user is not very useful, rather better to pick
-  // up the error message, and even better to process the entire error object which
-  // typically has useful additional information.
-  if (!result.ok) {
-    throw new Error('An error occurred while searching - ' + result.status);
+  /**
+   *
+   * @param {SearchParams} params - this takes a query, number of documents to skip,
+   *   sort parameter, auth (boolean, true if we're looking up personal data), and pageSize
+   */
+  async makeRequest(params: SearchParams): Promise<JSONRPCResponse> {
+    const headers: { [key: string]: string } = {
+      'Content-Type': 'application/json',
+      Authorization: this.authInfo.token,
+    };
+
+    const result = await fetch(Runtime.getConfig().service_routes.search, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: Date.now(),
+        method: 'search_workspace',
+        params,
+      }),
+    });
+    // TODO: [SCT-2925] JSON-RPC does not make any guarantees of an error status code.
+    // I know that KBase does typically issue 500 for rpc errors, but even this is
+    // not guaranteed. One should ignore the status and just look
+    // at the rpc  result, with an "error" property indicating an error, and
+    // properties of that  indicating the nature of the error, the most important
+    // of which is the "code" and "message".
+    // And, reporting the status to the user is not very useful, rather better to pick
+    // up the error message, and even better to process the entire error object which
+    // typically has useful additional information.
+    if (!result.ok) {
+      throw new Error('An error occurred while searching - ' + result.status);
+    }
+    return result.json();
   }
-  return result.json();
 }

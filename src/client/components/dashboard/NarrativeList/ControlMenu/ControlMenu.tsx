@@ -8,6 +8,9 @@ import CopyItem from './CopyItem';
 import LinkOrgItem from './LinkOrgItem';
 import RenameItem from './RenameItem';
 import SharingItem from './sharing/SharingItem';
+import { AuthContext, AuthenticationStatus } from '../../../Auth';
+import { AsyncProcessStatus } from '../../../../utils/AsyncProcess';
+import { Doc } from '../../../../utils/NarrativeModel';
 
 interface State {
   showMenu: boolean;
@@ -55,10 +58,13 @@ const menuItems: Array<MenuItem> = [
   },
 ];
 
-export default class ControlMenu extends Component<
-  ControlMenuItemProps,
-  State
-> {
+interface ControlMenuProps {
+  narrative: Doc;
+  cancelFn?: () => void;
+  doneFn: () => void;
+}
+
+export default class ControlMenu extends Component<ControlMenuProps, State> {
   constructor(props: ControlMenuItemProps) {
     super(props);
     this.state = {
@@ -122,21 +128,57 @@ export default class ControlMenu extends Component<
       );
     }
 
-    let modal = null;
-    if (this.state.showModal && this.state.modalItem) {
-      modal = (
+    const modal = ((state) => {
+      if (!state.showModal) {
+        return null;
+      }
+      if (!state.modalItem) {
+        return null;
+      }
+      const { dialogTitle, menuComponent } = state.modalItem;
+      return (
         <Modal
           closeFn={() => this.closeModal()}
-          title={this.state.modalItem.dialogTitle}
+          title={dialogTitle}
           withCloseButton={true}
         >
-          {React.createElement(this.state.modalItem.menuComponent, {
-            ...this.props,
-            cancelFn: () => this.closeModal(),
-          })}
+          <AuthContext.Consumer>
+            {(value) => {
+              if (
+                value.status === AsyncProcessStatus.SUCCESS &&
+                value.value.status === AuthenticationStatus.AUTHENTICATED
+              ) {
+                const authInfo = value.value.authInfo;
+                return React.createElement(menuComponent, {
+                  ...{ authInfo, ...this.props },
+                  cancelFn: () => this.closeModal(),
+                });
+              }
+            }}
+          </AuthContext.Consumer>
         </Modal>
       );
-    }
+    })(this.state);
+
+    // let modal = null;
+    // if (this.state.showModal && this.state.modalItem) {
+    //   modal = (
+    //     <Modal
+    //       closeFn={() => this.closeModal()}
+    //       title={this.state.modalItem.dialogTitle}
+    //       withCloseButton={true}
+    //     >
+    //       <AuthContext.Consumer>
+    //         {(value) => {
+    //           return React.createElement(this.state.modalItem.menuComponent, {
+    //             ...this.props,
+    //             cancelFn: () => this.closeModal(),
+    //           })
+    //         }}
+    //       </AuthContext.Consumer>
+    //     </Modal>
+    //   );
+    // }
 
     return (
       <div className="cursor tr">

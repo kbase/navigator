@@ -1,5 +1,6 @@
 import React from 'react';
-import { DataObject } from '../../../utils/narrativeData';
+import { DataObject } from '../../../utils/NarrativeModel';
+import Runtime from '../../../utils/runtime';
 import { getWSTypeName } from '../../../utils/stringUtils';
 import { TypeIcon } from '../../generic/Icon';
 
@@ -38,7 +39,10 @@ export default function DataView(props: Props) {
         <div className="ml4">
           <div className="dataview">
             <a
-              href={`/#dataview/${accessGroup}/${obj.name}`}
+              href={`${
+                Runtime.getConfig().host_root
+              }/#dataview/${accessGroup}/${obj.name}`}
+              target="_blank"
               rel="noopener noreferrer"
             >
               {obj.name}

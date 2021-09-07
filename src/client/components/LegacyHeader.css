@@ -1,0 +1,8 @@
+.LegacyHeader {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 5px solid #e0e0e0;
+  height: 70px;
+  align-items: center;
+}

@@ -1,3 +1,4 @@
+import { AuthInfo } from '../components/Auth';
 import Runtime from './runtime';
 
 export interface GroupInfo {
@@ -20,15 +21,24 @@ export interface GroupIdentity {
  * view access.
  * @param {number} wsId - a workspace id
  */
-export async function getLinkedOrgs(wsId: number): Promise<Array<GroupInfo>> {
-  return makeOrgsCall(`group?resourcetype=workspace&resource=${wsId}`, 'GET');
+export async function getLinkedOrgs(
+  authInfo: AuthInfo,
+  wsId: number
+): Promise<Array<GroupInfo>> {
+  return makeOrgsCall(
+    authInfo,
+    `group?resourcetype=workspace&resource=${wsId}`,
+    'GET'
+  );
 }
 
 /**
  * Returns the list of all orgs to which the current user is a member.
  */
-export async function lookupUserOrgs(): Promise<Array<GroupIdentity>> {
-  const orgs = await makeOrgsCall('member', 'GET');
+export async function lookupUserOrgs(
+  authInfo: AuthInfo
+): Promise<Array<GroupIdentity>> {
+  const orgs = await makeOrgsCall(authInfo, 'member', 'GET');
   return orgs.sort((a: GroupIdentity, b: GroupIdentity) => {
     return a.name.localeCompare(b.name);
   });
@@ -60,11 +70,12 @@ interface GroupsRequest {
 }
 
 export async function linkNarrativeToOrg(
+  authInfo: AuthInfo,
   wsId: number,
   orgId: string
 ): Promise<GroupsRequest & AddResourceStatus> {
   const call = `group/${orgId}/resource/workspace/${wsId}`;
-  return makeOrgsCall(call, 'POST');
+  return makeOrgsCall(authInfo, call, 'POST');
 }
 
 export class OrgAPIError extends Error {
@@ -84,12 +95,19 @@ export class OrgAPIError extends Error {
  * @param {string} call - string, the command to send
  * @param {string} method - one of GET, POST, PUT, DELETE
  */
-async function makeOrgsCall(call: string, method: string): Promise<any> {
+async function makeOrgsCall(
+  authInfo: AuthInfo,
+  call: string,
+  method: string
+): Promise<any> {
   const groupsUrl = Runtime.getConfig().service_routes.groups;
-  const headers = {
+  const headers: { [key: string]: string } = {
     'Content-Type': 'application/json',
-    Authorization: Runtime.token(),
   };
+  const token = authInfo.token;
+  if (token !== null) {
+    headers.Authorization = token;
+  }
   return fetch(groupsUrl + '/' + call, {
     headers,
     method: method,

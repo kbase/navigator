@@ -7,9 +7,24 @@ import { shallow } from 'enzyme';
 import { enableFetchMocks } from 'jest-fetch-mock';
 
 import RenameItem from '../RenameItem';
-import { Doc } from '../../../../../utils/narrativeData';
+import { Doc } from '../../../../../utils/NarrativeModel';
+import { AuthInfo } from '../../../../Auth';
 
 enableFetchMocks();
+
+const authInfo: AuthInfo = {
+  token: 'foo',
+  tokenInfo: {
+    cachefor: 0,
+    created: 0,
+    expires: 0,
+    id: 'foo',
+    name: 'foo',
+    type: 'login',
+    custom: {},
+    user: 'foo',
+  },
+};
 
 describe('RenameItem', () => {
   it('should render', () => {
@@ -59,6 +74,7 @@ describe('RenameItem', () => {
       version: 0,
     };
     const props = {
+      authInfo,
       narrative,
       cancelFn: () => {},
       doneFn: () => {},

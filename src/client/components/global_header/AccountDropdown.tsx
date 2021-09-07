@@ -1,22 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Runtime from '../../utils/runtime';
 
-interface State {
+interface AccountDropdownState {
   dropdownHidden: boolean;
 }
 
-interface Props {
+interface AccountDropdownProps {
   username: string | null;
   realname: string | null;
   gravatarURL: string;
-  signedout: boolean;
   onSignOut: () => void;
 }
 
-export class AccountDropdown extends Component<Props, State> {
+export class AccountDropdown extends React.Component<
+  AccountDropdownProps,
+  AccountDropdownState
+> {
   bodyCloseHandler: (ev: MouseEvent) => void = () => {};
 
-  constructor(props: Props) {
+  constructor(props: AccountDropdownProps) {
     super(props);
     this.state = {
       dropdownHidden: true,
@@ -31,7 +33,7 @@ export class AccountDropdown extends Component<Props, State> {
         return;
       }
       if (!elm.contains(ev.target as Node)) {
-        this.setState({ dropdownHidden: true });
+        this.closeDropdown();
       }
     };
     document.body.addEventListener('click', this.bodyCloseHandler);
@@ -41,25 +43,24 @@ export class AccountDropdown extends Component<Props, State> {
     document.body.removeEventListener('click', this.bodyCloseHandler);
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if (prevState === this.state) {
-      return;
-    }
-  }
-
   toggleDropdown() {
     this.setState((prevState) => ({
       dropdownHidden: !prevState.dropdownHidden,
     }));
   }
 
+  closeDropdown() {
+    this.setState({ dropdownHidden: true });
+  }
+
   // View for the account drop down when signed in
-  dropdownView() {
+  render() {
+    const hostRoot = Runtime.getConfig().host_root;
     return (
       <div className="account-dropdown">
         <button
           className="profile-dropdown flex pointer"
-          onClick={(event) => this.toggleDropdown()}
+          onClick={() => this.toggleDropdown()}
         >
           <img
             style={{ maxWidth: '40px' }}
@@ -72,7 +73,7 @@ export class AccountDropdown extends Component<Props, State> {
           ></i>
         </button>
         <ul
-          className="dropdown-menu"
+          className="dropdown-menu z-2"
           role="menu"
           hidden={this.state.dropdownHidden}
         >
@@ -84,7 +85,11 @@ export class AccountDropdown extends Component<Props, State> {
           </li>
           <li className="divider" />
           <li>
-            <a href="/#people" className="menu-item">
+            <a
+              href={`${hostRoot}/#people`}
+              onClick={this.closeDropdown.bind(this)}
+              className="menu-item"
+            >
               <div className="icon">
                 <span className="fa fa-user"></span>
               </div>
@@ -92,7 +97,11 @@ export class AccountDropdown extends Component<Props, State> {
             </a>
           </li>
           <li>
-            <a href="/#account" className="menu-item">
+            <a
+              href={`${hostRoot}/#account`}
+              onClick={this.closeDropdown.bind(this)}
+              className="menu-item"
+            >
               <div className="icon">
                 <span className="fa fa-drivers-license"></span>
               </div>
@@ -111,28 +120,5 @@ export class AccountDropdown extends Component<Props, State> {
         </ul>
       </div>
     );
-  }
-
-  // View for the "Sign In" link when the user is signed out
-  signInView() {
-    return (
-      <a
-        className="db no-underline br2 account-dropdown-signin"
-        data-button="signin"
-        href={Runtime.getConfig().host_root + '/#login'}
-      >
-        <div
-          className="fa fa-sign-in"
-          style={{ marginRight: '5px', fontSize: '25px', color: '#2196F3' }}
-        ></div>
-        <div style={{ color: '#666', fontSize: '13px', marginTop: '2px' }}>
-          Sign In
-        </div>
-      </a>
-    );
-  }
-
-  render() {
-    return this.props.signedout ? this.signInView() : this.dropdownView();
   }
 }

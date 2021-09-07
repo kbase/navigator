@@ -6,7 +6,22 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import DeleteNarrative from '../DeleteNarrative';
-import { Doc } from '../../../../../utils/narrativeData';
+import { Doc } from '../../../../../utils/NarrativeModel';
+import { AuthInfo } from '../../../../Auth';
+
+const authInfo: AuthInfo = {
+  token: 'foo',
+  tokenInfo: {
+    cachefor: 0,
+    created: 0,
+    expires: 0,
+    id: 'foo',
+    name: 'foo',
+    type: 'login',
+    custom: {},
+    user: 'foo',
+  },
+};
 
 describe('Preview tests', () => {
   it('<DeleteNarrative> should render', () => {
@@ -34,6 +49,7 @@ describe('Preview tests', () => {
       version: 0,
     };
     const props = {
+      authInfo,
       narrative,
       cancelFn: () => {},
       doneFn: () => {},

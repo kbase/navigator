@@ -7,7 +7,8 @@ import { shallow } from 'enzyme';
 import { enableFetchMocks } from 'jest-fetch-mock';
 
 import LinkOrgItem from '../LinkOrgItem';
-import { Doc } from '../../../../../utils/narrativeData';
+import { Doc } from '../../../../../utils/NarrativeModel';
+import ControlMenuItemProps from '../ControlMenuItemProps';
 
 enableFetchMocks();
 
@@ -83,7 +84,20 @@ describe('LinkOrgItem', () => {
       total_cells: 0,
       version: 0,
     };
-    const props = {
+    const props: ControlMenuItemProps = {
+      authInfo: {
+        token: 'foo',
+        tokenInfo: {
+          cachefor: 0,
+          created: 0,
+          expires: 0,
+          id: 'foo',
+          name: 'foo',
+          type: 'login',
+          custom: {},
+          user: 'foo',
+        },
+      },
       narrative,
       cancelFn: () => {},
       doneFn: () => {},

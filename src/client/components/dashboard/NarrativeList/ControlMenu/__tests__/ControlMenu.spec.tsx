@@ -6,7 +6,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 
 import ControlMenu from '../ControlMenu';
-import { Doc } from '../../../../../utils/narrativeData';
+import { Doc } from '../../../../../utils/NarrativeModel';
 
 describe('Preview tests', () => {
   it('<ControlMenu> should render', () => {

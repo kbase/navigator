@@ -4,7 +4,7 @@ import DashboardButton from '../../../generic/DashboardButton';
 import Runtime from '../../../../utils/runtime';
 import { DynamicServiceClient } from '../../../../api/serviceWizard';
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
-import { getCurrentUserPermission } from '../../../../utils/narrativeData';
+import NarrativeModel from '../../../../utils/NarrativeModel';
 
 interface State {
   isLoading: boolean;
@@ -28,7 +28,8 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
   }
 
   async componentDidMount() {
-    const userPerm = await getCurrentUserPermission(
+    const client = new NarrativeModel(this.props.authInfo);
+    const userPerm = await client.getCurrentUserPermission(
       this.props.narrative.access_group
     );
     this.setState({
@@ -56,7 +57,7 @@ export default class RenameItem extends Component<ControlMenuItemProps, State> {
     const narrativeService = new DynamicServiceClient({
       moduleName: 'NarrativeService',
       wizardUrl: config.service_routes.service_wizard,
-      authToken: Runtime.token(),
+      authToken: this.props.authInfo.token,
       version: 'beta',
     });
     try {

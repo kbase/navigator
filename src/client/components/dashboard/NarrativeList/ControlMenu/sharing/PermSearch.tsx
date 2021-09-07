@@ -1,13 +1,14 @@
-// as of now eslint cannot detect when imported interfaces are used
-import Select, { OptionsType, Styles } from 'react-select'; // eslint-disable-line no-unused-vars
+import Select, { OptionsType, Styles } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import DashboardButton from '../../../../generic/DashboardButton';
 import React, { Component } from 'react';
 import { PERM_MAPPING } from './Definitions';
-import { searchUsernames } from '../../../../../utils/auth';
+import { AuthInfo } from '../../../../Auth';
+import { AuthService } from '../../../../../utils/AuthService';
 
 /* The main user input search bar */
 interface PermSearchProps {
+  authInfo: AuthInfo;
   addPerms: (userIds: string[], perm: string) => void;
   currentUser: string; // the current user id
 }
@@ -42,7 +43,8 @@ export default class PermSearch extends Component<PermSearchProps> {
     if (term.length < 2) {
       return new Promise((resolve) => resolve(''));
     }
-    return searchUsernames(term).then((usernames) => {
+    const auth = new AuthService(this.props.authInfo.token);
+    return auth.searchUsernames(term).then((usernames) => {
       return Object.keys(usernames)
         .filter((userId) => userId !== this.props.currentUser)
         .map((userId) => ({
@@ -94,7 +96,7 @@ export default class PermSearch extends Component<PermSearchProps> {
           }}
           menuPortalTarget={document.body}
           onInputChange={this.handleInputChange.bind(this)}
-          onChange={this.handleUserChange.bind}
+          onChange={this.handleUserChange.bind(this)}
         />
         <Select
           defaultValue={this.permOptions[0]}

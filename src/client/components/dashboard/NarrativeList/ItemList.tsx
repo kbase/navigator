@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import { keepParamsLinkTo } from '../utils';
-import { Doc } from '../../../utils/narrativeData';
+import { Doc } from '../../../utils/NarrativeModel';
 
 const timeago = require('timeago.js');
 

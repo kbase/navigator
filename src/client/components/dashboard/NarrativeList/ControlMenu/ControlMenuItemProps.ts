@@ -1,6 +1,8 @@
-import { Doc } from '../../../../utils/narrativeData';
+import { Doc } from '../../../../utils/NarrativeModel';
+import { AuthInfo } from '../../../Auth';
 
 interface ControlMenuItemProps {
+  authInfo: AuthInfo;
   narrative: Doc;
   cancelFn?: () => void;
   doneFn: () => void;
