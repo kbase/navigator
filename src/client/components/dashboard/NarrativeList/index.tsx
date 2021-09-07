@@ -135,6 +135,7 @@ export class NarrativeList extends Component<Props, State> {
     }
 
     const resp = await narrativeSearch.searchNarratives(searchParams);
+    console.log('RESP', resp);
 
     // TODO handle error from server
     if (!resp || !resp.hits) {
