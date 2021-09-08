@@ -37,10 +37,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Build and push image
-
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+      - name: Get current date for usage in subsequent steps as env.BUILD_DATE
+        run: |
+          echo BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') >> $GITHUB_ENV
 
       - uses: FranzDiebold/github-env-vars-action@v2
 
@@ -70,11 +69,12 @@ jobs:
           echo "CI_RUN_NUMBER=$CI_RUN_NUMBER"
           echo "CI_WORKFLOW=$CI_WORKFLOW"
           echo "CI_ACTION=$CI_ACTION"
+          echo "BUILD_DATE=${{ env.BUILD_DATE }}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Login to DockerHub
+      - name: Login to GitHub Container Registry (GHCR)
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -89,9 +89,7 @@ jobs:
           pull: true
           push: true
           build-args: |
-            BUILD_CONFIG=ci
-            BUILD_DATE=${{ steps.date.outputs.date }}
+            BUILD_DATE=${{ env.BUILD_DATE }}
             VCS_REF=${{ github.sha }}
             BRANCH=${{ github.ref }}
-            TAG=${{ github.ref }}
           tags: ghcr.io/${{ github.repository_owner }}/navigator:${{ env.CI_REF_NAME_SLUG }}
