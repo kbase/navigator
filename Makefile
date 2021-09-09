@@ -5,4 +5,5 @@ serve:
 reset:
 	docker-compose down --rmi all --remove-orphans --volumes
 	docker-compose build --no-cache
-	docker-compose up
+	sh dev/start_server.sh
+
