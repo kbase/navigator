@@ -10,7 +10,6 @@ RUN yarn build && rm -rf node_modules
 
 # Set up python
 FROM python:3.7-alpine
-# FROM kbase/kb_python:python3
 COPY --from=0 /app /app
 COPY requirements.txt /app
 WORKDIR /app
