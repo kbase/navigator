@@ -1,6 +1,6 @@
 # KBase Narratives Navigator
 
-[![Testing Status](https://github.com/kbase/dashboard-redesign/workflows/Tests/badge.svg)](https://github.com/kbase/dashboard-redesign/workflows/Tests/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/kbase/dashboard-redesign/badge.svg?branch=main)](https://coveralls.io/github/kbase/dashboard-redesign?branch=main)
+[![Testing Status](https://github.com/kbase/navigator/workflows/Tests/badge.svg)](https://github.com/kbase/navigator/workflows/Tests/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/kbase/navigator/badge.svg?branch=main)](https://coveralls.io/github/kbase/navigator?branch=main)
 
 - React
 - Webpack
