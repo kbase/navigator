@@ -14,7 +14,7 @@ You can monitor the action's progress through the _Actions_ tab.
 
 Once the image is built, it's pushed to the `kbase/navigator` repo in GHCR. You can inspect the images built via Packages <https://github.com/kbase?tab=packages&repo_name=navigator>.
 
-The image will have a tag which looks similar to the release tag, `v.#.#.#`, but has dashes substituted for periods, `v#-#-#`. In the example below, the version-tagged image is the top most one. Other images may be produced for merges into `main`, `fix-*`, `feature-*`, and pull request actions, which appear as `#-merge`, where `#` is the pull request number.
+The image will have a tag which looks similar to the release tag, `v.#.#.#`, but has dashes substituted for periods, `v#-#-#`. In the example below, the version-tagged image is the top most one. Other images may be produced for merges into `main`, `fix-*`, `feature-*`, and pull request actions, which have a tag like `#-merge`, where `#` is the pull request number.
 
 > These tag names are produced by using the `CI_REF_NAME_SLUG` environment variable created by the [`FranzDiebold/github-env-vars-action@v2`] action.
 
