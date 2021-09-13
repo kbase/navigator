@@ -1,6 +1,6 @@
 # Github Actions
 
-Certain events in the Navigator GitHub reopo trigger a GitHub Action (GHA) workflow which runs tests, builds an image, and push the image to GitHub Container Registry (GHCR). A single GHA workflow located in `.github/workflows/test-and-build.yml` is invoked for all actions. This workflow will run unit tests, and, should they succeed, build an image and push it up to the GitHub Container Registry (GHCR).
+Certain events in the Navigator GitHub repo trigger a GitHub Action (GHA) workflow which runs tests, builds an image, and push the image to GitHub Container Registry (GHCR). A single GHA workflow located in `.github/workflows/test-and-build.yml` is invoked for all actions. This workflow will run unit tests, and, should they succeed, build an image and push it up to the GitHub Container Registry (GHCR).
 
 The docker reference for all built images is
 
@@ -48,11 +48,11 @@ Upon pushing to a feature branch, the workflow will be triggered, which will, up
 
 For instance, the feature branch which introduces this very document, and the workflow described herein, is `feature-improve-gha-workflow`.
 
-Feature branchs builds are useful for demonstrating new features before they are finalized, and may be deployed in `ci`, `narrative-dev` or other shared development deployment environments.
+Feature branches builds are useful for demonstrating new features before they are finalized, and may be deployed in `ci`, `narrative-dev` or other shared development deployment environments.
 
 ## Fix branch `fix-*`
 
-Similar to feature branchs, fix branches are rather dedicated to fixing one or more issues which probably originate in a Jira ticket.
+Similar to feature branches, fix branches are rather dedicated to fixing one or more issues which probably originate in a Jira ticket.
 
 The fix branch name has the form `fix-FIX_NAME`, where `FIX_NAME` is probably a Jira ticket id, like `PTV-1234`.
 
@@ -72,4 +72,4 @@ A release created through the GitHub release tool will trigger the workflow and 
 
 Since the tag is based on `CI_REF_NAME_SLUG`, the "slugification" process converts the `.` to `-` in order to make it more universally acceptable as an identifier.
 
-A release image is based on the state of the `main` branch at some point at which the team decides a new release is suitable. A release image is suitable for deployment in any user-facing environment, including `appdev` and `prod` (aka `narrative.kbase.us`). It may also be deployed to `next`, which serves as a pre-production evalutation environment.
+A release image is based on the state of the `main` branch at some point at which the team decides a new release is suitable. A release image is suitable for deployment in any user-facing environment, including `appdev` and `prod` (aka `narrative.kbase.us`). It may also be deployed to `next`, which serves as a pre-production evaluation environment.

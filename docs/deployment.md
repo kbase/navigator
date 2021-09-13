@@ -54,7 +54,7 @@ This takes a little extra work than the above.
    }
    ```
 
-   Note that `(navigator)` in the location line above implies that the service name is `navigator`. That hard-coded value is captured by the `()` group and made avaiable via `set $servicehost $1;` as the host name for the service. The Rancher config is converted to a `docker-compose` configuration in which the Rancher service name becomes the docker-compose service name which in turn becomes the containers host name in the docker network.
+   Note that `(navigator)` in the location line above implies that the service name is `navigator`. That hard-coded value is captured by the `()` group and made available via `set $servicehost $1;` as the host name for the service. The Rancher config is converted to a `docker-compose` configuration in which the Rancher service name becomes the docker-compose service name which in turn becomes the containers host name in the docker network.
 
    That needs to get checked in to the secure nginx config location and the nginx image restarted, so this requires help from people who can do that.
 

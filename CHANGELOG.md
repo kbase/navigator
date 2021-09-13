@@ -29,9 +29,9 @@ none
 ### Fixed
 
 - PTV-1694: Fix disappearing search text when use the Data/Preview tab, or the "Load More" button
-- add "-n" to entre, otherwise broken
+- add "-n" to entr, otherwise broken
 - Fix broken tests
-- Fixed Typscript usage (errors reported by latest TS)
+- Fixed Typescript usage (errors reported by latest TS)
 
 ### Security
 
