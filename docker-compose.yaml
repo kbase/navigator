@@ -1,8 +1,7 @@
 version: '3'
 networks:
   kbase-dev:
-    external:
-      name: kbase-dev
+    name: kbase-dev
 services:
   navigator:
     build:
@@ -13,7 +12,12 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - DEVELOPMENT=1
+      # KBASE_ENDPOINT defaults to the ci_proxy for development; used for KBase service endpoint urls
       - KBASE_ENDPOINT=${KBASE_ENDPOINT:-http://localhost:5011/services}
+      # KBASE_ROOT defaults to the CI origin for development; used for KBase user interface urls
+      - KBASE_ROOT=${KBASE_ROOT:-https://ci.kbase.us}
+      # URL_PREFIX defaults to an empty string for development; set to "narratives" for deployments, including
+      # development with the kbase-ui proxy
       - URL_PREFIX
       - WORKERS=2
     networks:
