@@ -1,12 +1,12 @@
-[![Testing Status](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg)](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/kbaseIncubator/dashboard-redesign/badge.svg?branch=main)](https://coveralls.io/github/kbaseIncubator/dashboard-redesign?branch=main)
-
 # KBase Prototype React + Python UI
 
-* React
-* Webpack
-* Typescript
-* Tachyons
-* Backend: Sanic and jinja2
+[![Testing Status](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg)](https://github.com/kbaseIncubator/dashboard-redesign/workflows/Tests/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/kbaseIncubator/dashboard-redesign/badge.svg?branch=main)](https://coveralls.io/github/kbaseIncubator/dashboard-redesign?branch=main)
+
+- React
+- Webpack
+- Typescript
+- Tachyons
+- Backend: Sanic and jinja2
 
 ## Development
 
@@ -40,10 +40,9 @@ Run `make reset` to do a hard reset of your docker build, deleting containers an
 
 There are a few dockerfiles:
 
-* `Dockerfile` - production image
-* `dev/Dockerfile-python` - development python image
-* `dev/Dockerfile-node` - development js/css watcher
-* `docker-compose.yaml` - development docker-compose config
+- `Dockerfile` - production image
+- `dev/Dockerfile-python` - development python image
+- `docker-compose.yaml` - development docker-compose config
 
 ## Deployment
 
@@ -58,5 +57,5 @@ Building for deployment is done via Github Actions. Once a branch is ready for d
 These environment variables can be set:
 
 - `URL_PREFIX` - path prefix for all links and asset urls (css, js, images) that get generated in the app. Used when behind an nginx proxy.
-- `KBASE_ENDPOINT` - prefix to all KBase service endpoints - usually something like `https://kbase.us/services` for production.
+- `KBASE_SERVICE_HOST` - prefix to all KBase service endpoints - usually something like `https://kbase.us` for production.
 - `KBASE_ROOT` - prefix to all UI asset URLs - `https://narrative.kbase.us` in production.
