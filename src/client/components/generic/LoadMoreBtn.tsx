@@ -11,7 +11,6 @@ interface State {}
 
 /**
  * This is a stateless button with a few different forms based on its props.
- * It ixpec
  * If it has a loading prop, it'll return a spinner.
  * If it has some nonzero numerical items, it'll compare them and return how many remain.
  * If there are more items, then when clicked it'll trigger its onLoadMore function prop.

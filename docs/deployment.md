@@ -1,48 +1,49 @@
 # Deployment
 
-## Deploying this dashboard app in KBase
-
 This document describes how to build and deploy a new version of this module in the KBase environment.
+
+## Deploying this dashboard app in KBase
 
 ### 1. Set up a deployment image
 
-This module uses Github Actions to build and save a Docker image in GitHub Image Registry (GHCR). The build is triggered by releasing a new version through the releases page of the repo. Just draft a new release with a semantic version tag, like `v1.2.3`, and that'll trigger the action.
+This module uses Github Actions to build and save a Docker image at Github Container Repository (GHCR). This building gets triggered by releasing a new version through the releases page of the repo. Just draft a new release with a unique version, and that'll trigger the action.
 
-Once the image is built, it's sent pushed to GHCR as `kbase/navigator`. You can inspect the Packages to find the built images and their tags. The tag for a release image should be in the form `v1.2.3` - that is, a semantic version prefixed with the letter "v".
+You can monitor the action's progress through the _Actions_ tab.
 
-> Images are also built for other repo events, including
+![GitHub Actions Progress](./images/actions-progress.png)
+
+Once the image is built, it's pushed to the `kbase/navigator` repo in GHCR. You can inspect the images built via Packages <https://github.com/kbase?tab=packages&repo_name=navigator>.
+
+The image will have a tag which looks similar to the release tag, `v.#.#.#`, but has dashes substituted for periods, `v#-#-#`. In the example below, the version-tagged image is the top most one. Other images may be produced for merges into `main`, `fix-*`, `feature-*`, and pull request actions, which have a tag like `#-merge`, where `#` is the pull request number.
+
+> These tag names are produced by using the `CI_REF_NAME_SLUG` environment variable created by the [`FranzDiebold/github-env-vars-action@v2`] action.
+
+![Github packages](./images/packages.png)
 
 ### 2. Deploy through Rancher
 
-In your environment of choice, open the Rancher view, and find the `dashboard-redesign` service.
+Developer deployment is available via [Rancher](https://rancher.com) for `CI` and `narrative-dev`. Neither access to Rancher nor production deployment is not described in this document.
 
-To deploy the image, you need to "upgrade" the service.
+In your environment of choice, open the Rancher view, and find the service named `navigator`:
 
-(the little circled up-arrow on the right side) this to use the newly tagged image. Save and finalize the upgrade, and away it goes.
+Either way, upgrade (the little circled up-arrow on the right side) this to use the newly tagged image. Save and finalize the upgrade, and away it goes.
 
 ## Setting up a new stack
 
 This takes a little extra work than the above.
 
-1. Create a new stack in whatever Rancher environment. Name `navigator` unless there is some reason not to.
-
+1. Create a new stack in whatever Rancher environment. Name it `navigator`, as that is the recognized name for this service, and must match the `$servicehost` used in the `nginx` config stanza described below.
 2. Set the following environment variables:
 
-   Required:
-
-   - `KBASE_ROOT` - the root origin URL for the user interfaces. It will be `https://narrative.kbase.us` for prod, `https://ci.kbase.us` for CI, etc. This is used as the origin for the `href` of internal links.
-   - `KBASE_ENDPOINT` - the base url, or "origin", for all service calls. It will be `https://kbase.us/services` for production, `https://ci.kbase.us/services` for CI, etc.
-
-   Optional:
-
-   - `URL_PREFIX` - this is the prefix for any path that the "service" (the server that comes along with this module) responds to; defaults to `narratives`. For example, in a narrative-dev deployment, with the `URL PREFIX` either omitted, or set to `narratives`, the plain URL to the Navigator's main page is `https://narrative-dev.kbase.us/narratives`. There should be little to no need to override this in a deployment; it will be overridden by default in development.
+   - `URL_PREFIX` - this is the prefix for any path that the "service" (the server that comes along with this module) generates. I.e., it's the path that to the entrypoint. On narrative-dev, it's `/narratives`, so the URL of the main page is `https://narrative-dev.kbase.us/narratives`
+   - `KBASE_ROOT` - this is the root URL for the environment. `https://ci.kbase.us`, `https://narrative-dev.kbase.us`, etc. This is used to craft most external link URLs.
+   - `KBASE_ENDPOINT` - this is the root endpoint for all services. `https://kbase.us/services` for production, `https://ci.kbase.us/services` for CI, etc. This is used to call individual data providers.
 
 3. Everything else should be default.
-
-4. Update the deployment's nginx proxy to route to the path you just created. It will need a block like this:
+4. Update the environment nginx to route to the path you just created. It will need a block like this:
 
    ```nginx
-   location ~ /(narratives)/(.*) {
+   location ~ /(navigator)/(.*) {
        set $servicehost $1;
        set $serviceurl $2;
        proxy_pass http://$servicehost:5000/$serviceurl;
@@ -53,7 +54,7 @@ This takes a little extra work than the above.
    }
    ```
 
-   Note that in the line `location ~ /(narratives)/(.*) {`, the string literal `narratives` must match the value of `URL_PREFIX`; by default it does, but if you specify a different `URL_PREFIX`, take care to also update the location line.
+   Note that `(navigator)` in the location line above implies that the service name is `navigator`. That hard-coded value is captured by the `()` group and made available via `set $servicehost $1;` as the host name for the service. The Rancher config is converted to a `docker-compose` configuration in which the Rancher service name becomes the docker-compose service name which in turn becomes the containers host name in the docker network.
 
    That needs to get checked in to the secure nginx config location and the nginx image restarted, so this requires help from people who can do that.
 
