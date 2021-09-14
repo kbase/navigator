@@ -36,7 +36,9 @@ This takes a little extra work than the above.
 2. Set the following environment variables:
 
    - `URL_PREFIX` - this is the prefix for any path that the "service" (the server that comes along with this module) generates. I.e., it's the path that to the entrypoint. On narrative-dev, it's `/narratives`, so the URL of the main page is `https://narrative-dev.kbase.us/narratives`
+
    - `KBASE_ROOT` - this is the root URL for the environment. `https://ci.kbase.us`, `https://narrative-dev.kbase.us`, etc. This is used to craft most external link URLs.
+
    - `KBASE_ENDPOINT` - this is the root endpoint for all services. `https://kbase.us/services` for production, `https://ci.kbase.us/services` for CI, etc. This is used to call individual data providers.
 
 3. Everything else should be default.
