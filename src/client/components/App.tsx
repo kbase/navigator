@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { Catalog } from './catalog';
 import { Dashboard } from './dashboard';
 import LegacyHeader from './LegacyHeader';
 import { LegacyNav } from './LegacyNav';
@@ -46,7 +45,9 @@ export default class App extends React.Component<AppProps, AppState> {
                 <Route path="/orgs">
                   <Todo text="Orgs" />
                 </Route>
-                <Route path="/catalog" component={Catalog} />
+                <Route path="/catalog">
+                  <Todo text="Notifications" />
+                </Route>
                 <Route path="/notifications">
                   <Todo text="Notifications" />
                 </Route>
