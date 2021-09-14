@@ -1,4 +1,4 @@
-// Utility for sorting an array of data using a custom accessor fucntion
+// Utility for sorting an array of data using a custom accessor function
 
 export function sortBy(arr: Array<any>, fn: (param: any) => any) {
   return arr.sort((a, b) => {

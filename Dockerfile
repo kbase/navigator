@@ -6,11 +6,10 @@ WORKDIR /app
 
 # Install npm dependencies and build static css/js
 ENV PRODUCTION=true
-RUN yarn run build && rm -rf node_modules
+RUN yarn build && rm -rf node_modules
 
 # Set up python
 FROM python:3.7-alpine
-# FROM kbase/kb_python:python3
 COPY --from=0 /app /app
 COPY requirements.txt /app
 WORKDIR /app
@@ -30,7 +29,7 @@ ARG BUILD_DATE
 ARG BRANCH
 ARG VCS_REF
 LABEL org.label-schema.build-date=$BUILD_DATE
-LABEL org.label-schema.vcs-url="https://github.com/kbaseIncubator/dashboard-redesign.git"
+LABEL org.label-schema.vcs-url="https://github.com/kbase/navigator.git"
 LABEL org.label-schema.vcs-ref=$VCS_REF
 LABEL org.label-schema.schema-version="1.1.8"
 LABEL us.kbase.vcs-branch=$BRANCH

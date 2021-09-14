@@ -43,7 +43,7 @@ export default class LinkOrgItem extends Component<
   }
 
   /**
-   * Once the componenent mounts, it should look up the user's permissions
+   * Once the component mounts, it should look up the user's permissions
    * on the Narrative, the list of orgs that the user belongs to, and any orgs
    * that the Narrative is already linked to.
    *

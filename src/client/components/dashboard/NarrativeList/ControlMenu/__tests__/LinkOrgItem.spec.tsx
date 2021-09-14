@@ -55,7 +55,7 @@ describe('LinkOrgItem', () => {
     );
     /*
     Note that the 'foo' in the perms above needs to match the test config user.
-    The user used in getCurrentUserPermission is that returend by Runtime.username(),
+    The user used in getCurrentUserPermission is that returned by Runtime.username(),
     which matches Runtime.token(). .username() actually gets it's value from
     window._env.username (_env appears to be used as a global namespace !?).
     getToken() simply takes the value of the cookie 'kbase_session'

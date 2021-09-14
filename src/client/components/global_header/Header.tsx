@@ -114,7 +114,7 @@ export class Header extends Component<Props, State> {
 
   // Set gravatarURL
   gravatarSrc() {
-    if (this.state.avatarOption === 'silhoutte' || !this.state.gravatarHash) {
+    if (this.state.avatarOption === 'silhouette' || !this.state.gravatarHash) {
       let origin = Runtime.getConfig().host_root;
       if (origin !== location.origin) {
         origin = '';
