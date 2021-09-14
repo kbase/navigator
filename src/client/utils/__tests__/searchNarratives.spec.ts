@@ -8,14 +8,13 @@
  * from the search service, or even interpreting terms being sent to the service,
  * just making sure that this client runs through cases correctly.
  */
-import { timeStamp } from 'console';
 import { enableFetchMocks } from 'jest-fetch-mock';
 import { AuthInfo } from '../../components/Auth';
 enableFetchMocks();
 // as of now eslint cannot detect when imported interfaces are used
 import {
+  sorts,
   NarrativeSearch,
-  sortsLookup,
   SearchOptions, // eslint-disable-line no-unused-vars
 } from '../searchNarratives';
 
@@ -160,7 +159,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
     const results = await search.searchNarratives({
       term: '',
       category: 'own',
-      sort: 'Recently updated',
+      sort: '-updated',
       skip: 0,
       pageSize: 10,
     });
@@ -177,7 +176,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
     const searchParams = {
       term: '',
       category: 'own',
-      sort: 'Recently updated',
+      sort: '-updated',
       skip: 0,
       pageSize: 10,
     };
@@ -201,7 +200,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
         search.searchNarratives({
           term: '',
           category: 'own',
-          sort: 'Recently updated',
+          sort: '-updated',
           skip: 0,
           pageSize: 10,
         })
@@ -220,7 +219,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
       search.searchNarratives({
         term: '',
         category: 'own',
-        sort: 'Recently updated',
+        sort: '-updated',
         skip: 0,
         pageSize: 10,
       })
@@ -238,7 +237,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
     const results = await search.searchNarratives({
       term: '',
       category: 'own',
-      sort: 'Recently updated',
+      sort: '-updated',
       skip: 0,
       pageSize: 10,
     });
@@ -257,7 +256,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
     const results = await search.searchNarratives({
       term: '',
       category: 'shared',
-      sort: 'Recently updated',
+      sort: '-updated',
       skip: 0,
       pageSize: 10,
     });
@@ -278,7 +277,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
         search.searchNarratives({
           term: '',
           category: 'shared',
-          sort: 'Recently updated',
+          sort: '-updated',
           skip: 0,
           pageSize: 10,
         })
@@ -297,7 +296,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
     const results = await search.searchNarratives({
       term: '',
       category: 'public',
-      sort: 'Recently updated',
+      sort: '-updated',
       skip: 0,
       pageSize: 10,
     });
@@ -316,7 +315,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
     const results = await search.searchNarratives({
       term: '',
       category: 'tutorials',
-      sort: 'Recently updated',
+      sort: '-updated',
       skip: 0,
       pageSize: 10,
     });
@@ -334,7 +333,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
     const results = await search.searchNarratives({
       term: '',
       category: 'tutorials',
-      sort: 'Recently updated',
+      sort: '-updated',
       skip: 0,
       pageSize: 10,
     });
@@ -354,7 +353,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
     const results = await search.searchNarratives({
       term: 'narr',
       category: 'tutorials',
-      sort: 'Recently updated',
+      sort: '-updated',
       skip: 0,
       pageSize: 10,
     });
@@ -364,13 +363,13 @@ describe('The SearchNarratives.searchNarratives method', () => {
 
   // DISABLED - but this tests no such thing
   test.skip('should sort results automatically by some criteria', async () => {
-    const sortings = Object.keys(sortsLookup);
+    // const sortings = Object.keys(sortsLookup);
     mockSearchOk(
       { term: 'narr', sort: '', category: '', skip: 0, pageSize: 10 },
       TEST_USER
     );
     const search = new NarrativeSearch(authInfo);
-    for (const s of sortings) {
+    for (const s of Object.keys(sorts)) {
       const results = await search.searchNarratives({
         term: '',
         category: 'tutorials',
@@ -412,7 +411,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
       search.searchNarratives({
         term: '',
         category: 'uncategorized',
-        sort: 'Recently updated',
+        sort: '-updated',
         skip: 0,
         pageSize: 10,
       })
@@ -430,7 +429,7 @@ describe('The SearchNarratives.searchNarratives method', () => {
     const results = await search.searchNarratives({
       term: '',
       category: 'public',
-      sort: 'Recently updated',
+      sort: '-updated',
       skip: 5,
       pageSize: 10,
     });

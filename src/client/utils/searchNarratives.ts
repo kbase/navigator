@@ -89,9 +89,6 @@ export const sorts: Record<string, string> = {
   lex: 'Lexicographic (A-Za-z)',
   '-lex': 'Reverse Lexicographic',
 };
-export const sortsLookup = Object.fromEntries(
-  Object.entries(sorts).map(([key, val]) => [val, key])
-);
 
 /**
  * Search narratives using ElasticSearch.
@@ -163,10 +160,7 @@ export class NarrativeSearch {
       operator: Operator.And,
       fields: [],
     };
-    // const username = await Runtime.username();
-    // if (!username) {
-    //   return { count: 0, search_time: 0, hits: [] };
-    // }
+
     const username = this.authInfo.tokenInfo.user;
     switch (category) {
       case 'own':
@@ -197,18 +191,18 @@ export class NarrativeSearch {
     }
 
     params.sorts = [['_score', SortDir.Desc]];
-    const sortSlug = sortsLookup[sort];
-    if (sortSlug === '-created') {
+    // const sortSlug = sortsLookup[sort];
+    if (sort === '-created') {
       params.sorts.unshift(['creation_date', SortDir.Desc]);
-    } else if (sortSlug === 'created') {
+    } else if (sort === 'created') {
       params.sorts.unshift(['creation_date', SortDir.Asc]);
-    } else if (sortSlug === 'updated') {
+    } else if (sort === 'updated') {
       params.sorts.unshift(['timestamp', SortDir.Asc]);
-    } else if (sortSlug === '-updated') {
+    } else if (sort === '-updated') {
       params.sorts.unshift(['timestamp', SortDir.Desc]);
-    } else if (sortSlug === 'lex') {
+    } else if (sort === 'lex') {
       params.sorts.unshift(['narrative_title.raw', SortDir.Asc]);
-    } else if (sortSlug === '-lex') {
+    } else if (sort === '-lex') {
       params.sorts.unshift(['narrative_title.raw', SortDir.Desc]);
     } else {
       throw new Error('Unknown sorting method');
@@ -243,12 +237,12 @@ export class NarrativeSearch {
     // TODO: [SCT-2925] JSON-RPC does not make any guarantees of an error status code.
     // I know that KBase does typically issue 500 for rpc errors, but even this is
     // not guaranteed. One should ignore the status and just look
-    // at the rpc  result, with an "error" property indicating an error, and
-    // properties of that  indicating the nature of the error, the most important
+    // at the rpc result, with an "error" property indicating an error, and
+    // properties of that indicating the nature of the error, the most important
     // of which is the "code" and "message".
     // And, reporting the status to the user is not very useful, rather better to pick
     // up the error message, and even better to process the entire error object which
-    // typically has useful additional information.
+    // typically has additional useful information.
     if (!result.ok) {
       throw new Error('An error occurred while searching - ' + result.status);
     }

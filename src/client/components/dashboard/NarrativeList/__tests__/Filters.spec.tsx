@@ -18,20 +18,32 @@ const dummyEvent = {
 const mockFilters = (search: string = '') =>
   mount(
     <Filters
-      category={'public'}
+      category="public"
       history={createBrowserHistory()}
       loading={false}
       onSetSearch={(searchParams, invalidateCache = false) => {}}
       search={search}
-      sort={'-updated'}
+      sort="-updated"
     />
   );
 
-describe('The Filter component', () => {
+const mockFilters2 = (search: string = '') =>
+  mount(
+    <Filters
+      category="public"
+      history={createBrowserHistory()}
+      loading={false}
+      onSetSearch={(searchParams, invalidateCache = false) => {}}
+      search={search}
+      sort="-updated"
+    />
+  );
+
+describe('The Filters component', () => {
   test('renders', () => {
     const wrapper = mockFilters();
     expect(wrapper).toBeTruthy();
-    expect(wrapper.find('filters')).toBeTruthy();
+    expect(wrapper.find('Filters')).toBeTruthy();
   });
 
   test('refresh button handles click', () => {
@@ -40,24 +52,17 @@ describe('The Filter component', () => {
     wrapper.find('button.refresh').simulate('click', dummyEvent);
   });
 
-  // TODO: test that sorting actually works.
-  test('sort dropdown works', () => {
+  // NOTE: See FiltersSort.spec.tsx for more complex sort control testing.
+  test('sort dropdown shows default sort option', () => {
     const wrapper = mockFilters();
-    // TODO: these selectors are fragile ... a test should try to
-    // focus on one thing. There _could_ be a test to ensure that certain classes
-    // are present.
-    expect(wrapper.find('a.ba').first()).toBeTruthy();
-    // Open the filter dropdowns:
-    wrapper.find('a.ba').simulate('click', dummyEvent);
-    expect(wrapper.find('a.db.hover-bg-blue').first()).toBeTruthy();
-    // Click on the one with index 0:
-    wrapper.find('a.db.hover-bg-blue').first().simulate('click', dummyEvent);
-    expect(wrapper.find('a.ba').first()).toBeTruthy();
-    // Open the filter dropdowns:
-    wrapper.find('a.ba').simulate('click', dummyEvent);
-    expect(wrapper.find('a.db.hover-bg-blue').at(1)).toBeTruthy();
-    // Click on the one with index 1:
-    wrapper.find('a.db.hover-bg-blue').at(1).simulate('click', dummyEvent);
+
+    // Selects the dropdown menu control wrapper
+    const dropdownControl = wrapper.find('.Filters .SortDropdown > .-control');
+    expect(dropdownControl).toBeTruthy();
+
+    // This is the default selection, which appears as the controls content upon
+    // first opening.
+    expect(dropdownControl.text()).toEqual('Recently updated');
   });
 
   test('search input change fires handleSearch', async () => {

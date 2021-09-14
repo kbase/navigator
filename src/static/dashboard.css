@@ -46,12 +46,6 @@ body {
   text-decoration: none;
 }
 
-.filters {
-  align-items: center;
-  background-color: var(--tachyon-light-gray);
-  display: flex;
-}
-
 /* .clickable and .inactive are the same as tachyon's .dim (for now) */
 .clickable,
 .inactive {

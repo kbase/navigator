@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
 import { History } from 'history';
+import Select from 'react-select';
 
-import { sorts, sortsLookup } from '../../../utils/searchNarratives';
+import { sorts } from '../../../utils/searchNarratives';
 
 // Components
-import { FilterDropdown } from '../../generic/FilterDropdown';
 import { SearchInput } from '../../generic/SearchInput';
+
+import './Filters.css';
+
 interface SearchParams {
   term: string;
   sort: string;
 }
+// TODO: Is it not exported from react-select?
+interface OptionType {
+  [key: string]: any;
+}
+
 interface State {
   loading: boolean;
   searchParams: SearchParams;
+  sort: string;
+  selectedSort: OptionType;
 }
 
 interface Props {
@@ -23,8 +33,13 @@ interface Props {
   search: string;
   sort: string;
 }
-
 const sortSlugDefault = Object.keys(sorts)[0];
+const sortOptions = Object.entries(sorts).map(([value, label]) => {
+  return {
+    label,
+    value,
+  };
+});
 
 // Filter bar for searching and sorting data results
 export class Filters extends Component<Props, State> {
@@ -33,19 +48,40 @@ export class Filters extends Component<Props, State> {
     this.state = {
       loading: false,
       searchParams: this.getSearchParamsFromProps(props),
+      sort: this.props.sort,
+      selectedSort: this.getSort(this.props.sort),
     };
-    this.handleSearch = this.handleSearch.bind(this);
-    this.handleRefresh = this.handleRefresh.bind(this);
+
+    // Options will never change after being set once; could just load
+    // them from a source file.
   }
 
-  componentDidMount() {
-    this.handleFilter(this.state.searchParams.sort, false);
+  componentDidUpdate(previousProps: Props) {
+    if (previousProps.sort !== this.props.sort) {
+      this.setState({
+        sort: this.props.sort,
+        selectedSort: this.getSort(this.props.sort),
+      });
+    }
+  }
+
+  getSort(sort: string): OptionType {
+    for (const [value, label] of Object.entries(sorts)) {
+      if (value === sort) {
+        return {
+          label,
+          value,
+        };
+      }
+    }
+    // An invalid value  (can this occur? TODO!)
+    throw new Error(`Sort option "${sort}" not recognized`);
   }
 
   getSearchParamsFromProps(props: Props) {
     return {
       term: props.search,
-      sort: sorts[props.sort],
+      sort: props.sort,
     };
   }
 
@@ -63,23 +99,33 @@ export class Filters extends Component<Props, State> {
     this.props.onSetSearch(searchParams);
   }
 
-  // Handle an onSelect event from FilterDropdown
-  handleFilter(val: string, updateLocation: boolean = true): void {
+  handleFilterChange(value: any): void {
     const { category } = this.props;
-    if (updateLocation) {
-      const queryParams = new URLSearchParams(location.search);
-      const sortSlug = sortsLookup[val];
-      if (sortSlug === sortSlugDefault) {
-        queryParams.delete('sort');
-      } else {
-        queryParams.set('sort', sortSlug);
-      }
-      const prefix = '/' + (category === 'own' ? '' : `${category}/`);
-      const newLocation = `${prefix}?${queryParams.toString()}`;
-      this.props.history.push(newLocation);
+    const sortSlug = value.value;
+
+    // Update the url with the new sort option.
+    const queryParams = new URLSearchParams(location.search);
+
+    // This bit of magic removes the 'sort' query parameter if the
+    // sort option is the default one (which is the first one).
+    // TODO: this might be cute, but i'm not sure what the use is,
+    // If a use case for putting state like this into the url is to
+    // provide the ability to pass such links around, removing state
+    // from the user might be self-defeating if the sort option order
+    // ever changes. Nevertheless, the "Recently updated" order will
+    // probably always be the default.
+    if (sortSlug === sortSlugDefault) {
+      queryParams.delete('sort');
+    } else {
+      queryParams.set('sort', sortSlug);
     }
+    const prefix = '/' + (category === 'own' ? '' : `${category}/`);
+    const newLocation = `${prefix}?${queryParams.toString()}`;
+    this.props.history.push(newLocation);
+
+    // Perform the search update.
     const searchParams = this.state.searchParams;
-    searchParams.sort = val;
+    searchParams.sort = sortSlug;
     this.setState({ searchParams });
     if (this.props.onSetSearch) {
       this.props.onSetSearch(searchParams);
@@ -98,37 +144,58 @@ export class Filters extends Component<Props, State> {
     });
   }
 
+  renderFilterDropdown() {
+    return (
+      <span className="SortDropdown">
+        <div className="-label">Sort</div>
+        <div className="-control" role="listbox">
+          <Select
+            defaultOptions
+            isSearchable={false}
+            defaultValue={this.state.selectedSort}
+            value={this.state.selectedSort}
+            placeholder="Sort by..."
+            options={sortOptions}
+            display="inline"
+            width="10em"
+            styles={{
+              container: (base) => {
+                return {
+                  ...base,
+                  width: '14em',
+                };
+              },
+            }}
+            onChange={this.handleFilterChange.bind(this)}
+          />
+        </div>
+      </span>
+    );
+  }
+
   render() {
-    const dropdownItems = Object.values(sorts);
-    const searchParams = this.state.searchParams;
-    const selectedSort = sorts[this.props.sort] || searchParams.sort;
-    const selectedIdx = dropdownItems.indexOf(selectedSort);
     const refreshIconClasses = [
       'fa fa-refresh',
       this.state.loading ? ' loading' : '',
     ].join('');
     return (
-      <div className="filters">
+      <div className="Filters">
         {/* Left-aligned actions (eg. search) */}
         <div className="pv3">
           <SearchInput
             loading={this.props.loading}
-            onSetVal={this.handleSearch}
+            onSetVal={this.handleSearch.bind(this)}
             placeholder="Search Narratives"
             value={this.props.search}
           />
         </div>
 
         {/* Right-aligned actions (eg. filter dropdown) */}
-        <div className="pa3">
-          <FilterDropdown
-            onSelect={this.handleFilter.bind(this)}
-            selectedIdx={selectedIdx}
-            txt={'Sort by'}
-            items={dropdownItems}
-          />
-        </div>
-        <button className="button refresh" onClick={this.handleRefresh}>
+        <div className="pa3">{this.renderFilterDropdown()}</div>
+        <button
+          className="button refresh"
+          onClick={this.handleRefresh.bind(this)}
+        >
           Refresh &nbsp;
           <i className={refreshIconClasses}></i>
         </button>

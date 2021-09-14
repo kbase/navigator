@@ -56,8 +56,8 @@ const upaKey = (id: number, obj: number, ver: number) => `${id}/${obj}/${ver}`;
 export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { category, limit, search } = this.props;
-    const sortDefault = Object.values(sorts)[0];
+    const { category, limit, search, sort } = this.props;
+    const sortDefault = Object.keys(sorts)[0];
     this.state = {
       // Currently active narrative result, selected on the left and shown on the right
       // This is unused if the items array is empty.
@@ -69,8 +69,8 @@ export class NarrativeList extends Component<Props, State> {
       pages: parseInt((limit / PAGE_SIZE).toString()),
       searchParams: {
         term: search,
-        sort: sortDefault,
-        category: category,
+        sort: sort || sortDefault,
+        category,
         pageSize: limit || PAGE_SIZE,
       },
       totalItems: 0,
@@ -84,7 +84,7 @@ export class NarrativeList extends Component<Props, State> {
   async componentDidUpdate(prevProps: Props) {
     const { category, search } = this.props;
     const pageSize = this.props.limit || PAGE_SIZE;
-    const sort = sorts[this.props.sort];
+    const sort = this.props.sort;
     const nextSearchParams = { term: search, sort, category, pageSize };
     const performSearchCondition =
       prevProps.category !== this.props.category ||
@@ -236,7 +236,9 @@ export class NarrativeList extends Component<Props, State> {
                 authInfo={this.props.authInfo}
                 activeItem={activeItem}
                 view={view}
-                updateSearch={() => this.performSearch()}
+                updateSearch={() => {
+                  this.performSearch();
+                }}
               />
             ) : (
               <></>
