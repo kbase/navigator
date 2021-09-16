@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { keepParamsLinkTo } from '../utils';
 import { Doc } from '../../../utils/narrativeData';
+import { VersionDropdown } from './VersionDropdown';
+import { History } from 'history';
 
 const timeago = require('timeago.js');
 
@@ -16,6 +18,7 @@ interface Props {
   selectedIdx: number;
   sort?: string;
   totalItems: number;
+  history: History;
 }
 
 interface State {}
@@ -43,6 +46,8 @@ export class ItemList extends Component<Props, State> {
       this.props.onSelectItem(idx);
     }
   }
+
+  state = {};
 
   // Handle click event on an individual item
   handleClickItem(idx: number) {
@@ -77,6 +82,7 @@ export class ItemList extends Component<Props, State> {
           <div className={css.inner}>
             <div className="ma0 mb2 pa0 f5">
               {item.narrative_title || 'Untitled'}
+              {this.renderDropdown(upa, item.version)}
             </div>
             <p className="ma0 pa0 f7">
               Updated {timeago.format(item.timestamp)} by {item.creator}
@@ -87,6 +93,22 @@ export class ItemList extends Component<Props, State> {
       </Link>
     );
   };
+
+  renderDropdown(upa: string, version: number) {
+    const { selected } = this.props;
+    const selectedNarr = selected.substring(0, selected.lastIndexOf('/'));
+    const narr = upa.substring(0, upa.lastIndexOf('/'));
+    // if (this.props.selected !== upa) {
+    if (narr !== selectedNarr) {
+      return <></>
+    }
+    return <VersionDropdown
+              upa={upa}
+              version={version}
+              category={this.props.category}
+              history={this.props.history}
+            />
+  }
 
   hasMoreButton() {
     const { items, pageSize, totalItems } = this.props;

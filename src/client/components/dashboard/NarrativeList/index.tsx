@@ -33,6 +33,7 @@ interface State {
   // Parameters to send to searchNarratives
   searchParams: SearchOptions;
   totalItems: number;
+  oldVersionDoc: Doc | null;
 }
 
 interface Props {
@@ -75,6 +76,7 @@ export class NarrativeList extends Component<Props, State> {
         pageSize: limit || PAGE_SIZE,
       },
       totalItems: 0,
+      oldVersionDoc: null
     };
   }
 
@@ -102,6 +104,23 @@ export class NarrativeList extends Component<Props, State> {
       this.setState({
         searchParams: nextSearchParams,
       });
+    }
+
+    this.checkSelectedVersion();
+  }
+
+  async checkSelectedVersion() {
+    // check if item is a previous version
+    // if user selected an earlier version of a narrative, we need to fetch it separately
+    // as the search service does not index prior versions
+    if (!this.state.items.length) {
+      return;
+    }
+    const { id, obj, ver } = this.props;
+    const activeItem = this.state.items[this.state.activeIdx];
+    if (ver !== activeItem?.version) {
+      const upa = upaKey(id, obj, ver)
+      // TODO: get new call from narrative service that will return Doc type of older version
     }
   }
 
@@ -233,6 +252,7 @@ export class NarrativeList extends Component<Props, State> {
               selectedIdx={this.state.activeIdx}
               sort={sort}
               totalItems={this.state.totalItems}
+              history={this.props.history}
             />
 
             {activeItem ? (
