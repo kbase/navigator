@@ -232,13 +232,13 @@ function GlobalPerms(props: GlobalProps): React.ReactElement {
     text = 'Public';
     className += ' bg-light-green dark-green b--green';
     if (props.isAdmin) {
-      text += ' (click to lock)';
+      text += ' (click to make private)';
     }
   } else {
     text = 'Private';
     className += ' bg-lightest-blue dark-blue b--dark-blue';
     if (props.isAdmin) {
-      text += ' (click to unlock)';
+      text += ' (click to make public)';
     }
   }
 
