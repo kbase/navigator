@@ -51,7 +51,9 @@ export class LegacyHamburgerMenu extends React.Component<
   }
 
   toggleMenu() {
-    this.setState({ isMenuOpen: !this.state.isMenuOpen });
+    this.setState((prevState: LegacyHamburgerMenuState) => {
+      return { isMenuOpen: !prevState.isMenuOpen };
+    });
   }
 
   closeMenu() {

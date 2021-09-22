@@ -21,7 +21,6 @@ interface OptionType {
 interface State {
   loading: boolean;
   searchParams: SearchParams;
-  sort: string;
   selectedSort: OptionType;
 }
 
@@ -48,7 +47,6 @@ export class Filters extends Component<Props, State> {
     this.state = {
       loading: false,
       searchParams: this.getSearchParamsFromProps(props),
-      sort: this.props.sort,
       selectedSort: this.getSort(this.props.sort),
     };
 
@@ -59,7 +57,6 @@ export class Filters extends Component<Props, State> {
   componentDidUpdate(previousProps: Props) {
     if (previousProps.sort !== this.props.sort) {
       this.setState({
-        sort: this.props.sort,
         selectedSort: this.getSort(this.props.sort),
       });
     }

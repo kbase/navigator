@@ -24,17 +24,15 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
         synced: { gravatarHash },
       },
     } = userProfile;
-    if (avatarOption === 'silhoutte' || !gravatarHash) {
+    if (avatarOption === 'silhouette') {
       // TODO: please explain
       let origin = Runtime.getConfig().host_root;
       if (origin !== location.origin) {
         origin = '';
       }
       return `${origin}${window._env.urlPrefix}/static/images/nouserpic.png`;
-    } else if (gravatarHash) {
-      return `https://www.gravatar.com/avatar/${gravatarHash}?s=300&r=pg&d=${gravatarDefault}`;
     }
-    return '';
+    return `https://www.gravatar.com/avatar/${gravatarHash}?s=300&r=pg&d=${gravatarDefault}`;
   }
 
   async signOut(token: string) {
