@@ -160,26 +160,6 @@ export default class ControlMenu extends Component<ControlMenuProps, State> {
       );
     })(this.state);
 
-    // let modal = null;
-    // if (this.state.showModal && this.state.modalItem) {
-    //   modal = (
-    //     <Modal
-    //       closeFn={() => this.closeModal()}
-    //       title={this.state.modalItem.dialogTitle}
-    //       withCloseButton={true}
-    //     >
-    //       <AuthContext.Consumer>
-    //         {(value) => {
-    //           return React.createElement(this.state.modalItem.menuComponent, {
-    //             ...this.props,
-    //             cancelFn: () => this.closeModal(),
-    //           })
-    //         }}
-    //       </AuthContext.Consumer>
-    //     </Modal>
-    //   );
-    // }
-
     return (
       <div className="cursor tr">
         <span
