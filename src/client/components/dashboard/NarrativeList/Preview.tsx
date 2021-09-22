@@ -16,7 +16,6 @@ interface Props {
 
 interface State {
   isLoading: boolean;
-  narrObj: any; // gets fetched from Workspace.
   cells: Array<any>;
   error: any;
 }
@@ -34,7 +33,6 @@ export default class Preview extends Component<Props, State> {
     super(props);
     this.state = {
       isLoading: true,
-      narrObj: null,
       cells: [],
       error: null,
     };
@@ -65,7 +63,6 @@ export default class Preview extends Component<Props, State> {
       const cells = narrative.cells ? narrative.cells : [];
       this.setState({
         isLoading: false,
-        narrObj: narrative,
         cells,
         error: null,
       });
