@@ -39,21 +39,6 @@ export default class App extends React.Component<AppProps, AppState> {
                   path={'/:category/:id/:obj/:ver'}
                   component={Dashboard}
                 />
-                <Route path="/search">
-                  <Todo text="Search" />
-                </Route>
-                <Route path="/orgs">
-                  <Todo text="Orgs" />
-                </Route>
-                <Route path="/catalog">
-                  <Todo text="Notifications" />
-                </Route>
-                <Route path="/notifications">
-                  <Todo text="Notifications" />
-                </Route>
-                <Route path="/account">
-                  <Todo text="Account" />
-                </Route>
                 <Route path="*">
                   <NotFoundPage />
                 </Route>
