@@ -26,10 +26,15 @@ describe('The Main component', () => {
 
     const wrapper = mount(<Main />);
 
-    expect(wrapper.text()).toContain('This app requires authentication');
+    // expect(wrapper.text()).toContain('Authenticating...');
+
+    expect(wrapper.text()).toContain('The Navigator requires authentication');
   });
 
   it('should render an error if rendered with an invalid auth token cookie', async () => {
+    // Note that this test is only valid for developer mode (localhost); in a deployment
+    // there will actually be a redirect and no error message.
+
     // Ensure no auth cookie is picked up.
     setAuthCookie('foo');
     fetchMock.mockOnce(async (req) => {
@@ -48,41 +53,15 @@ describe('The Main component', () => {
         }),
       };
     });
+    const main = mount(<Main />);
 
-    const wrapper = mount(<Main />);
+    // This is enough to allow the async mock to run.
+    await wait(0);
 
-    await wait(100);
+    // Need to update Enzyme's view of the component; it takes a snapshot at mount time, which
+    // is not correct after the call to get authentication status of the token cookie resolves.
+    main.update();
 
-    expect(wrapper.text()).toContain('This app requires authentication');
-  });
-
-  // TODO: full mounting, but that requires quite a bit of mocking!
-
-  // it('should render an error if rendered with no auth token cookie', () => {
-  //   // Ensure no auth cookie is picked up.
-  //   removeAuthCookie();
-
-  //   const wrapper = mount(<Main />);
-
-  //   // const mount = document.createElement('div');
-  //   // main(mount);
-  //   // TODO: something useful.
-  //   expect(wrapper).toBeTruthy();
-
-  //   expect(wrapper.text()).toContain('This app requires authentication');
-  // });
-
-  //
-});
-
-describe('The main function', () => {
-  it('should render an error if rendered with no auth token cookie', () => {
-    // Ensure no auth cookie is picked up.
-    removeAuthCookie();
-
-    const node = document.createElement('div');
-    main(node);
-
-    expect(node.textContent).toContain('This app requires authentication');
+    expect(main.text()).toContain('The Navigator requires authentication');
   });
 });

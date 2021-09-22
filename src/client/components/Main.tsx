@@ -28,7 +28,7 @@ export const Main = () => {
                     return <Loading message="Redirecting to login..." />;
                   } else {
                     return (
-                      <ErrorMessage message="This app requires authentication" />
+                      <ErrorMessage message="The Navigator requires authentication" />
                     );
                   }
                 case AuthenticationStatus.AUTHENTICATED:
