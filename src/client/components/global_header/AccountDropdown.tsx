@@ -64,7 +64,7 @@ export class AccountDropdown extends React.Component<
         >
           <img
             style={{ maxWidth: '40px' }}
-            alt="avatar"
+            alt="Your Gravatar"
             src={this.props.gravatarURL}
           />
           <i
