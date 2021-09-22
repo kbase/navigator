@@ -18,13 +18,12 @@ interface OptionType {
   [key: string]: any;
 }
 
-interface State {
+interface FiltersState {
   loading: boolean;
   searchParams: SearchParams;
-  selectedSort: OptionType;
 }
 
-interface Props {
+interface FiltersProps {
   category: string;
   history: History;
   loading: boolean;
@@ -41,41 +40,27 @@ const sortOptions = Object.entries(sorts).map(([value, label]) => {
 });
 
 // Filter bar for searching and sorting data results
-export class Filters extends Component<Props, State> {
-  constructor(props: Props) {
+export class Filters extends Component<FiltersProps, FiltersState> {
+  constructor(props: FiltersProps) {
     super(props);
     this.state = {
       loading: false,
       searchParams: this.getSearchParamsFromProps(props),
-      selectedSort: this.getSort(this.props.sort),
     };
-
-    // Options will never change after being set once; could just load
-    // them from a source file.
-  }
-
-  componentDidUpdate(previousProps: Props) {
-    if (previousProps.sort !== this.props.sort) {
-      this.setState({
-        selectedSort: this.getSort(this.props.sort),
-      });
-    }
   }
 
   getSort(sort: string): OptionType {
-    for (const [value, label] of Object.entries(sorts)) {
-      if (value === sort) {
-        return {
-          label,
-          value,
-        };
-      }
+    if (sort in sorts) {
+      return {
+        value: sort,
+        label: sorts[sort],
+      };
     }
     // An invalid value  (can this occur? TODO!)
     throw new Error(`Sort option "${sort}" not recognized`);
   }
 
-  getSearchParamsFromProps(props: Props) {
+  getSearchParamsFromProps(props: FiltersProps) {
     return {
       term: props.search,
       sort: props.sort,
@@ -132,16 +117,18 @@ export class Filters extends Component<Props, State> {
   async handleRefresh(evt: any) {
     const searchParams = this.getSearchParamsFromProps(this.props);
     if (this.props.onSetSearch) {
-      this.setState({ loading: true });
-      await this.props.onSetSearch(searchParams, true);
+      this.setState({ loading: true }, async () => {
+        await this.props.onSetSearch(searchParams, true);
+        this.setState({
+          loading: false,
+          searchParams,
+        });
+      });
     }
-    this.setState({
-      loading: false,
-      searchParams,
-    });
   }
 
   renderFilterDropdown() {
+    const sortOption = this.getSort(this.props.sort);
     return (
       <span className="SortDropdown">
         <div className="-label">Sort</div>
@@ -149,8 +136,8 @@ export class Filters extends Component<Props, State> {
           <Select
             defaultOptions
             isSearchable={false}
-            defaultValue={this.state.selectedSort}
-            value={this.state.selectedSort}
+            defaultValue={sortOption}
+            value={sortOption}
             placeholder="Sort by..."
             options={sortOptions}
             display="inline"
