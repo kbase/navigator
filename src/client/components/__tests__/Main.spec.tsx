@@ -26,8 +26,6 @@ describe('The Main component', () => {
 
     const wrapper = mount(<Main />);
 
-    // expect(wrapper.text()).toContain('Authenticating...');
-
     expect(wrapper.text()).toContain('The Navigator requires authentication');
   });
 
