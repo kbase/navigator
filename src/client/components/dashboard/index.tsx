@@ -9,6 +9,7 @@ import { NarrativeList } from './NarrativeList';
 import { AuthContext, AuthenticationStatus } from '../Auth';
 import { AsyncProcessStatus } from '../../utils/AsyncProcess';
 import { LoadingSpinner } from '../generic/LoadingSpinner';
+import Runtime from '../../utils/runtime';
 
 interface RouteParams {
   category?: string;
@@ -41,7 +42,12 @@ export class Dashboard extends Component<Props, State> {
   }
 
   renderUnauthenticated() {
-    return this.renderError('This app requires authentication');
+    // If running on a kbase.us host, we route to kbase-ui login.
+    if (/kbase\.us$/.test(document.location.host)) {
+      document.location.href = Runtime.getConfig().host_root + '/#login';
+    } else {
+      return this.renderError('This app requires authentication');
+    }
   }
 
   renderLoading() {
