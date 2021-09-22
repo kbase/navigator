@@ -30,7 +30,6 @@ interface State {
   items: Array<Doc>;
   // Whether we are loading data from the server
   loading: boolean;
-  pages: number;
   // Parameters to send to searchNarratives
   searchParams: SearchOptions;
   totalItems: number;
@@ -66,7 +65,6 @@ export class NarrativeList extends Component<Props, State> {
       items: [],
       loading: false,
       // parameters to send to the searchNarratives function
-      pages: parseInt((limit / PAGE_SIZE).toString()),
       searchParams: {
         term: search,
         sort: sort || sortDefault,
