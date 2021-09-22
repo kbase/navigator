@@ -4,6 +4,7 @@ networks:
     name: kbase-dev
 services:
   navigator:
+    hostname: navigator
     build:
       context: .
       dockerfile: dev/Dockerfile-python
@@ -30,6 +31,7 @@ services:
   # Proxy requests from localhost:5011 to ci.kbase.us
   # (for getting around CORS restrictions)
   ci_proxy:
+    hostname: navigator_ci_proxy
     image: nginx:alpine
     ports:
       - '127.0.0.1:5011:5011'
