@@ -32,7 +32,10 @@ export class LoginMenu extends Component<LoginMenuProps, LoginMenuState> {
       }
       return `${origin}${window._env.urlPrefix}/static/images/nouserpic.png`;
     }
-    return `https://www.gravatar.com/avatar/${gravatarHash}?s=300&r=pg&d=${gravatarDefault}`;
+    console.log('user profile', userProfile);
+    return `https://www.gravatar.com/avatar/${gravatarHash}?s=300&r=pg&d=${
+      gravatarDefault || 'identicon'
+    }`;
   }
 
   async signOut(token: string) {
