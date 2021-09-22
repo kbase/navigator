@@ -14,7 +14,6 @@ interface PermSearchProps {
 }
 
 interface PermSearchState {
-  inputValue: string;
   selectedUsers: string[]; // user ids
   perm: string;
 }
@@ -26,7 +25,6 @@ export interface PermOption {
 
 export default class PermSearch extends Component<PermSearchProps> {
   state: PermSearchState = {
-    inputValue: '',
     selectedUsers: [],
     perm: 'r',
   };
@@ -38,7 +36,7 @@ export default class PermSearch extends Component<PermSearchProps> {
 
   searchUsers(
     term: string,
-    callback: (options: OptionsType<any>) => void | Promise<any>
+    _callback: (options: OptionsType<any>) => void | Promise<any>
   ) {
     if (term.length < 2) {
       return new Promise((resolve) => resolve(''));
@@ -54,12 +52,6 @@ export default class PermSearch extends Component<PermSearchProps> {
         .sort((a, b) => a.value.localeCompare(b.value));
     });
   }
-
-  handleInputChange = (newValue: string) => {
-    const inputValue = newValue.replace(/\W/g, '');
-    this.setState({ inputValue });
-    return inputValue;
-  };
 
   handleUserChange = (selected: Array<any>) => {
     if (!selected) {
@@ -95,7 +87,6 @@ export default class PermSearch extends Component<PermSearchProps> {
             container: (base: any) => ({ ...base, flex: 2 }),
           }}
           menuPortalTarget={document.body}
-          onInputChange={this.handleInputChange.bind(this)}
           onChange={this.handleUserChange.bind(this)}
         />
         <Select
