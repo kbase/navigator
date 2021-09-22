@@ -51,7 +51,7 @@ export interface AuthenticationStateAuthenticated
   userProfile: UserProfile;
 }
 
-export interface AuthenticationStateUnuthenticated
+export interface AuthenticationStateUnauthenticated
   extends AuthenticationStatusBase {
   status: AuthenticationStatus.UNAUTHENTICATED;
 }
@@ -59,7 +59,7 @@ export interface AuthenticationStateUnuthenticated
 export type AuthenticationState =
   | AuthenticationStateNone
   | AuthenticationStateAuthenticated
-  | AuthenticationStateUnuthenticated;
+  | AuthenticationStateUnauthenticated;
 
 export type AuthState = AsyncProcess<AuthenticationState>;
 
@@ -125,7 +125,7 @@ export default class AuthWrapper extends React.Component<
   async fetchTokenInfo() {
     const token = BrowserAuth.getToken();
 
-    function unauthenticatedState(): AsyncProcessSuccess<AuthenticationStateUnuthenticated> {
+    function unauthenticatedState(): AsyncProcessSuccess<AuthenticationStateUnauthenticated> {
       return {
         status: AsyncProcessStatus.SUCCESS,
         value: {
@@ -180,7 +180,7 @@ export default class AuthWrapper extends React.Component<
       } else if (ex instanceof Error) {
         this.setState({ authState: errorState(ex.message) });
       } else {
-        this.setState({ authState: errorState('Unknown') });
+        this.setState({ authState: errorState('Unknown Error') });
       }
     }
   }
