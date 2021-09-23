@@ -34,12 +34,9 @@ export default class PermSearch extends Component<PermSearchProps> {
     { value: 'a', label: PERM_MAPPING['a'] },
   ];
 
-  searchUsers(
-    term: string,
-    _callback: (options: OptionsType<any>) => void | Promise<any>
-  ) {
+  searchUsers(term: string, _callback: any): Promise<Array<any>> {
     if (term.length < 2) {
-      return new Promise((resolve) => resolve(''));
+      return Promise.resolve([]);
     }
     const auth = new AuthService(this.props.authInfo.token);
     return auth.searchUsernames(term).then((usernames) => {
@@ -53,7 +50,7 @@ export default class PermSearch extends Component<PermSearchProps> {
     });
   }
 
-  handleUserChange = (selected: Array<any>) => {
+  handleUserChange = (selected: OptionsType<any>) => {
     if (!selected) {
       this.setState({ selectedUsers: [] });
     } else {
@@ -71,9 +68,6 @@ export default class PermSearch extends Component<PermSearchProps> {
   };
 
   render() {
-    const selectStyles: Partial<Styles<PermOption, false>> = {
-      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-    };
     return (
       <div className="flex flex-row flex-nowrap">
         <AsyncSelect
@@ -83,8 +77,8 @@ export default class PermSearch extends Component<PermSearchProps> {
           loadOptions={this.searchUsers.bind(this)}
           placeholder={'Share with...'}
           styles={{
-            ...selectStyles,
-            container: (base: any) => ({ ...base, flex: 2 }),
+            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+            container: (base) => ({ ...base, flex: 2 }),
           }}
           menuPortalTarget={document.body}
           onChange={this.handleUserChange.bind(this)}
@@ -93,7 +87,7 @@ export default class PermSearch extends Component<PermSearchProps> {
           defaultValue={this.permOptions[0]}
           options={this.permOptions}
           styles={{
-            ...selectStyles,
+            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
             container: (base) => ({ ...base, flex: 1 }),
           }}
           menuPortalTarget={document.body}
