@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 // as of now eslint cannot detect when imported interfaces are used
-import { Location, LocationDescriptor } from 'history'; // eslint-disable-line no-unused-vars
+import { Location } from 'history'; // eslint-disable-line no-unused-vars
 
 interface LinkFunction {
-  (loc: Location): LocationDescriptor;
+  (loc: Location): string;
 }
 
 export interface Props {
