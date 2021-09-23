@@ -56,7 +56,6 @@ export class Dashboard extends Component<Props, State> {
           ver={paramVer}
           view={view}
         />
-        );
       </section>
     );
   }
