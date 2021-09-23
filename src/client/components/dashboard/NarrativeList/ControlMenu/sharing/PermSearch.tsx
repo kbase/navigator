@@ -1,4 +1,4 @@
-import Select, { OptionsType, Styles } from 'react-select';
+import Select, { OptionsType } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import DashboardButton from '../../../../generic/DashboardButton';
 import React, { Component } from 'react';
