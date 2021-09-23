@@ -8,7 +8,7 @@ import {
 import { Dashboard } from './dashboard';
 import LegacyHeader from './LegacyHeader';
 import { LegacyNav } from './LegacyNav';
-import { NotFoundPage } from './not_found';
+import NotFoundPage from './NotFoundPage';
 import './App.css';
 import { AuthInfo } from './Auth';
 import { UserProfile } from '../utils/UserModel';

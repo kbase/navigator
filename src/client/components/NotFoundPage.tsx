@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 
-interface Props {
+interface NotFoundPageProps {
   href?: string;
   linkText?: string;
 }
 
-interface State {}
+interface NotFoundPageState {}
 
-// Parent page component for the dashboard page
-export class NotFoundPage extends Component<Props, State> {
+export default class NotFoundPage extends Component<
+  NotFoundPageProps,
+  NotFoundPageState
+> {
   render() {
     const href = this.props.href || '/';
     const linkText = this.props.linkText || 'Return home';
