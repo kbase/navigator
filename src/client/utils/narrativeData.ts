@@ -94,3 +94,15 @@ export async function getCurrentUserPermission(wsId: number): Promise<string> {
   }
   return 'n';
 }
+
+export async function fetchOldVersionDoc(id: number, obj: number, ver: number): Promise<Doc> {
+  const client = new KBaseServiceClient({
+    module: 'NarrativeService',
+    url: Runtime.getConfig().service_routes.service_wizard,
+    authToken: Runtime.token()
+  });
+
+  const response = await client.call('get_narrative_doc', [{narrative_upa: `${id}/${obj}/${ver}`}]);
+  return response[0];
+
+}

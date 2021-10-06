@@ -6,7 +6,7 @@ import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
 import { NarrativeDetails } from './NarrativeDetails';
-import { Doc, KBaseCache } from '../../../utils/narrativeData';
+import { Doc, KBaseCache, fetchOldVersionDoc } from '../../../utils/narrativeData';
 
 // Utils
 import { keepParamsLinkTo } from '../utils';
@@ -109,19 +109,38 @@ export class NarrativeList extends Component<Props, State> {
     this.checkSelectedVersion();
   }
 
-  async checkSelectedVersion() {
+  checkSelectedVersion() {
     // check if item is a previous version
     // if user selected an earlier version of a narrative, we need to fetch it separately
     // as the search service does not index prior versions
+    const { id, obj, ver } = this.props;
+
     if (!this.state.items.length) {
       return;
     }
-    const { id, obj, ver } = this.props;
+
     const activeItem = this.state.items[this.state.activeIdx];
-    if (ver !== activeItem?.version) {
-      const upa = upaKey(id, obj, ver)
-      // TODO: get new call from narrative service that will return Doc type of older version
+
+    if (this.state.oldVersionDoc) {
+      if (this.state.oldVersionDoc.version !== ver) {
+        if (ver === activeItem.version) {
+          this.setState({oldVersionDoc: null})
+        } else {
+          this.updateVersionDoc();
+        }
+      }
+    } else {
+      if (activeItem.version !== ver && ver > 0) {
+        this.updateVersionDoc();
+      }
     }
+  }
+
+  async updateVersionDoc() {
+    // TODO: NarrativeService.get_narrative_doc([{narrative_upa: `${id}/${obj}/${ver}`])
+    const { id, obj, ver } = this.props;
+    const oldVersionDoc = await fetchOldVersionDoc(id, obj, ver);
+    this.setState({oldVersionDoc});
   }
 
   // Handle an onSetSearch callback from Filters
@@ -261,6 +280,8 @@ export class NarrativeList extends Component<Props, State> {
                 cache={this.state.cache}
                 view={view}
                 updateSearch={() => this.performSearch()}
+                previousVersion={this.state.oldVersionDoc}
+                category={category}
               />
             ) : (
               <></>
