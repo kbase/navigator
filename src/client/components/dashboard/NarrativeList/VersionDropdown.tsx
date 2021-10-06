@@ -5,6 +5,7 @@ import { History } from 'history'
 interface Props {
     upa: string;
     version: number;
+    selectedVersion: number;
     category: string;
     history: History
 }
@@ -18,7 +19,8 @@ export class VersionDropdown extends Component<Props, State> {
 
     state = {
         versionToggle: false,
-        selectedVersion: this.props.version
+        // selectedVersion: this.props.version
+        selectedVersion: this.props.selectedVersion
     };
 
     setVersionToggle(event: MouseEvent) {
@@ -79,7 +81,13 @@ export class VersionDropdown extends Component<Props, State> {
             {this.state.versionToggle &&
               <div
                 className="ba b--black-30 bg-white db fr absolute"
-                style={{boxShadow: '0 2px 3px #aaa', zIndex: 1, width: '8rem', maxHeight: '200px', overflowY: 'scroll'}}
+                style={{
+                    boxShadow: '0 2px 3px #aaa',
+                    zIndex: 1,
+                    width: '8rem',
+                    maxHeight: '200px',
+                    overflowY: 'scroll'
+                }}
               >
                 {versions.map(ver => this.itemView(ver))}
               </div>

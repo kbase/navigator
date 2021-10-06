@@ -97,14 +97,15 @@ export class ItemList extends Component<Props, State> {
   renderDropdown(upa: string, version: number) {
     const { selected } = this.props;
     const selectedNarr = selected.substring(0, selected.lastIndexOf('/'));
+    const selectedVersion = +selected.split('/')[2];
     const narr = upa.substring(0, upa.lastIndexOf('/'));
-    // if (this.props.selected !== upa) {
     if (narr !== selectedNarr) {
       return <></>
     }
     return <VersionDropdown
               upa={upa}
               version={version}
+              selectedVersion={selectedVersion}
               category={this.props.category}
               history={this.props.history}
             />
