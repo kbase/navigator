@@ -137,9 +137,10 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   async updateVersionDoc() {
-    // TODO: NarrativeService.get_narrative_doc([{narrative_upa: `${id}/${obj}/${ver}`])
     const { id, obj, ver } = this.props;
     const oldVersionDoc = await fetchOldVersionDoc(id, obj, ver);
+    // TODO: obj_id needs to be returned from NarrativeService
+    oldVersionDoc.obj_id = obj;
     this.setState({oldVersionDoc});
   }
 

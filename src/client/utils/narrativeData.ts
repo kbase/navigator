@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { KBaseServiceClient } from '@kbase/narrative-utils';
+import { KBaseServiceClient, KBaseDynamicServiceClient } from '@kbase/narrative-utils';
 import Runtime from '../utils/runtime';
 
 /**
@@ -96,13 +96,13 @@ export async function getCurrentUserPermission(wsId: number): Promise<string> {
 }
 
 export async function fetchOldVersionDoc(id: number, obj: number, ver: number): Promise<Doc> {
-  const client = new KBaseServiceClient({
+  const client = new KBaseDynamicServiceClient({
     module: 'NarrativeService',
-    url: Runtime.getConfig().service_routes.service_wizard,
+    version: 'dev',
     authToken: Runtime.token()
-  });
+  })
 
   const response = await client.call('get_narrative_doc', [{narrative_upa: `${id}/${obj}/${ver}`}]);
-  return response[0];
+  return response;
 
 }
