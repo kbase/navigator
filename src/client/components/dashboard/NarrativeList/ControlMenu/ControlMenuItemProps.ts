@@ -4,7 +4,7 @@ interface ControlMenuItemProps {
   narrative: Doc;
   cancelFn?: () => void;
   doneFn: () => void;
-  isCurrentVersion: boolean;
+  isCurrentVersion?: boolean;
 }
 
 export default ControlMenuItemProps;

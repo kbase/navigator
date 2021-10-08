@@ -59,6 +59,8 @@ describe('NarrativeDetails tests', () => {
         cache={{}}
         updateSearch={() => {}}
         view={'preview'}
+        previousVersion={null}
+        category={''}
       />
     );
     expect(wrapper).toBeTruthy();
