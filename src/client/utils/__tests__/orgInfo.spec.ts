@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 import { enableFetchMocks } from 'jest-fetch-mock';
+import { AuthInfo } from '../../components/Auth';
 enableFetchMocks();
 import {
   getLinkedOrgs,
@@ -9,6 +10,20 @@ import {
   linkNarrativeToOrg,
   OrgAPIError,
 } from '../orgInfo';
+
+const authInfo: AuthInfo = {
+  token: 'foo',
+  tokenInfo: {
+    cachefor: 0,
+    created: 0,
+    expires: 0,
+    id: 'foo',
+    name: 'foo',
+    type: 'login',
+    custom: {},
+    user: 'foo',
+  },
+};
 
 describe('Organizations API testing', () => {
   const authToken = 'someToken';
@@ -18,7 +33,7 @@ describe('Organizations API testing', () => {
 
   it('getLinkedOrgs should fail without an auth token', async () => {
     document.cookie = `kbase_session=`;
-    await expect(() => getLinkedOrgs(123)).rejects.toThrow();
+    await expect(() => getLinkedOrgs(authInfo, 123)).rejects.toThrow();
   });
 
   it('getLinkedOrgs should fail with a bad workspace id', async () => {
@@ -37,7 +52,7 @@ describe('Organizations API testing', () => {
         status: 500,
       };
     });
-    await expect(() => getLinkedOrgs(123)).rejects.toThrow();
+    await expect(() => getLinkedOrgs(authInfo, 123)).rejects.toThrow();
   });
 
   it('getLinkedOrgs should return the linked organizations for a valid workspace id', async () => {
@@ -53,13 +68,13 @@ describe('Organizations API testing', () => {
     fetchMock.mockOnce(async (req) => {
       return JSON.stringify(groupInfos);
     });
-    const linkedOrgs = await getLinkedOrgs(123);
+    const linkedOrgs = await getLinkedOrgs(authInfo, 123);
     expect(linkedOrgs).toEqual(groupInfos);
   });
 
   it('lookupUserOrgs should fail without an auth token', async () => {
     document.cookie = `kbase_session=`;
-    await expect(() => lookupUserOrgs()).rejects.toThrow();
+    await expect(() => lookupUserOrgs(authInfo)).rejects.toThrow();
   });
 
   it('lookupUserOrgs should list user organization id and name', async () => {
@@ -76,18 +91,20 @@ describe('Organizations API testing', () => {
     fetchMock.mockOnce(async (req) => {
       return JSON.stringify(groupIds);
     });
-    const linkedOrgs = await lookupUserOrgs();
+    const linkedOrgs = await lookupUserOrgs(authInfo);
     expect(linkedOrgs).toEqual(groupIds);
   });
 
   it('linkNarrativeToOrg should fail without an auth token', async () => {
     document.cookie = `kbase_session=`;
-    await expect(() => linkNarrativeToOrg(123, 'someOrg')).rejects.toThrow();
+    await expect(() =>
+      linkNarrativeToOrg(authInfo, 123, 'someOrg')
+    ).rejects.toThrow();
   });
 
   it('linkNarrativeToOrg should return "complete" if the user is an org admin', async () => {
     fetchMock.mockOnce(async (req) => JSON.stringify({ complete: true }));
-    const res = await linkNarrativeToOrg(123, 'someOrg');
+    const res = await linkNarrativeToOrg(authInfo, 123, 'someOrg');
     expect(res).toEqual({ complete: true });
   });
 
@@ -110,7 +127,7 @@ describe('Organizations API testing', () => {
       };
     });
     try {
-      await linkNarrativeToOrg(123, 'someOrg');
+      await linkNarrativeToOrg(authInfo, 123, 'someOrg');
     } catch (error) {
       expect(error).toBeInstanceOf(OrgAPIError);
       if (error instanceof OrgAPIError) {

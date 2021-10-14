@@ -8,7 +8,7 @@ import {
   lookupUserOrgs,
   GroupIdentity,
 } from '../../../../utils/orgInfo';
-import { getCurrentUserPermission } from '../../../../utils/narrativeData';
+import NarrativeModel from '../../../../utils/NarrativeModel';
 import Runtime from '../../../../utils/runtime';
 import OrgSelect from './OrgSelect';
 import Model, { LinkOrgResult } from './Model';
@@ -62,10 +62,14 @@ export default class LinkOrgItem extends Component<
       },
     });
     try {
-      const perm = await getCurrentUserPermission(
+      const narrativeModel = new NarrativeModel(this.props.authInfo);
+      const perm = await narrativeModel.getCurrentUserPermission(
         this.props.narrative.access_group
       );
-      const linkedOrgs = await getLinkedOrgs(this.props.narrative.access_group);
+      const linkedOrgs = await getLinkedOrgs(
+        this.props.authInfo,
+        this.props.narrative.access_group
+      );
 
       const linkedOrgIds: Set<string> = new Set();
       for (const org of linkedOrgs) {
@@ -74,9 +78,11 @@ export default class LinkOrgItem extends Component<
 
       // reduce the set of userOrgs down to those that are not already linked.
       // Don't want to give the illusion of being able to link again.
-      const userOrgs = (await lookupUserOrgs()).filter((org) => {
-        return !linkedOrgIds.has(org.id);
-      });
+      const userOrgs = (await lookupUserOrgs(this.props.authInfo)).filter(
+        (org) => {
+          return !linkedOrgIds.has(org.id);
+        }
+      );
 
       this.setState({
         loadProcess: {
@@ -111,9 +117,10 @@ export default class LinkOrgItem extends Component<
       },
     });
     try {
-      const result = await new Model(this.props.narrative.access_group).linkOrg(
-        orgId
-      );
+      const result = await new Model(
+        this.props.authInfo,
+        this.props.narrative.access_group
+      ).linkOrg(orgId);
       this.setState(
         {
           linkProcess: {

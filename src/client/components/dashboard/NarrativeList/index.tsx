@@ -6,16 +6,18 @@ import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
 import { NarrativeDetails } from './NarrativeDetails';
-import { Doc, KBaseCache } from '../../../utils/narrativeData';
+import { Doc } from '../../../utils/NarrativeModel';
 
 // Utils
 import { keepParamsLinkTo } from '../utils';
 import Runtime from '../../../utils/runtime';
-import searchNarratives, {
+import {
+  NarrativeSearch,
   sorts,
   SearchOptions,
 } from '../../../utils/searchNarratives';
-import { getUsername } from '../../../utils/auth';
+
+import { AuthInfo } from '../../Auth';
 
 // Page length of search results
 const PAGE_SIZE = 20;
@@ -24,18 +26,17 @@ const NEW_NARR_URL = Runtime.getConfig().host_root + '/#narrativemanager/new';
 interface State {
   // Currently activated narrative details
   activeIdx: number;
-  cache: KBaseCache;
   // List of objects of narrative details
   items: Array<Doc>;
   // Whether we are loading data from the server
   loading: boolean;
-  pages: number;
   // Parameters to send to searchNarratives
   searchParams: SearchOptions;
   totalItems: number;
 }
 
 interface Props {
+  authInfo: AuthInfo;
   category: string;
   history: History;
   id: number;
@@ -54,42 +55,34 @@ const upaKey = (id: number, obj: number, ver: number) => `${id}/${obj}/${ver}`;
 export class NarrativeList extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { category, limit, search } = this.props;
-    const sortDefault = Object.values(sorts)[0];
+    const { category, limit, search, sort } = this.props;
+    const sortDefault = Object.keys(sorts)[0];
     this.state = {
       // Currently active narrative result, selected on the left and shown on the right
       // This is unused if the items array is empty.
       activeIdx: 0,
-      cache: {
-        objects: {},
-      },
       // List of narrative data
       items: [],
       loading: false,
       // parameters to send to the searchNarratives function
-      pages: parseInt((limit / PAGE_SIZE).toString()),
       searchParams: {
         term: search,
-        sort: sortDefault,
-        category: category,
+        sort: sort || sortDefault,
+        category,
         pageSize: limit || PAGE_SIZE,
       },
       totalItems: 0,
     };
   }
 
-  componentDidMount() {
-    // FIXME this is redundant with client/index.tsx
-    getUsername((username) => {
-      window._env.username = username;
-      this.performSearch();
-    });
+  async componentDidMount() {
+    this.performSearch();
   }
 
   async componentDidUpdate(prevProps: Props) {
     const { category, search } = this.props;
     const pageSize = this.props.limit || PAGE_SIZE;
-    const sort = sorts[this.props.sort];
+    const sort = this.props.sort;
     const nextSearchParams = { term: search, sort, category, pageSize };
     const performSearchCondition =
       prevProps.category !== this.props.category ||
@@ -132,12 +125,14 @@ export class NarrativeList extends Component<Props, State> {
     }
     this.setState({ loading: true });
     const requestedId = this.props.id;
-    const cache = this.state.cache;
-    const initializeCacheCondition = invalidateCache || !('search' in cache);
-    if (initializeCacheCondition) {
-      cache.search = {};
+
+    const narrativeSearch = new NarrativeSearch(this.props.authInfo);
+
+    if (invalidateCache) {
+      narrativeSearch.clearCache();
     }
-    const resp = await searchNarratives(searchParams, cache.search);
+
+    const resp = await narrativeSearch.searchNarratives(searchParams);
 
     // TODO handle error from server
     if (!resp || !resp.hits) {
@@ -156,7 +151,6 @@ export class NarrativeList extends Component<Props, State> {
     // If we are loading a subsequent page, append to items. Otherwise, replace them.
     this.setState({
       activeIdx: requestedItemIdx,
-      cache,
       items,
       loading: false,
       totalItems: total,
@@ -237,10 +231,12 @@ export class NarrativeList extends Component<Props, State> {
 
             {activeItem ? (
               <NarrativeDetails
+                authInfo={this.props.authInfo}
                 activeItem={activeItem}
-                cache={this.state.cache}
                 view={view}
-                updateSearch={() => this.performSearch()}
+                updateSearch={() => {
+                  this.performSearch();
+                }}
               />
             ) : (
               <></>

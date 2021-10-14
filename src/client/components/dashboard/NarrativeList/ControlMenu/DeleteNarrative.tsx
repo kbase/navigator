@@ -5,7 +5,7 @@ import { LoadingSpinner } from '../../../generic/LoadingSpinner';
 import DashboardButton from '../../../generic/DashboardButton';
 import Runtime from '../../../../utils/runtime';
 import { KBaseServiceClient } from '@kbase/narrative-utils';
-import { getCurrentUserPermission } from '../../../../utils/narrativeData';
+import NarrativeModel from '../../../../utils/NarrativeModel';
 
 type ComponentStatus =
   | 'none'
@@ -70,7 +70,8 @@ export default class DeleteNarrative extends Component<
       status: 'loading',
     });
     try {
-      const perm = await getCurrentUserPermission(
+      const client = new NarrativeModel(this.props.authInfo);
+      const perm = await client.getCurrentUserPermission(
         this.props.narrative.access_group
       );
       if (perm === 'a') {
@@ -109,7 +110,7 @@ export default class DeleteNarrative extends Component<
     const workspaceClient = new KBaseServiceClient({
       module: 'Workspace',
       url: Runtime.getConfig().service_routes.workspace,
-      authToken: Runtime.token(),
+      authToken: this.props.authInfo.token,
     });
     try {
       await workspaceClient.call('delete_workspace', [

@@ -4,30 +4,37 @@
 
 import { getCookie, removeCookie } from '../cookies';
 
-describe('cookie tests', () => {
+describe('The getCookie function', () => {
   const cookieName = 'some_cookie';
   const cookieValue = 'some_value';
   beforeEach(() => {
     document.cookie = `${cookieName}=${cookieValue}`;
   });
 
-  test('getCookie should fetch a cookie', () => {
+  test('should fetch a cookie if present in the browser', () => {
     expect(getCookie(cookieName)).toEqual(cookieValue);
   });
 
-  test('getCookie should throw an error for a missing cookie', () => {
-    expect(() => getCookie('not_a_real_cookie')).toThrowError(
-      'Unable to fetch non-existent cookie: not_a_real_cookie'
-    );
+  test('should return null if a cookie is not present in the browser', () => {
+    const cookieValue = getCookie('not_a_real_cookie');
+    expect(cookieValue).toBeNull();
+  });
+});
+
+describe('The removeCookie function', () => {
+  const cookieName = 'some_cookie';
+  const cookieValue = 'some_value';
+  beforeEach(() => {
+    document.cookie = `${cookieName}=${cookieValue}`;
   });
 
-  test('removeCookie should remove a cookie', () => {
+  test('should remove a cookie', () => {
     expect(getCookie(cookieName)).toEqual(cookieValue);
     removeCookie(cookieName);
-    expect(() => getCookie(cookieName)).toThrowError();
+    expect(getCookie(cookieName)).toBeNull();
   });
 
-  test('removeCookie should be a no-op on a cookie that does not exist', () => {
+  test('should succeed with a cookie not present in the browser', () => {
     removeCookie('not_a_real_cookie'); // just run it, shouldn't fail.
   });
 });

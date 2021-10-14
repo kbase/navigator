@@ -1,4 +1,5 @@
 import { linkNarrativeToOrg, OrgAPIError } from '../../../../utils/orgInfo';
+import { AuthInfo } from '../../../Auth';
 
 /**
  * Holds the state for the overall Link Organizations item popup.
@@ -7,12 +8,18 @@ export type LinkOrgResult = 'requested' | 'completed';
 
 export default class Model {
   narrativeId: number;
-  constructor(narrativeId: number) {
+  authInfo: AuthInfo;
+  constructor(authInfo: AuthInfo, narrativeId: number) {
     this.narrativeId = narrativeId;
+    this.authInfo = authInfo;
   }
   async linkOrg(orgId: string): Promise<LinkOrgResult> {
     try {
-      const request = await linkNarrativeToOrg(this.narrativeId, orgId);
+      const request = await linkNarrativeToOrg(
+        this.authInfo,
+        this.narrativeId,
+        orgId
+      );
       if (request.complete) {
         return 'completed';
       }

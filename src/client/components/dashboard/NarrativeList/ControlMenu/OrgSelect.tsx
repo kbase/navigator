@@ -47,7 +47,7 @@ export default class OrgSelect extends Component<OrgListProps, OrgListState> {
           defaultOptions
           isClearable
           isSearchable
-          placeholder={'Select an Organization ...'}
+          placeholder="Select an Organization ..."
           styles={{
             ...selectStyles,
             container: (base) => ({ ...base, flex: 2 }),

@@ -68,7 +68,7 @@ export class SearchInput extends Component<Props, State> {
         </label>
         <input
           className="w5-l pa2 br2 ba b--solid b--black-20"
-          type="text"
+          type="search"
           id={this.inputID}
           placeholder={this.props.placeholder || 'Search'}
           onChange={this.handleInput}

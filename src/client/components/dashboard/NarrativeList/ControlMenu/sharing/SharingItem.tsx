@@ -4,10 +4,10 @@ import ControlMenuItemProps from '../ControlMenuItemProps'; // eslint-disable-li
 import { LoadingSpinner } from '../../../../generic/LoadingSpinner';
 import { KBaseServiceClient } from '@kbase/narrative-utils';
 import Runtime from '../../../../../utils/runtime';
-import { getUsernames } from '../../../../../utils/auth';
 import PermSearch from './PermSearch';
 import { UserPerms } from './Definitions';
 import ShareUser from './ShareUser';
+import { AuthService } from '../../../../../utils/AuthService';
 
 interface State {
   isLoading: boolean;
@@ -32,10 +32,10 @@ export default class SharingItem extends Component<
     this.workspaceClient = new KBaseServiceClient({
       module: 'Workspace',
       url: Runtime.getConfig().service_routes.workspace,
-      authToken: Runtime.token(),
+      authToken: this.props.authInfo.token,
     });
 
-    const userId = Runtime.username() || '';
+    const userId = this.props.authInfo.tokenInfo.user;
 
     this.state = {
       isLoading: true,
@@ -83,7 +83,10 @@ export default class SharingItem extends Component<
       return users;
     }, [] as string[]);
     // get user infos from auth
-    const userNames: { [key: string]: string } = await getUsernames(userList);
+    const auth = new AuthService(this.props.authInfo.token);
+    const userNames: { [key: string]: string } = await auth.getUsernames(
+      userList
+    );
     userList.forEach((u) => {
       const userPerm: UserPerms = {
         userId: u,
@@ -183,6 +186,7 @@ export default class SharingItem extends Component<
     if (curPerm === 'a') {
       userPermSearch = (
         <PermSearch
+          authInfo={this.props.authInfo}
           addPerms={this.updatePerms.bind(this)}
           currentUser={this.state.perms.curUserPerm.userId}
         />
@@ -228,13 +232,13 @@ function GlobalPerms(props: GlobalProps): React.ReactElement {
     text = 'Public';
     className += ' bg-light-green dark-green b--green';
     if (props.isAdmin) {
-      text += ' (click to lock)';
+      text += ' (click to make private)';
     }
   } else {
     text = 'Private';
     className += ' bg-lightest-blue dark-blue b--dark-blue';
     if (props.isAdmin) {
-      text += ' (click to unlock)';
+      text += ' (click to make public)';
     }
   }
 

@@ -8,7 +8,7 @@ from src.utils.config import ServerConf
 _CONF = ServerConf()
 
 # Initialize the Sanic app object
-app = sanic.Sanic('kbase-ui', strict_slashes=False)
+app = sanic.Sanic('navigator', strict_slashes=False)
 app.config.URL_PREFIX = _CONF.url_prefix
 app.config.KBASE_ENDPOINT = _CONF.kbase_endpoint
 app.config.KBASE_UI_ROOT = _CONF.kbase_root
@@ -40,69 +40,6 @@ async def narratives(request, suffix=None):
     opts = {'template': 'layout-legacy.html'}
     return _render_template('narratives/index.html', opts)
 
-
-@app.route('/newnav', methods=['GET'])
-async def newnav_root(request):
-    return sanic.response.redirect(_url_for('narratives_newnav'))
-
-
-@app.route('/newnav/narratives', methods=['GET'])
-@app.route('/newnav/narratives/<suffix:path>', methods=['GET'])
-async def narratives_newnav(request, suffix=None):
-    """Narratives (previously Dashboard) with new nav."""
-    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
-    return _render_template('narratives/index.html', opts)
-
-
-@app.route('/newnav/notifications', methods=['GET'])
-@app.route('/newnav/notifications/<suffix:path>', methods=['GET'])
-async def notifications_newnav(request, suffix=None):
-    """Notifications."""
-    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
-    return _render_template('notifications/index.html', opts)
-
-
-@app.route('/newnav/catalog', methods=['GET'])
-async def catalog_root(request):
-    return sanic.response.redirect(_url_for('catalog_newnav', suffix='apps'))
-
-
-@app.route('/newnav/catalog/<suffix:path>', methods=['GET'])
-async def catalog_newnav(request, suffix=None):
-    """Catalog."""
-    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
-    return _render_template('catalog/index.html', opts)
-
-
-@app.route('/newnav/search', methods=['GET'])
-@app.route('/newnav/search/<suffix:path>', methods=['GET'])
-async def search_newnav(request, suffix=None):
-    """Search."""
-    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
-    return _render_template('search/index.html', opts)
-
-
-@app.route('/newnav/account', methods=['GET'])
-@app.route('/newnav/account/<suffix:path>', methods=['GET'])
-async def account_newnav(request, suffix=None):
-    """Account settings."""
-    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
-    return _render_template('account/index.html', opts)
-
-
-@app.route('/newnav/orgs', methods=['GET'])
-@app.route('/newnav/orgs/<suffix:path>', methods=['GET'])
-async def orgs_newnav(request, suffix=None):
-    """Organizations."""
-    opts = {'template': 'layout-newnav.html', 'path_prefix': '/newnav'}
-    return _render_template('orgs/index.html', opts)
-
-
-@app.route('/newnav/<suffix:path>', methods=['GET'])
-async def newnav_catch_all(request, suffix=None):
-    return _render_template('404.html', {'template': 'layout-newnav.html'}, status=404)
-
-
 @app.exception(sanic.exceptions.NotFound)
 async def page_not_found(request, err):
     """404 not found."""
@@ -124,8 +61,8 @@ async def server_error(request, err):
 def _url_for(arg, *args, **kwargs):
     """
     A wrapper around app.url_for that injects a configurable prefix.
-    For example, if we are serving via nginx proxy at /services/react-ui
-    then we want our links to look like "/services/react-ui/{link_path}"
+    For example, if we are serving via nginx proxy at /narratives
+    then we want our links to look like "/narratives/{link_path}"
     """
     url = app.url_for(arg, *args, **kwargs)
     # Note that _CONF.url_prefix will have leading slash and no trailing slash

@@ -1,0 +1,39 @@
+version: '3'
+networks:
+  kbase-dev:
+    name: kbase-dev
+services:
+  navigator:
+    hostname: navigator
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        DEVELOPMENT: 1
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DEVELOPMENT=1
+      # KBASE_ENDPOINT defaults to the ci_proxy for development; used for KBase service endpoint urls
+      - KBASE_ENDPOINT=${KBASE_ENDPOINT:-http://localhost:5011/services}
+      # KBASE_ROOT defaults to the CI origin for development; used for KBase user interface urls
+      - KBASE_ROOT=${KBASE_ROOT:-https://ci.kbase.us}
+      # URL_PREFIX defaults to an empty string for development; set to "narratives" for deployments, including
+      # development with the kbase-ui proxy
+      - URL_PREFIX
+      - WORKERS=2
+    networks:
+      - kbase-dev
+    ports:
+      - '127.0.0.1:5000:5000'
+    volumes:
+      - ${PWD}/..:/app
+
+  # Proxy requests from localhost:5011 to ci.kbase.us
+  # (for getting around CORS restrictions)
+  ci_proxy:
+    hostname: navigator_ci_proxy
+    image: nginx:alpine
+    ports:
+      - '127.0.0.1:5011:5011'
+    volumes:
+      - ./nginx-default.conf:/etc/nginx/conf.d/default.conf

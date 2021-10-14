@@ -47,9 +47,26 @@ describe('AppIcon tests', () => {
       <AppCellIcon appId={'SomeModule.someApp'} appTag={'release'} />
     );
 
-    const currentEventLoopEnd = () =>
-      new Promise((resolve) => setImmediate(resolve));
-    await currentEventLoopEnd();
+    // SHould immediately spin, since the call to fetch and populate the icon
+    // will not have completed yet.
+    expect(wrapper.find('span.fa-spinner').length).toEqual(1);
+
+    /*
+    Note that a simple
+    await new Promise.resolve();
+    will also work here, as this may invoke the icon cache, which will cause
+    the promise to immediately resolve (well, on the next turn of the interpreter
+    wheel perhaps).
+    This is a more general solution, though, as the timeout duration can be adjusted.
+    Should really test cached and uncached behavior, and for uncached with different
+    performance characterstics for the call to the NMS.
+    */
+    await new Promise<void>((resolve) => {
+      window.setTimeout(() => {
+        resolve();
+      }, 0);
+    });
+
     wrapper.update();
     expect(wrapper.find('span.fa-spinner').length).toEqual(0);
     expect(wrapper.find('span.fa-cube').length).toEqual(1);

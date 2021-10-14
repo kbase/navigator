@@ -5,6 +5,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { enableFetchMocks } from 'jest-fetch-mock';
 import { NarrativeDetails } from '../NarrativeDetails';
+import { AuthInfo } from '../../../Auth';
 
 enableFetchMocks();
 
@@ -33,6 +34,20 @@ const mockDoc = {
   version: 1,
 };
 
+const authInfo: AuthInfo = {
+  token: 'foo',
+  tokenInfo: {
+    cachefor: 0,
+    created: 0,
+    expires: 0,
+    id: 'foo',
+    name: 'foo',
+    type: 'login',
+    custom: {},
+    user: 'foo',
+  },
+};
+
 describe('NarrativeDetails tests', () => {
   test('NarrativeDetails renders', () => {
     const ownerProfile = JSON.stringify({
@@ -55,8 +70,8 @@ describe('NarrativeDetails tests', () => {
     );
     const wrapper = shallow(
       <NarrativeDetails
+        authInfo={authInfo}
         activeItem={mockDoc}
-        cache={{}}
         updateSearch={() => {}}
         view={'preview'}
       />

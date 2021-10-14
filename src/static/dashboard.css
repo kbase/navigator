@@ -1,20 +1,38 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#react-root {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 1024px;
+}
+
 :root {
   --black: #000;
-  --tachyon-black-20: rgba(0,0,0,.2);
-  --tachyon-black-30: rgba(0,0,0,.3);
-  --tachyon-black-70: rgba(0,0,0,.7);
+  --tachyon-black-20: rgba(0, 0, 0, 0.2);
+  --tachyon-black-30: rgba(0, 0, 0, 0.3);
+  --tachyon-black-70: rgba(0, 0, 0, 0.7);
   --tachyon-dark-green: #137752;
   --tachyon-green: #19a974;
   --tachyon-light-gray: #eee;
   --tachyon-lightest-blue: #cdecff;
   --tachyon-spacing-medium: 1rem;
-  --tachyon-spacing-small: .5rem;
+  --tachyon-spacing-small: 0.5rem;
   --white: #fff;
 }
 
 .button {
   background-color: var(--tachyon-dark-green);
-  border-radius: .25em;
+  border-radius: 0.25em;
   color: var(--white);
   cursor: pointer;
   display: inline-block;
@@ -23,36 +41,36 @@
   text-decoration: none;
 }
 
-.dataview a, .dataview a:visited {
+.dataview a,
+.dataview a:visited {
   color: var(--black);
   text-decoration: none;
 }
 
-.filters {
-  align-items: center;
-  background-color: var(--tachyon-light-gray);
-  display: flex;
-}
-
 /* .clickable and .inactive are the same as tachyon's .dim (for now) */
-.clickable, .inactive {
+.clickable,
+.inactive {
   opacity: 1;
-  transition: opacity .15s ease-in;
+  transition: opacity 0.15s ease-in;
 }
 
-.clickable:focus, .clickable:hover, .inactive:focus, .inactive:hover {
-  opacity: .5;
-  transition: opacity .15s ease-in;
+.clickable:focus,
+.clickable:hover,
+.inactive:focus,
+.inactive:hover {
+  opacity: 0.5;
+  transition: opacity 0.15s ease-in;
 }
 
-.clickable:active, .inactive:active {
-  opacity: .8;
-  transition: opacity .15s ease-out;
+.clickable:active,
+.inactive:active {
+  opacity: 0.8;
+  transition: opacity 0.15s ease-out;
 }
 
 .narrative-details {
   display: flex;
-  font-size: .875rem;
+  font-size: 0.875rem;
   justify-content: space-between;
 }
 
@@ -143,16 +161,18 @@
   animation: fa-spin 2s infinite linear;
 }
 
-.subtab, .tab {
+.subtab,
+.tab {
   border-bottom-color: transparent;
   border-bottom-style: solid;
-  border-bottom-width: .125rem;
+  border-bottom-width: 0.125rem;
   color: var(--black);
   display: inline-block;
   padding: var(--tachyon-spacing-medium);
 }
 
-.subtab.active, .tab.active {
+.subtab.active,
+.tab.active {
   border-bottom-color: var(--tachyon-green);
 }
 
@@ -176,4 +196,62 @@
   text-align: center;
   top: 1px;
   width: 100%;
+}
+
+/* Copied from bootstrap 5.1: https://getbootstrap.com/docs/5.1/components/alerts/ */
+
+.Alert {
+  position: relative;
+  padding: 1rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.Alert-danger {
+  color: #842029;
+  background-color: #f8d7da;
+  border-color: #f5c2c7;
+}
+
+.Alert-primary {
+  color: #084298;
+  background-color: #cfe2ff;
+  border-color: #b6d4fe;
+}
+
+.Alert-secondary {
+  color: #41464b;
+  background-color: #e2e3e5;
+  border-color: #d3d6d8;
+}
+
+.Alert-success {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.Alert-warning {
+  color: #664d03;
+  background-color: #fff3cd;
+  border-color: #ffecb5;
+}
+
+.Alert-info {
+  color: #055160;
+  background-color: #cff4fc;
+  border-color: #b6effb;
+}
+
+.Alert-light {
+  color: #636464;
+  background-color: #fefefe;
+  border-color: #fdfdfe;
+}
+
+.Alert-dark {
+  color: #141619;
+  background-color: #d3d3d4;
+  border-color: #bcbebf;
 }

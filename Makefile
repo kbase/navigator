@@ -1,8 +1,22 @@
 serve:
-	docker-compose down
-	sh dev/start_server.sh
+	cd dev; \
+	sh start_server.sh
+
+serve-stop:
+	cd dev; sh stop_server.sh
+
+watch:
+	yarn watch
 
 reset:
-	docker-compose down --rmi all --remove-orphans --volumes
-	docker-compose build --no-cache
-	docker-compose up
+	cd dev; \
+	docker compose down --rmi all --remove-orphans --volumes; \
+	docker compose build --no-cache; \
+	sh start_server.sh
+
+serve-prod:
+	docker compose --project-name navigator-prod up --build; \
+	docker compose  --project-name navigator-prod rm -f
+
+serve-prod-stop:
+	docker compose --project-name navigator-prod stop

@@ -1,19 +1,19 @@
-// as of now eslint cannot detect when imported interfaces are used
-import Select, { OptionsType, Styles } from 'react-select'; // eslint-disable-line no-unused-vars
+import Select, { OptionsType } from 'react-select';
 import AsyncSelect from 'react-select/async';
 import DashboardButton from '../../../../generic/DashboardButton';
 import React, { Component } from 'react';
 import { PERM_MAPPING } from './Definitions';
-import { searchUsernames } from '../../../../../utils/auth';
+import { AuthInfo } from '../../../../Auth';
+import { AuthService } from '../../../../../utils/AuthService';
 
 /* The main user input search bar */
 interface PermSearchProps {
+  authInfo: AuthInfo;
   addPerms: (userIds: string[], perm: string) => void;
   currentUser: string; // the current user id
 }
 
 interface PermSearchState {
-  inputValue: string;
   selectedUsers: string[]; // user ids
   perm: string;
 }
@@ -25,7 +25,6 @@ export interface PermOption {
 
 export default class PermSearch extends Component<PermSearchProps> {
   state: PermSearchState = {
-    inputValue: '',
     selectedUsers: [],
     perm: 'r',
   };
@@ -35,14 +34,12 @@ export default class PermSearch extends Component<PermSearchProps> {
     { value: 'a', label: PERM_MAPPING['a'] },
   ];
 
-  searchUsers(
-    term: string,
-    callback: (options: OptionsType<any>) => void | Promise<any>
-  ) {
+  searchUsers(term: string, _callback: any): Promise<Array<any>> {
     if (term.length < 2) {
-      return new Promise((resolve) => resolve(''));
+      return Promise.resolve([]);
     }
-    return searchUsernames(term).then((usernames) => {
+    const auth = new AuthService(this.props.authInfo.token);
+    return auth.searchUsernames(term).then((usernames) => {
       return Object.keys(usernames)
         .filter((userId) => userId !== this.props.currentUser)
         .map((userId) => ({
@@ -53,13 +50,7 @@ export default class PermSearch extends Component<PermSearchProps> {
     });
   }
 
-  handleInputChange = (newValue: string) => {
-    const inputValue = newValue.replace(/\W/g, '');
-    this.setState({ inputValue });
-    return inputValue;
-  };
-
-  handleUserChange = (selected: Array<any>) => {
+  handleUserChange = (selected: OptionsType<any>) => {
     if (!selected) {
       this.setState({ selectedUsers: [] });
     } else {
@@ -77,9 +68,6 @@ export default class PermSearch extends Component<PermSearchProps> {
   };
 
   render() {
-    const selectStyles: Partial<Styles<PermOption, false>> = {
-      menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-    };
     return (
       <div className="flex flex-row flex-nowrap">
         <AsyncSelect
@@ -89,18 +77,17 @@ export default class PermSearch extends Component<PermSearchProps> {
           loadOptions={this.searchUsers.bind(this)}
           placeholder={'Share with...'}
           styles={{
-            ...selectStyles,
-            container: (base: any) => ({ ...base, flex: 2 }),
+            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+            container: (base) => ({ ...base, flex: 2 }),
           }}
           menuPortalTarget={document.body}
-          onInputChange={this.handleInputChange.bind(this)}
-          onChange={this.handleUserChange.bind}
+          onChange={this.handleUserChange.bind(this)}
         />
         <Select
           defaultValue={this.permOptions[0]}
           options={this.permOptions}
           styles={{
-            ...selectStyles,
+            menuPortal: (base) => ({ ...base, zIndex: 9999 }),
             container: (base) => ({ ...base, flex: 1 }),
           }}
           menuPortalTarget={document.body}

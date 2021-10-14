@@ -3,19 +3,19 @@ import marked from 'marked';
 import React, { Component } from 'react';
 
 import { TypeIcon, AppCellIcon, DefaultIcon } from '../../generic/Icon';
-import { Doc, fetchNarrative, KBaseCache } from '../../../utils/narrativeData';
+import NarrativeModel, { Doc } from '../../../utils/NarrativeModel';
 import Runtime from '../../../utils/runtime';
+import { AuthInfo } from '../../Auth';
 
 const DOMPurify = createDOMPurify(window);
 
 interface Props {
-  cache: KBaseCache;
+  authInfo: AuthInfo;
   narrative: Doc;
 }
 
 interface State {
   isLoading: boolean;
-  narrObj: any; // gets fetched from Workspace.
   cells: Array<any>;
   error: any;
 }
@@ -33,7 +33,6 @@ export default class Preview extends Component<Props, State> {
     super(props);
     this.state = {
       isLoading: true,
-      narrObj: null,
       cells: [],
       error: null,
     };
@@ -55,26 +54,21 @@ export default class Preview extends Component<Props, State> {
 
   async fetchNarrativeObject() {
     this.setState({ isLoading: true });
-    const { cache, narrative } = this.props;
-    /* eslint-disable camelcase */
+    const { narrative } = this.props;
     const { access_group, obj_id, version } = narrative;
     const upa = `${access_group}/${obj_id}/${version}`;
-    /* eslint-enable camelcase */
-    let narrResponse = null;
-    if (!('objects' in cache)) cache.objects = {};
     try {
-      narrResponse = await fetchNarrative(upa, cache.objects);
+      const narrativeModel = new NarrativeModel(this.props.authInfo);
+      const narrative = await narrativeModel.fetchNarrative(upa);
+      const cells = narrative.cells ? narrative.cells : [];
+      this.setState({
+        isLoading: false,
+        cells,
+        error: null,
+      });
     } catch (error) {
       this.setState({ isLoading: false, error: error });
     }
-    const narr = narrResponse.data[0].data || {};
-    const cells = narr.cells ? narr.cells : [];
-    this.setState({
-      isLoading: false,
-      narrObj: narr,
-      cells: cells,
-      error: null,
-    });
   }
 
   render() {

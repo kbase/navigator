@@ -30,7 +30,7 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
     const narrativeService = new DynamicServiceClient({
       moduleName: 'NarrativeService',
       wizardUrl: config.service_routes.service_wizard,
-      authToken: Runtime.token(),
+      authToken: this.props.authInfo.token,
     });
     try {
       await narrativeService.call('copy_narrative', [

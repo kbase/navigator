@@ -132,7 +132,7 @@ module.exports = {
   snapshotSerializers: ['enzyme-to-json/serializer'],
 
   // The test environment that will be used for testing
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -170,6 +170,7 @@ module.exports = {
   // A map from regular expressions to paths to transformers
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
+    '.(css|less)$': '<rootDir>/jestConfig/styleMock.js',
   },
 
   // An array of regexp pattern strings that are matched against all source
