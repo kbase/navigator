@@ -61,8 +61,8 @@ async def server_error(request, err):
 def _url_for(arg, *args, **kwargs):
     """
     A wrapper around app.url_for that injects a configurable prefix.
-    For example, if we are serving via nginx proxy at /services/react-ui
-    then we want our links to look like "/services/react-ui/{link_path}"
+    For example, if we are serving via nginx proxy at /narratives
+    then we want our links to look like "/narratives/{link_path}"
     """
     url = app.url_for(arg, *args, **kwargs)
     # Note that _CONF.url_prefix will have leading slash and no trailing slash
