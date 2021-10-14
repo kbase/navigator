@@ -1,5 +1,3 @@
-# To be used to closely approximate production in development.
-# See /dev for support for local development iterative workflow.
 version: '3'
 networks:
   kbase-dev:
@@ -8,8 +6,10 @@ services:
   navigator:
     hostname: navigator
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
+      args:
+        DEVELOPMENT: 1
     environment:
       - PYTHONUNBUFFERED=1
       - DEVELOPMENT=1
@@ -25,3 +25,15 @@ services:
       - kbase-dev
     ports:
       - '127.0.0.1:5000:5000'
+    volumes:
+      - ${PWD}/..:/app
+
+  # Proxy requests from localhost:5011 to ci.kbase.us
+  # (for getting around CORS restrictions)
+  ci_proxy:
+    hostname: navigator_ci_proxy
+    image: nginx:alpine
+    ports:
+      - '127.0.0.1:5011:5011'
+    volumes:
+      - ./dev/nginx-default.conf:/etc/nginx/conf.d/default.conf
