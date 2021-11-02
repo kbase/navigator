@@ -61,6 +61,7 @@ describe('NarrativeDetails tests', () => {
         view={'preview'}
         previousVersion={null}
         category={''}
+        loading={false}
       />
     );
     expect(wrapper).toBeTruthy();

@@ -34,6 +34,7 @@ interface State {
   searchParams: SearchOptions;
   totalItems: number;
   oldVersionDoc: Doc | null;
+  oldVersionLoading: boolean;
 }
 
 interface Props {
@@ -76,7 +77,8 @@ export class NarrativeList extends Component<Props, State> {
         pageSize: limit || PAGE_SIZE,
       },
       totalItems: 0,
-      oldVersionDoc: null
+      oldVersionDoc: null,
+      oldVersionLoading: false
     };
   }
 
@@ -137,11 +139,13 @@ export class NarrativeList extends Component<Props, State> {
   }
 
   async updateVersionDoc() {
+    if (this.state.oldVersionLoading) {
+      return;
+    }
+    this.setState({oldVersionLoading: true});
     const { id, obj, ver } = this.props;
     const oldVersionDoc = await fetchOldVersionDoc(id, obj, ver);
-    // TODO: obj_id needs to be returned from NarrativeService
-    oldVersionDoc.obj_id = obj;
-    this.setState({oldVersionDoc});
+    this.setState({oldVersionDoc, oldVersionLoading : false});
   }
 
   // Handle an onSetSearch callback from Filters
@@ -283,6 +287,7 @@ export class NarrativeList extends Component<Props, State> {
                 updateSearch={() => this.performSearch()}
                 previousVersion={this.state.oldVersionDoc}
                 category={category}
+                loading={this.state.oldVersionLoading}
               />
             ) : (
               <></>
