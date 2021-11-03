@@ -145,6 +145,8 @@ export class NarrativeList extends Component<Props, State> {
     this.setState({oldVersionLoading: true});
     const { id, obj, ver } = this.props;
     const oldVersionDoc = await fetchOldVersionDoc(id, obj, ver);
+    // TODO: This result should come from NarrativeService
+    oldVersionDoc.obj_id = obj;
     this.setState({oldVersionDoc, oldVersionLoading : false});
   }
 
