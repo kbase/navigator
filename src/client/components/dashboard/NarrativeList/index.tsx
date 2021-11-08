@@ -115,8 +115,7 @@ export class NarrativeList extends Component<Props, State> {
     // check if item is a previous version
     // if user selected an earlier version of a narrative, we need to fetch it separately
     // as the search service does not index prior versions
-    const { id, obj, ver } = this.props;
-
+    const { ver } = this.props;
     if (!this.state.items.length) {
       return;
     }
@@ -142,8 +141,16 @@ export class NarrativeList extends Component<Props, State> {
     if (this.state.oldVersionLoading) {
       return;
     }
-    this.setState({oldVersionLoading: true});
     const { id, obj, ver } = this.props;
+    // prevents attempt to fetch previous version with no active item selected
+    if (id === 0 && obj === 0 && ver === 0) {
+      // clear old version when user navigates to new category or selected item
+      this.setState({oldVersionDoc: null});
+      return;
+    }
+
+    this.setState({oldVersionLoading: true});
+
     const oldVersionDoc = await fetchOldVersionDoc(id, obj, ver);
     // TODO: This result should come from NarrativeService
     oldVersionDoc.obj_id = obj;
