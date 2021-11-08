@@ -5,6 +5,8 @@ import DashboardButton from '../../../generic/DashboardButton';
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
 import Runtime from '../../../../utils/runtime';
 import { KBaseServiceClient } from '@kbase/narrative-utils';
+import { RouteComponentProps, withRouter } from 'react-router';
+import ControlMenu from './ControlMenu';
 
 type ComponentStatus =
   | 'none'
@@ -16,6 +18,7 @@ type ComponentStatus =
 
 interface ComponentStateBase {
   status: ComponentStatus;
+  newVersion?: number // the newest version returned from narrative service after successful revert
 }
 
 interface ComponentStateNone extends ComponentStateBase {
@@ -52,8 +55,7 @@ type ComponentState =
   | ComponentStateReverting
   | ComponentStateError
   | ComponentStateSuccess;
-
-export default class RevertNarrative extends Component<ControlMenuItemProps, ComponentState> {
+class RevertNarrative extends Component<ControlMenuItemProps, ComponentState> {
 
     constructor(props: ControlMenuItemProps) {
         super(props);
@@ -109,7 +111,10 @@ export default class RevertNarrative extends Component<ControlMenuItemProps, Com
             }
           }
         ])
-        this.setState({status: 'success'});
+        this.setState({
+          status: 'success',
+          newVersion: revertResult[4]
+        });
       } catch(error) {
         const message = (() => {
           if (error instanceof Error) {
@@ -164,9 +169,18 @@ export default class RevertNarrative extends Component<ControlMenuItemProps, Com
 
     renderSuccess() {
         const done = () => {
-            this.props.doneFn(); // should redirect logic be here?
+            this.props.doneFn();
             if (this.props.cancelFn) {
-            this.props.cancelFn();
+              this.props.cancelFn();
+            }
+            if (this.props.history) {
+              const { access_group, obj_id }  = this.props.narrative;
+              const newUpa = `${access_group}/${obj_id}/${this.state.newVersion}`
+              const { category } = this.props;
+              const queryParams = new URLSearchParams(location.search);
+              const prefix = '/' + (category === 'own' ? '' : `${category}/`);
+              const newLocation = `${prefix}${newUpa}?${queryParams.toString()}`;
+              this.props.history.push(newLocation);
             }
         };
         return (
@@ -223,3 +237,5 @@ export default class RevertNarrative extends Component<ControlMenuItemProps, Com
       }
 
 }
+
+export default withRouter<ControlMenuItemProps & RouteComponentProps, any>(RevertNarrative)

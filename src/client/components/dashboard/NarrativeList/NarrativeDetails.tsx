@@ -304,6 +304,7 @@ export class NarrativeDetails extends React.Component<Props, State> {
               narrative={displayItem}
               doneFn={() => updateSearch()}
               isCurrentVersion={!previousVersion}
+              category={this.props.category}
             />
           </div>
         </div>
