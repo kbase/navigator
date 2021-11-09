@@ -124,14 +124,17 @@ export class NarrativeList extends Component<Props, State> {
 
     if (this.state.oldVersionDoc) {
       if (this.state.oldVersionDoc.version !== ver) {
-        if (ver === activeItem.version) {
-          this.setState({oldVersionDoc: null})
+        if (ver >= activeItem.version) {
+          this.setState(() => ({oldVersionDoc: null}))
+          if (ver > activeItem.version) {
+            this.performSearch(this.state.searchParams, true);
+          }
         } else {
           this.updateVersionDoc();
         }
       }
     } else {
-      if (activeItem.version !== ver && ver > 0) {
+      if (activeItem.version > ver && ver > 0) {
         this.updateVersionDoc();
       }
     }
