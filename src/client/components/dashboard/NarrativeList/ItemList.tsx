@@ -65,7 +65,15 @@ export class ItemList extends Component<Props, State> {
     // I need this until I figure out what's in item
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
-    const upa = `${item.access_group}/${item.obj_id}/${item.version}`;
+    const { selected } = this.props;
+
+    // have link point to previous version if a previous version is selected
+    let upa = `${item.access_group}/${item.obj_id}`;
+    if (upa === selected.split('/').slice(0,2).join('/')) {
+      upa += `/${selected.split('/')[2]}`;
+    } else {
+      upa += `/${item.version}`;
+    }
     const keepParams = (link: string) =>
       keepParamsLinkTo(['limit', 'search', 'sort', 'view'], link);
     const { category } = this.props;
