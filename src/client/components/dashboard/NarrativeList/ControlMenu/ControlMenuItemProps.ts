@@ -7,7 +7,7 @@ interface ControlMenuItemProps {
   doneFn: () => void;
   isCurrentVersion?: boolean;
   history?: History;
-  category: string;
+  category?: string;
 }
 
 export default ControlMenuItemProps;
