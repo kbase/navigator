@@ -4,7 +4,7 @@ import ControlMenuItemProps from './ControlMenuItemProps';
 import DashboardButton from '../../../generic/DashboardButton';
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
 import Runtime from '../../../../utils/runtime';
-import { KBaseServiceClient } from '@kbase/narrative-utils';
+import { KBaseServiceClient, KBaseDynamicServiceClient } from '@kbase/narrative-utils';
 import { RouteComponentProps, withRouter } from 'react-router';
 import ControlMenu from './ControlMenu';
 
@@ -90,27 +90,24 @@ class RevertNarrative extends Component<ControlMenuItemProps, ComponentState> {
     }
 
     async doRevert() {
-      const { narrative } = this.props;
-      const workspaceClient = new KBaseServiceClient({
-        module: 'Workspace',
-        url: Runtime.getConfig().service_routes.workspace,
-        authToken: Runtime.token(),
+      
+      this.setState({
+        status: 'reverting'
       });
+      
+      const { narrative } = this.props;
+      const narrativeClient = new KBaseDynamicServiceClient({
+        module: 'NarrativeService',
+        version: 'dev',
+        authToken: Runtime.token()
+      })
 
       try {
-        const revertResult = await workspaceClient.call('revert_object', [{
+        const revertResult = await narrativeClient.call('revert_narrative_object', [{
           wsid: narrative.access_group,
           objid: narrative.obj_id,
           ver: narrative.version
-        }]);
-        await workspaceClient.call('alter_workspace_metadata', [
-          {
-            wsi: { id: narrative.access_group },
-            new: {
-              narrative_nice_name: revertResult[10].name
-            }
-          }
-        ])
+        }])
         this.setState({
           status: 'success',
           newVersion: revertResult[4]
