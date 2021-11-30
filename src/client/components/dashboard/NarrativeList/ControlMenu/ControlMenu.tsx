@@ -63,15 +63,15 @@ const oldVersionMenuItems: Array<MenuItem> = [
     title: 'Copy this Version',
     icon: 'fa fa-copy',
     dialogTitle: 'Make a copy of this version',
-    menuComponent: CopyItem
+    menuComponent: CopyItem,
   },
   {
     title: 'Restore Version',
     icon: 'fa fa-history',
     dialogTitle: 'Revert narrative to this version',
-    menuComponent: RevertNarrative
-  }
-]
+    menuComponent: RevertNarrative,
+  },
+];
 
 export default class ControlMenu extends Component<
   ControlMenuItemProps,
@@ -136,11 +136,9 @@ export default class ControlMenu extends Component<
           className="ba b--black-30 bg-white db fr absolute"
           style={{ top: '3em', right: '1em', boxShadow: '0 2px 3px #aaa' }}
         >
-          {
-            isCurrentVersion
-              ? menuItems.map((item, idx) => this.menuItem(item, idx))
-              : oldVersionMenuItems.map((item, idx) => this.menuItem(item, idx))
-          }
+          {isCurrentVersion
+            ? menuItems.map((item, idx) => this.menuItem(item, idx))
+            : oldVersionMenuItems.map((item, idx) => this.menuItem(item, idx))}
         </div>
       );
     }
@@ -163,22 +161,22 @@ export default class ControlMenu extends Component<
 
     return (
       <div className="cursor tr">
-        {
-          isCurrentVersion
-            ? <span
-                className="black-20 dim fa fa-2x fa-cog"
-                style={{cursor: 'pointer'}}
-                onClick={(e) => this.menuClicked()}
-              ></span>
-            : <button
-                className="button"
-                style={{border: 'none'}}
-                onClick={(e) => this.menuClicked()}
-              >
-                v{narrative.version} Options
-                <i className="fa fa-caret-down ml2"></i>
-              </button>
-        }
+        {isCurrentVersion ? (
+          <span
+            className="black-20 dim fa fa-2x fa-cog"
+            style={{ cursor: 'pointer' }}
+            onClick={(e) => this.menuClicked()}
+          ></span>
+        ) : (
+          <button
+            className="button"
+            style={{ border: 'none' }}
+            onClick={(e) => this.menuClicked()}
+          >
+            v{narrative.version} Options
+            <i className="fa fa-caret-down ml2"></i>
+          </button>
+        )}
         {menu}
         {modal}
       </div>

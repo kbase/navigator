@@ -1,5 +1,5 @@
 import { Doc } from '../../../../utils/narrativeData';
-import { History } from 'history'
+import { History } from 'history';
 
 interface ControlMenuItemProps {
   narrative: Doc;

@@ -69,7 +69,7 @@ export class ItemList extends Component<Props, State> {
 
     // have link point to previous version if a previous version is selected
     let upa = `${item.access_group}/${item.obj_id}`;
-    if (upa === selected.split('/').slice(0,2).join('/')) {
+    if (upa === selected.split('/').slice(0, 2).join('/')) {
       upa += `/${selected.split('/')[2]}`;
     } else {
       upa += `/${item.version}`;
@@ -107,15 +107,17 @@ export class ItemList extends Component<Props, State> {
     const selectedVersion = +selected.split('/')[2];
     const narr = upa.substring(0, upa.lastIndexOf('/'));
     if (narr !== selectedNarr) {
-      return <></>
+      return <></>;
     }
-    return <VersionDropdown
-              upa={upa}
-              version={version}
-              selectedVersion={selectedVersion}
-              category={this.props.category}
-              history={this.props.history}
-            />
+    return (
+      <VersionDropdown
+        upa={upa}
+        version={version}
+        selectedVersion={selectedVersion}
+        category={this.props.category}
+        history={this.props.history}
+      />
+    );
   }
 
   hasMoreButton() {

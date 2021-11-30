@@ -4,7 +4,10 @@ import ControlMenuItemProps from './ControlMenuItemProps';
 import DashboardButton from '../../../generic/DashboardButton';
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
 import Runtime from '../../../../utils/runtime';
-import { KBaseServiceClient, KBaseDynamicServiceClient } from '@kbase/narrative-utils';
+import {
+  KBaseServiceClient,
+  KBaseDynamicServiceClient,
+} from '@kbase/narrative-utils';
 import { RouteComponentProps, withRouter } from 'react-router';
 import ControlMenu from './ControlMenu';
 
@@ -18,7 +21,7 @@ type ComponentStatus =
 
 interface ComponentStateBase {
   status: ComponentStatus;
-  newVersion?: number // the newest version returned from narrative service after successful revert
+  newVersion?: number; // the newest version returned from narrative service after successful revert
 }
 
 interface ComponentStateNone extends ComponentStateBase {
@@ -56,183 +59,191 @@ type ComponentState =
   | ComponentStateError
   | ComponentStateSuccess;
 class RevertNarrative extends Component<ControlMenuItemProps, ComponentState> {
+  constructor(props: ControlMenuItemProps) {
+    super(props);
+    this.state = {
+      status: 'none',
+    };
+  }
 
-    constructor(props: ControlMenuItemProps) {
-        super(props);
-        this.state = {
-            status: 'none'
-        }
-    }
-
-    async componentDidMount() {
+  async componentDidMount() {
+    this.setState({
+      status: 'loading',
+    });
+    try {
+      const perm = await getCurrentUserPermission(
+        this.props.narrative.access_group
+      );
+      if (perm === 'a') {
         this.setState({
-            status: 'loading'
-        })
-        try {
-            const perm = await getCurrentUserPermission(
-                this.props.narrative.access_group
-            );
-            if (perm === 'a') {
-                this.setState({
-                    status: 'ready'
-                });
-            } else {
-                this.setState({
-                    status: 'error',
-                    error: {
-                        message: 'You do not have permission to revert this Narrative.'
-                    }
-                })
-            }
-        } catch(e) {
-            console.error(e);
-        }
-    }
-
-    async doRevert() {
-      
-      this.setState({
-        status: 'reverting'
-      });
-      
-      const { narrative } = this.props;
-      const narrativeClient = new KBaseDynamicServiceClient({
-        module: 'NarrativeService',
-        version: 'dev',
-        authToken: Runtime.token()
-      })
-
-      try {
-        const revertResult = await narrativeClient.call('revert_narrative_object', [{
-          wsid: narrative.access_group,
-          objid: narrative.obj_id,
-          ver: narrative.version
-        }])
-        this.setState({
-          status: 'success',
-          newVersion: revertResult[4]
+          status: 'ready',
         });
-      } catch(error) {
-        const message = (() => {
-          if (error instanceof Error) {
-            return error.message;
-          }
-          return 'Unknown error';
-        })();
-  
+      } else {
         this.setState({
           status: 'error',
           error: {
-            message,
+            message: 'You do not have permission to revert this Narrative.',
           },
         });
       }
+    } catch (e) {
+      console.error(e);
     }
+  }
 
-    renderError({ error: { message } }: ComponentStateError) {
-        const messageContent = (() => {
-          if (typeof message === 'string') {
-            return <p>{message}</p>;
-          } else {
-            return message.map((message, index) => {
-              return <p key={index}>{message}</p>;
-            });
-          }
-        })();
-        const done = () => {
-          this.props.doneFn();
-          if (this.props.cancelFn) {
-            this.props.cancelFn();
-          }
-        };
-        return (
-          <>
-            <div style={{ fontWeight: 'bold', color: 'red' }}>Error</div>
-            {messageContent}
-            <div style={{ textAlign: 'center' }}>
-              <DashboardButton onClick={done}>Close</DashboardButton>
-            </div>
-          </>
-        );
-      }
+  async doRevert() {
+    this.setState({
+      status: 'reverting',
+    });
 
-    renderLoading(message: string) {
-        return (
-            <div style={{ textAlign: 'center' }}>
-            <LoadingSpinner loading={true} />
-            </div>
-        );
-    }
+    const { narrative } = this.props;
+    const narrativeClient = new KBaseDynamicServiceClient({
+      module: 'NarrativeService',
+      version: 'dev',
+      authToken: Runtime.token(),
+    });
 
-    renderSuccess() {
-        const done = () => {
-            this.props.doneFn();
-            if (this.props.cancelFn) {
-              this.props.cancelFn();
-            }
-            if (this.props.history) {
-              const { access_group, obj_id }  = this.props.narrative;
-              const newUpa = `${access_group}/${obj_id}/${this.state.newVersion}`
-              const { category } = this.props;
-              const queryParams = new URLSearchParams(location.search);
-              const prefix = '/' + (category === 'own' ? '' : `${category}/`);
-              const newLocation = `${prefix}${newUpa}?${queryParams.toString()}`;
-              this.props.history.push(newLocation);
-            }
-        };
-        return (
-            <div style={{ textAlign: 'center' }}>
-                <p>The Narrative has been successfully reverted to version {this.props.narrative.version}.</p>
-                <p>
-                    It may take up to 30 seconds for this to be reflected in the display.
-                </p>
-                <DashboardButton onClick={done}>Close</DashboardButton>
-            </div>
-        );
-    }
-
-    renderConfirmation() {
-        return (
-          <>
-            <div className="pb2">
-              <p>
-                Reverting a narrative to a previous version is permanent and may cause data loss.
-              </p>
-              <p style={{ fontWeight: 'bold' }}>This action cannot be undone!</p>
-            </div>
-            <div className="pb2">Continue?</div>
-            <div>
-              <DashboardButton
-                onClick={() => this.doRevert()}
-                bgcolor={'red'}
-                textcolor={'white'}
-              >
-                Revert
-              </DashboardButton>
-              <DashboardButton onClick={this.props.cancelFn}>
-                Cancel
-              </DashboardButton>
-            </div>
-          </>
-        );
-      }
-    
-      render() {
-        switch (this.state.status) {
-          case 'none':
-          case 'loading':
-            return this.renderLoading('Loading');
-          case 'ready':
-            return this.renderConfirmation();
-          case 'reverting':
-            return this.renderLoading('Reverting Narrative');
-          case 'success':
-            return this.renderSuccess();
-          case 'error':
-            return this.renderError(this.state);
+    try {
+      const revertResult = await narrativeClient.call(
+        'revert_narrative_object',
+        [
+          {
+            wsid: narrative.access_group,
+            objid: narrative.obj_id,
+            ver: narrative.version,
+          },
+        ]
+      );
+      this.setState({
+        status: 'success',
+        newVersion: revertResult[4],
+      });
+    } catch (error) {
+      const message = (() => {
+        if (error instanceof Error) {
+          return error.message;
         }
-      }
+        return 'Unknown error';
+      })();
 
+      this.setState({
+        status: 'error',
+        error: {
+          message,
+        },
+      });
+    }
+  }
+
+  renderError({ error: { message } }: ComponentStateError) {
+    const messageContent = (() => {
+      if (typeof message === 'string') {
+        return <p>{message}</p>;
+      } else {
+        return message.map((message, index) => {
+          return <p key={index}>{message}</p>;
+        });
+      }
+    })();
+    const done = () => {
+      this.props.doneFn();
+      if (this.props.cancelFn) {
+        this.props.cancelFn();
+      }
+    };
+    return (
+      <>
+        <div style={{ fontWeight: 'bold', color: 'red' }}>Error</div>
+        {messageContent}
+        <div style={{ textAlign: 'center' }}>
+          <DashboardButton onClick={done}>Close</DashboardButton>
+        </div>
+      </>
+    );
+  }
+
+  renderLoading(message: string) {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <LoadingSpinner loading={true} />
+      </div>
+    );
+  }
+
+  renderSuccess() {
+    const done = () => {
+      this.props.doneFn();
+      if (this.props.cancelFn) {
+        this.props.cancelFn();
+      }
+      if (this.props.history) {
+        const { access_group, obj_id } = this.props.narrative;
+        const newUpa = `${access_group}/${obj_id}/${this.state.newVersion}`;
+        const { category } = this.props;
+        const queryParams = new URLSearchParams(location.search);
+        const prefix = '/' + (category === 'own' ? '' : `${category}/`);
+        const newLocation = `${prefix}${newUpa}?${queryParams.toString()}`;
+        this.props.history.push(newLocation);
+      }
+    };
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <p>
+          The Narrative has been successfully reverted to version{' '}
+          {this.props.narrative.version}.
+        </p>
+        <p>
+          It may take up to 30 seconds for this to be reflected in the display.
+        </p>
+        <DashboardButton onClick={done}>Close</DashboardButton>
+      </div>
+    );
+  }
+
+  renderConfirmation() {
+    return (
+      <>
+        <div className="pb2">
+          <p>
+            Reverting a narrative to a previous version is permanent and may
+            cause data loss.
+          </p>
+          <p style={{ fontWeight: 'bold' }}>This action cannot be undone!</p>
+        </div>
+        <div className="pb2">Continue?</div>
+        <div>
+          <DashboardButton
+            onClick={() => this.doRevert()}
+            bgcolor={'red'}
+            textcolor={'white'}
+          >
+            Revert
+          </DashboardButton>
+          <DashboardButton onClick={this.props.cancelFn}>
+            Cancel
+          </DashboardButton>
+        </div>
+      </>
+    );
+  }
+
+  render() {
+    switch (this.state.status) {
+      case 'none':
+      case 'loading':
+        return this.renderLoading('Loading');
+      case 'ready':
+        return this.renderConfirmation();
+      case 'reverting':
+        return this.renderLoading('Reverting Narrative');
+      case 'success':
+        return this.renderSuccess();
+      case 'error':
+        return this.renderError(this.state);
+    }
+  }
 }
 
-export default withRouter<ControlMenuItemProps & RouteComponentProps, any>(RevertNarrative)
+export default withRouter<ControlMenuItemProps & RouteComponentProps, any>(
+  RevertNarrative
+);

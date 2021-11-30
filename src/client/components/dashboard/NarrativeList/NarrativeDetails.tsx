@@ -188,7 +188,7 @@ interface Props {
   view: string;
   category: string;
   // takes precedence over active item if it was fetched from narrative service
-  previousVersion: Doc | null
+  previousVersion: Doc | null;
   loading: boolean;
 }
 
@@ -232,16 +232,17 @@ export class NarrativeDetails extends React.Component<Props, State> {
   }
 
   render() {
-    const { activeItem, previousVersion, cache, updateSearch, view, category } = this.props;
+    const { activeItem, previousVersion, cache, updateSearch, view, category } =
+      this.props;
     if (!activeItem) {
       return <div></div>;
     }
     if (this.props.loading) {
       return (
-        <div style={{margin: 'auto'}}>
+        <div style={{ margin: 'auto' }}>
           <LoadingSpinner loading={true}></LoadingSpinner>
         </div>
-      )
+      );
     }
     const displayItem = previousVersion || activeItem;
     const wsid = displayItem.access_group;
@@ -296,7 +297,9 @@ export class NarrativeDetails extends React.Component<Props, State> {
             </a>
             <span className="b f4 gray i ml2">
               v{displayItem.version}
-              {previousVersion && <span className="b f4 gray i"> of {activeItem.version}</span>}
+              {previousVersion && (
+                <span className="b f4 gray i"> of {activeItem.version}</span>
+              )}
             </span>
           </div>
           <div className="ml-auto">

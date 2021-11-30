@@ -6,7 +6,11 @@ import { TabHeader } from '../../generic/TabHeader';
 import { Filters } from './Filters';
 import { ItemList } from './ItemList';
 import { NarrativeDetails } from './NarrativeDetails';
-import { Doc, KBaseCache, fetchOldVersionDoc } from '../../../utils/narrativeData';
+import {
+  Doc,
+  KBaseCache,
+  fetchOldVersionDoc,
+} from '../../../utils/narrativeData';
 
 // Utils
 import { keepParamsLinkTo } from '../utils';
@@ -78,7 +82,7 @@ export class NarrativeList extends Component<Props, State> {
       },
       totalItems: 0,
       oldVersionDoc: null,
-      oldVersionLoading: false
+      oldVersionLoading: false,
     };
   }
 
@@ -125,7 +129,7 @@ export class NarrativeList extends Component<Props, State> {
     if (this.state.oldVersionDoc) {
       if (this.state.oldVersionDoc.version !== ver) {
         if (ver >= activeItem.version) {
-          this.setState(() => ({oldVersionDoc: null}))
+          this.setState(() => ({ oldVersionDoc: null }));
           if (ver > activeItem.version) {
             this.performSearch(this.state.searchParams, true);
           }
@@ -148,16 +152,16 @@ export class NarrativeList extends Component<Props, State> {
     // prevents attempt to fetch previous version with no active item selected
     if (id === 0 && obj === 0 && ver === 0) {
       // clear old version when user navigates to new category or selected item
-      this.setState({oldVersionDoc: null});
+      this.setState({ oldVersionDoc: null });
       return;
     }
 
-    this.setState({oldVersionLoading: true});
+    this.setState({ oldVersionLoading: true });
 
     const oldVersionDoc = await fetchOldVersionDoc(id, obj, ver);
     // TODO: This result should come from NarrativeService
     oldVersionDoc.obj_id = obj;
-    this.setState({oldVersionDoc, oldVersionLoading : false});
+    this.setState({ oldVersionDoc, oldVersionLoading: false });
   }
 
   // Handle an onSetSearch callback from Filters
