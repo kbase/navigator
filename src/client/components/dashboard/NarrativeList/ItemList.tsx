@@ -65,7 +65,7 @@ export class ItemList extends Component<Props, State> {
     // I need this until I figure out what's in item
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
-    const { selected } = this.props;
+    const { selected, category } = this.props;
 
     // have link point to previous version if a previous version is selected
     let upa = `${item.access_group}/${item.obj_id}`;
@@ -76,7 +76,6 @@ export class ItemList extends Component<Props, State> {
     }
     const keepParams = (link: string) =>
       keepParamsLinkTo(['limit', 'search', 'sort', 'view'], link);
-    const { category } = this.props;
     const prefix = '/' + (category === 'own' ? '' : `${category}/`);
     // Action to select an item to view details
     return (
@@ -90,7 +89,7 @@ export class ItemList extends Component<Props, State> {
           <div className={css.inner}>
             <div className="ma0 mb2 pa0 f5">
               {item.narrative_title || 'Untitled'}
-              {this.renderDropdown(upa, item.version)}
+              {category === 'own' && this.renderDropdown(upa, item.version)}
             </div>
             <p className="ma0 pa0 f7">
               Updated {timeago.format(item.timestamp)} by {item.creator}
