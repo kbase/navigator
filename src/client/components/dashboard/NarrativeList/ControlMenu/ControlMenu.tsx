@@ -8,6 +8,7 @@ import CopyItem from './CopyItem';
 import LinkOrgItem from './LinkOrgItem';
 import RenameItem from './RenameItem';
 import SharingItem from './sharing/SharingItem';
+import RevertNarrative from './RevertNarrative';
 
 interface State {
   showMenu: boolean;
@@ -15,7 +16,7 @@ interface State {
   modalItem: MenuItem | null;
 }
 
-interface MenuItem {
+export interface MenuItem {
   title: string;
   icon: string;
   dialogTitle?: string;
@@ -52,6 +53,23 @@ const menuItems: Array<MenuItem> = [
     icon: 'fa fa-trash-o',
     dialogTitle: 'Delete Narrative?',
     menuComponent: DeleteNarrative,
+  },
+];
+
+// options to be displayed when user has selected an older version
+// TODO: use Rename option for potential "version flagging" feature of older versions
+const oldVersionMenuItems: Array<MenuItem> = [
+  {
+    title: 'Copy this Version',
+    icon: 'fa fa-copy',
+    dialogTitle: 'Make a copy of this version',
+    menuComponent: CopyItem,
+  },
+  {
+    title: 'Restore Version',
+    icon: 'fa fa-history',
+    dialogTitle: 'Revert narrative to this version',
+    menuComponent: RevertNarrative,
   },
 ];
 
@@ -110,6 +128,7 @@ export default class ControlMenu extends Component<
   }
 
   render() {
+    const { isCurrentVersion, narrative } = this.props;
     let menu = null;
     if (this.state.showMenu) {
       menu = (
@@ -117,7 +136,9 @@ export default class ControlMenu extends Component<
           className="ba b--black-30 bg-white db fr absolute"
           style={{ top: '3em', right: '1em', boxShadow: '0 2px 3px #aaa' }}
         >
-          {menuItems.map((item, idx) => this.menuItem(item, idx))}
+          {isCurrentVersion
+            ? menuItems.map((item, idx) => this.menuItem(item, idx))
+            : oldVersionMenuItems.map((item, idx) => this.menuItem(item, idx))}
         </div>
       );
     }
@@ -140,11 +161,22 @@ export default class ControlMenu extends Component<
 
     return (
       <div className="cursor tr">
-        <span
-          className="black-20 dim fa fa-2x fa-cog"
-          style={{ cursor: 'pointer' }}
-          onClick={(e) => this.menuClicked()}
-        ></span>
+        {isCurrentVersion ? (
+          <span
+            className="black-20 dim fa fa-2x fa-cog"
+            style={{ cursor: 'pointer' }}
+            onClick={(e) => this.menuClicked()}
+          ></span>
+        ) : (
+          <button
+            className="button"
+            style={{ border: 'none' }}
+            onClick={(e) => this.menuClicked()}
+          >
+            v{narrative.version} Options
+            <i className="fa fa-caret-down ml2"></i>
+          </button>
+        )}
         {menu}
         {modal}
       </div>
