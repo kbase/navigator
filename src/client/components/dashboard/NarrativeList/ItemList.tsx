@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 import { keepParamsLinkTo } from '../utils';
 import { Doc } from '../../../utils/narrativeData';
+import { VersionDropdown } from './VersionDropdown';
+import { History } from 'history';
 
 const timeago = require('timeago.js');
 
@@ -16,6 +18,7 @@ interface Props {
   selectedIdx: number;
   sort?: string;
   totalItems: number;
+  history: History;
 }
 
 interface State {}
@@ -44,6 +47,8 @@ export class ItemList extends Component<Props, State> {
     }
   }
 
+  state = {};
+
   // Handle click event on an individual item
   handleClickItem(idx: number) {
     this.selectItem(idx);
@@ -60,10 +65,17 @@ export class ItemList extends Component<Props, State> {
     // I need this until I figure out what's in item
     const status = this.props.selectedIdx === idx ? 'active' : 'inactive';
     const css = itemClasses[status];
-    const upa = `${item.access_group}/${item.obj_id}/${item.version}`;
+    const { selected, category } = this.props;
+
+    // have link point to previous version if a previous version is selected
+    let upa = `${item.access_group}/${item.obj_id}`;
+    if (upa === selected.split('/').slice(0, 2).join('/')) {
+      upa += `/${selected.split('/')[2]}`;
+    } else {
+      upa += `/${item.version}`;
+    }
     const keepParams = (link: string) =>
       keepParamsLinkTo(['limit', 'search', 'sort', 'view'], link);
-    const { category } = this.props;
     const prefix = '/' + (category === 'own' ? '' : `${category}/`);
     // Action to select an item to view details
     return (
@@ -77,6 +89,7 @@ export class ItemList extends Component<Props, State> {
           <div className={css.inner}>
             <div className="ma0 mb2 pa0 f5">
               {item.narrative_title || 'Untitled'}
+              {category === 'own' && this.renderDropdown(upa, item.version)}
             </div>
             <p className="ma0 pa0 f7">
               Updated {timeago.format(item.timestamp)} by {item.creator}
@@ -87,6 +100,25 @@ export class ItemList extends Component<Props, State> {
       </Link>
     );
   };
+
+  renderDropdown(upa: string, version: number) {
+    const { selected } = this.props;
+    const selectedNarr = selected.substring(0, selected.lastIndexOf('/'));
+    const selectedVersion = +selected.split('/')[2];
+    const narr = upa.substring(0, upa.lastIndexOf('/'));
+    if (narr !== selectedNarr) {
+      return <></>;
+    }
+    return (
+      <VersionDropdown
+        upa={upa}
+        version={version}
+        selectedVersion={selectedVersion}
+        category={this.props.category}
+        history={this.props.history}
+      />
+    );
+  }
 
   hasMoreButton() {
     const { items, pageSize, totalItems } = this.props;

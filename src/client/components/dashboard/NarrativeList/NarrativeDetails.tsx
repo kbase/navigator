@@ -12,6 +12,7 @@ import { keepParamsLinkTo } from '../utils';
 import ControlMenu from './ControlMenu/ControlMenu';
 import DataView from './DataView';
 import Preview from './Preview';
+import { LoadingSpinner } from '../../generic/LoadingSpinner';
 
 function detailsHeaderItem(key: string, value: string | JSX.Element[]) {
   return (
@@ -185,6 +186,10 @@ interface Props {
   cache: KBaseCache;
   updateSearch: () => void;
   view: string;
+  category: string;
+  // takes precedence over active item if it was fetched from narrative service
+  previousVersion: Doc | null;
+  loading: boolean;
 }
 
 interface State {
@@ -227,11 +232,20 @@ export class NarrativeDetails extends React.Component<Props, State> {
   }
 
   render() {
-    const { activeItem, cache, updateSearch, view } = this.props;
+    const { activeItem, previousVersion, cache, updateSearch, view, category } =
+      this.props;
     if (!activeItem) {
       return <div></div>;
     }
-    const wsid = activeItem.access_group;
+    if (this.props.loading) {
+      return (
+        <div style={{ margin: 'auto' }}>
+          <LoadingSpinner loading={true}></LoadingSpinner>
+        </div>
+      );
+    }
+    const displayItem = previousVersion || activeItem;
+    const wsid = displayItem.access_group;
     const narrativeHref = `${
       Runtime.getConfig().view_routes.narrative
     }/${wsid}`;
@@ -239,12 +253,12 @@ export class NarrativeDetails extends React.Component<Props, State> {
     // Choose which content to show based on selected tab
     switch (view) {
       case 'preview':
-        content = <Preview cache={cache} narrative={activeItem} />;
+        content = <Preview cache={cache} narrative={displayItem} />;
         break;
       case 'data':
       default:
         content = (
-          <DataView accessGroup={wsid} dataObjects={activeItem.data_objects} />
+          <DataView accessGroup={wsid} dataObjects={displayItem.data_objects} />
         );
         break;
     }
@@ -278,17 +292,22 @@ export class NarrativeDetails extends React.Component<Props, State> {
             >
               <span className="fa fa-external-link"></span>
               <span className="ml2">
-                {activeItem.narrative_title || 'Untitled'}
+                {displayItem.narrative_title || 'Untitled'}
               </span>
             </a>
-            <span className="b f4 gray i ml2">v{activeItem.version}</span>
+            <span className="b f4 gray i ml2">
+              v{displayItem.version}
+              {previousVersion && (
+                <span className="b f4 gray i"> of {activeItem.version}</span>
+              )}
+            </span>
           </div>
           <div className="ml-auto">
             <ControlMenu
-              narrative={activeItem}
-              doneFn={() => {
-                updateSearch();
-              }}
+              narrative={displayItem}
+              doneFn={() => updateSearch()}
+              isCurrentVersion={!previousVersion}
+              category={this.props.category}
             />
           </div>
         </div>
