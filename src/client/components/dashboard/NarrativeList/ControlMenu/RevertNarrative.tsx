@@ -202,20 +202,20 @@ class RevertNarrative extends Component<ControlMenuItemProps, ComponentState> {
 
   renderConfirmation() {
     return (
-      <>
+      <div style={{textAlign: 'center'}}>
         <div className="pb2">
           <p>
-            Reverting a narrative to a previous version is permanent and may
-            cause data loss.
+            Reverting a narrative will create a new version identical to v{this.props.narrative.version}. 
           </p>
-          <p style={{ fontWeight: 'bold' }}>This action cannot be undone!</p>
+          <p>
+            This new narrative can be reverted to an earlier version at any time.
+          </p>
         </div>
-        <div className="pb2">Continue?</div>
+        <div className="pb2" style={{fontWeight: 'bold'}}>Do you wish to continue?</div>
         <div>
           <DashboardButton
             onClick={() => this.doRevert()}
-            bgcolor={'red'}
-            textcolor={'white'}
+            bgcolor={'lightblue'}
           >
             Revert
           </DashboardButton>
@@ -223,7 +223,7 @@ class RevertNarrative extends Component<ControlMenuItemProps, ComponentState> {
             Cancel
           </DashboardButton>
         </div>
-      </>
+      </div>
     );
   }
 
