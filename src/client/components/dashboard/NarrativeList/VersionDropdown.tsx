@@ -2,19 +2,6 @@ import React, { Component, MouseEvent } from 'react';
 import { keepParamsLinkTo } from '../utils';
 import { History } from 'history';
 
-interface Props {
-  upa: string;
-  version: number;
-  selectedVersion: number;
-  category: string;
-  history: History;
-}
-
-interface State {
-  versionToggle: boolean;
-  selectedVersion: number;
-}
-
 // wrapper for dismissing dropdown on outside click
 class OutsideClickListener extends Component<{ dismissToggle: () => void }> {
   wrapperRef: HTMLDivElement | null = null;
@@ -44,14 +31,27 @@ class OutsideClickListener extends Component<{ dismissToggle: () => void }> {
   }
 
   render() {
-    return <div ref={this.setWrapperRef}>{this.props.children}</div>;
+    return (
+      <div style={{ display: 'inline-block' }} ref={this.setWrapperRef}>
+        {this.props.children}
+      </div>
+    );
   }
 }
-
+interface Props {
+  upa: string;
+  version: number;
+  selectedVersion: number;
+  category: string;
+  history: History;
+}
+interface State {
+  versionToggle: boolean;
+  selectedVersion: number;
+}
 export class VersionDropdown extends Component<Props, State> {
   state = {
     versionToggle: false,
-    // selectedVersion: this.props.version
     selectedVersion: this.props.selectedVersion,
   };
 
@@ -96,7 +96,6 @@ export class VersionDropdown extends Component<Props, State> {
       <span
         key={version}
         className="db pa2 pointer hover-bg-blue hover-white"
-        // onClick={(e) => this.handleSelectVersion(e, version)}
         onClick={(e) =>
           this.handleSelectVersion(e, `${prefix}${newUpa}`, version)
         }
@@ -108,6 +107,8 @@ export class VersionDropdown extends Component<Props, State> {
 
   render() {
     const { version } = this.props;
+    // prevent scrollbar when all elements can fit in dropdown
+    const overflowStyle = version > 6 ? 'scroll' : 'hidden';
     const versions = Array(version)
       .fill(null)
       .map((_, n) => n + 1)
@@ -127,7 +128,7 @@ export class VersionDropdown extends Component<Props, State> {
                 zIndex: 1,
                 width: '8rem',
                 maxHeight: '200px',
-                overflowY: 'scroll',
+                overflowY: overflowStyle,
               }}
             >
               {versions.map((ver) => this.itemView(ver))}
