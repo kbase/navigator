@@ -202,16 +202,20 @@ class RevertNarrative extends Component<ControlMenuItemProps, ComponentState> {
 
   renderConfirmation() {
     return (
-      <div style={{textAlign: 'center'}}>
+      <div style={{ textAlign: 'center' }}>
         <div className="pb2">
           <p>
-            Reverting a narrative will create a new version identical to v{this.props.narrative.version}. 
+            Reverting a narrative will create a new version identical to v
+            {this.props.narrative.version}.
           </p>
           <p>
-            This new narrative can be reverted to an earlier version at any time.
+            This new narrative can be reverted to an earlier version at any
+            time.
           </p>
         </div>
-        <div className="pb2" style={{fontWeight: 'bold'}}>Do you wish to continue?</div>
+        <div className="pb2" style={{ fontWeight: 'bold' }}>
+          Do you wish to continue?
+        </div>
         <div>
           <DashboardButton
             onClick={() => this.doRevert()}

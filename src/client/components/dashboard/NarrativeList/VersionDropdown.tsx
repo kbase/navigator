@@ -15,6 +15,39 @@ interface State {
   selectedVersion: number;
 }
 
+// wrapper for dismissing dropdown on outside click
+class OutsideClickListener extends Component<{ dismissToggle: () => void }> {
+  wrapperRef: HTMLDivElement | null = null;
+
+  constructor(props: any) {
+    super(props);
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleOutsideClick = this.handleOutsideClick.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleOutsideClick);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleOutsideClick);
+  }
+
+  handleOutsideClick(event: any) {
+    if (this.wrapperRef && !this.wrapperRef?.contains(event.target)) {
+      this.props.dismissToggle();
+    }
+  }
+
+  setWrapperRef(node: HTMLDivElement) {
+    this.wrapperRef = node;
+  }
+
+  render() {
+    return <div ref={this.setWrapperRef}>{this.props.children}</div>;
+  }
+}
+
 export class VersionDropdown extends Component<Props, State> {
   state = {
     versionToggle: false,
@@ -27,6 +60,10 @@ export class VersionDropdown extends Component<Props, State> {
     this.setState((prevState) => ({
       versionToggle: !prevState.versionToggle,
     }));
+  }
+
+  dismissToggle() {
+    this.setState({ versionToggle: false });
   }
 
   handleSelectVersion(e: MouseEvent, upa: string, version: number) {
@@ -76,26 +113,28 @@ export class VersionDropdown extends Component<Props, State> {
       .map((_, n) => n + 1)
       .reverse();
     return (
-      <div className="relative ml2" style={{ display: 'inline-block' }}>
-        <span onClick={(e) => this.setVersionToggle(e)}>
-          <span className="f5 gray i"> v{this.state.selectedVersion}</span>
-          <i className="fa fa-caret-down ml1 gray"></i>
-        </span>
-        {this.state.versionToggle && (
-          <div
-            className="ba b--black-30 bg-white db fr absolute"
-            style={{
-              boxShadow: '0 2px 3px #aaa',
-              zIndex: 1,
-              width: '8rem',
-              maxHeight: '200px',
-              overflowY: 'scroll',
-            }}
-          >
-            {versions.map((ver) => this.itemView(ver))}
-          </div>
-        )}
-      </div>
+      <OutsideClickListener dismissToggle={this.dismissToggle.bind(this)}>
+        <div className="relative ml2" style={{ display: 'inline-block' }}>
+          <span onClick={(e) => this.setVersionToggle(e)}>
+            <span className="f5 gray i"> v{this.state.selectedVersion}</span>
+            <i className="fa fa-caret-down ml1 gray"></i>
+          </span>
+          {this.state.versionToggle && (
+            <div
+              className="ba b--black-30 bg-white db fr absolute"
+              style={{
+                boxShadow: '0 2px 3px #aaa',
+                zIndex: 1,
+                width: '8rem',
+                maxHeight: '200px',
+                overflowY: 'scroll',
+              }}
+            >
+              {versions.map((ver) => this.itemView(ver))}
+            </div>
+          )}
+        </div>
+      </OutsideClickListener>
     );
   }
 }
