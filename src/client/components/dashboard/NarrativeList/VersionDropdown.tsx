@@ -117,7 +117,9 @@ export class VersionDropdown extends Component<Props, State> {
       <OutsideClickListener dismissToggle={this.dismissToggle.bind(this)}>
         <div className="relative ml2" style={{ display: 'inline-block' }}>
           <span onClick={(e) => this.setVersionToggle(e)}>
-            <span className="f5 gray i"> v{this.state.selectedVersion}</span>
+            <span className="f5 gray i"> v{this.state.selectedVersion}
+              {this.state.selectedVersion < version && ` of ${version}`}
+            </span>
             <i className="fa fa-caret-down ml1 gray"></i>
           </span>
           {this.state.versionToggle && (
