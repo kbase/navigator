@@ -55,6 +55,13 @@ export class VersionDropdown extends Component<Props, State> {
     selectedVersion: this.props.selectedVersion,
   };
 
+  componentDidUpdate() {
+    // state should match again whenever component updates
+    if (this.state.selectedVersion !== this.props.selectedVersion) {
+      this.setState({selectedVersion: this.props.selectedVersion});
+    }
+  }
+
   setVersionToggle(event: MouseEvent) {
     event.preventDefault();
     this.setState((prevState) => ({
@@ -70,11 +77,11 @@ export class VersionDropdown extends Component<Props, State> {
     const { history } = this.props;
     const keepParams = (link: string) =>
       keepParamsLinkTo(['limit', 'search', 'sort', 'view'], link);
+      this.setState({
+        versionToggle: false,
+        selectedVersion: version,
+      });
     history.push(keepParams(upa)(history.location));
-    this.setState({
-      versionToggle: false,
-      selectedVersion: version,
-    });
     // prevent parent link from redirecting back to current version URL
     e.preventDefault();
   }
@@ -95,7 +102,8 @@ export class VersionDropdown extends Component<Props, State> {
     return (
       <span
         key={version}
-        className="db pa2 pointer hover-bg-blue hover-white"
+        className="db pa2 pointer hover-bg-blue hover-white f5 fs-normal"
+        style={{color: 'black', fontWeight: 'normal'}}
         onClick={(e) =>
           this.handleSelectVersion(e, `${prefix}${newUpa}`, version)
         }
@@ -117,7 +125,7 @@ export class VersionDropdown extends Component<Props, State> {
       <OutsideClickListener dismissToggle={this.dismissToggle.bind(this)}>
         <div className="relative ml2" style={{ display: 'inline-block' }}>
           <span onClick={(e) => this.setVersionToggle(e)}>
-            <span className="f5 gray i"> v{this.state.selectedVersion}
+            <span className="gray i"> v{this.state.selectedVersion}
               {this.state.selectedVersion < version && ` of ${version}`}
             </span>
             <i className="fa fa-caret-down ml1 gray"></i>

@@ -304,6 +304,7 @@ export class NarrativeList extends Component<Props, State> {
                 previousVersion={this.state.oldVersionDoc}
                 category={category}
                 loading={this.state.oldVersionLoading}
+                history={this.props.history}
               />
             ) : (
               <></>
