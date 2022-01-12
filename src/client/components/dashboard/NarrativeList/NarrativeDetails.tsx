@@ -13,7 +13,7 @@ import ControlMenu from './ControlMenu/ControlMenu';
 import DataView from './DataView';
 import Preview from './Preview';
 import { LoadingSpinner } from '../../generic/LoadingSpinner';
-import { History } from 'History';
+import { History } from 'history';
 import { VersionDropdown } from './VersionDropdown';
 
 function detailsHeaderItem(key: string, value: string | JSX.Element[]) {
