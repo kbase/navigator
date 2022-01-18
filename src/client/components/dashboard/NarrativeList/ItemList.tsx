@@ -89,7 +89,8 @@ export class ItemList extends Component<Props, State> {
           <div className={css.inner}>
             <div className="ma0 mb2 pa0 f5">
               {item.narrative_title || 'Untitled'}
-              {category === 'own' && this.renderDropdown(upa, item.version, idx)}
+              {category === 'own' &&
+                this.renderDropdown(upa, item.version, idx)}
             </div>
             <p className="ma0 pa0 f7">
               Updated {timeago.format(item.timestamp)} by {item.creator}

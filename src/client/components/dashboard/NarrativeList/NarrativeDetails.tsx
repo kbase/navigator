@@ -192,7 +192,7 @@ interface Props {
   // takes precedence over active item if it was fetched from narrative service
   previousVersion: Doc | null;
   loading: boolean;
-  history: History
+  history: History;
 }
 
 interface State {
@@ -237,13 +237,15 @@ export class NarrativeDetails extends React.Component<Props, State> {
   renderVersionDropdown() {
     const { activeItem, previousVersion, category, history } = this.props;
     const { access_group, obj_id, version } = activeItem;
-    return <VersionDropdown
-              upa={`${access_group}/${obj_id}/${version}`}
-              version={activeItem.version}
-              selectedVersion={previousVersion?.version ?? activeItem.version}
-              category={category}
-              history={history}
-            />
+    return (
+      <VersionDropdown
+        upa={`${access_group}/${obj_id}/${version}`}
+        version={activeItem.version}
+        selectedVersion={previousVersion?.version ?? activeItem.version}
+        category={category}
+        history={history}
+      />
+    );
   }
 
   render() {
@@ -313,8 +315,7 @@ export class NarrativeDetails extends React.Component<Props, State> {
             <span className="b f4 gray i ml2">
               {category === 'own'
                 ? this.renderVersionDropdown()
-                : `v${displayItem.version}`
-              }
+                : `v${displayItem.version}`}
             </span>
           </div>
           <div className="ml-auto">
