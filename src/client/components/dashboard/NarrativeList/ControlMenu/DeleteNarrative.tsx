@@ -190,7 +190,7 @@ export default class DeleteNarrative extends Component<
 
   renderConfirmation() {
     return (
-      <>
+      <div style={{ textAlign: 'center' }}>
         <div className="pb2">
           <p>
             Deleting a Narrative will permanently remove it and all its data.
@@ -210,7 +210,7 @@ export default class DeleteNarrative extends Component<
             Cancel
           </DashboardButton>
         </div>
-      </>
+      </div>
     );
   }
 

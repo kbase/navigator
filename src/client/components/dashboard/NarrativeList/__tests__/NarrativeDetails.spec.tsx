@@ -5,6 +5,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { enableFetchMocks } from 'jest-fetch-mock';
 import { NarrativeDetails } from '../NarrativeDetails';
+import { createBrowserHistory } from 'history';
 
 enableFetchMocks();
 
@@ -62,6 +63,7 @@ describe('NarrativeDetails tests', () => {
         previousVersion={null}
         category={''}
         loading={false}
+        history={createBrowserHistory()}
       />
     );
     expect(wrapper).toBeTruthy();
