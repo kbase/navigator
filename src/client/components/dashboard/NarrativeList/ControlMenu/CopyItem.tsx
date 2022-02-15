@@ -27,6 +27,7 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
     const config = Runtime.getConfig();
     const wsId = this.props.narrative.access_group;
     const objId = this.props.narrative.obj_id;
+    const { version } = this.props.narrative;
     const narrativeService = new DynamicServiceClient({
       moduleName: 'NarrativeService',
       wizardUrl: config.service_routes.service_wizard,
@@ -35,7 +36,7 @@ export default class CopyItem extends Component<ControlMenuItemProps, State> {
     try {
       await narrativeService.call('copy_narrative', [
         {
-          workspaceRef: `${wsId}/${objId}`,
+          workspaceRef: `${wsId}/${objId}/${version}`,
           workspaceId: wsId,
           newName: this.state.newName,
         },

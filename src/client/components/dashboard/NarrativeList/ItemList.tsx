@@ -89,7 +89,8 @@ export class ItemList extends Component<Props, State> {
           <div className={css.inner}>
             <div className="ma0 mb2 pa0 f5">
               {item.narrative_title || 'Untitled'}
-              {category === 'own' && this.renderDropdown(upa, item.version)}
+              {category === 'own' &&
+                this.renderDropdown(upa, item.version, idx)}
             </div>
             <p className="ma0 pa0 f7">
               Updated {timeago.format(item.timestamp)} by {item.creator}
@@ -101,19 +102,21 @@ export class ItemList extends Component<Props, State> {
     );
   };
 
-  renderDropdown(upa: string, version: number) {
+  renderDropdown(upa: string, version: number, idx: number) {
     const { selected } = this.props;
     const selectedNarr = selected.substring(0, selected.lastIndexOf('/'));
     const selectedVersion = +selected.split('/')[2];
     const narr = upa.substring(0, upa.lastIndexOf('/'));
-    if (narr !== selectedNarr) {
+
+    // only give dropdown to selected version or default highlighted version on first load
+    if (narr !== selectedNarr && !(selected === '0/0/0' && idx === 0)) {
       return <></>;
     }
     return (
       <VersionDropdown
         upa={upa}
         version={version}
-        selectedVersion={selectedVersion}
+        selectedVersion={selected === '0/0/0' ? version : selectedVersion}
         category={this.props.category}
         history={this.props.history}
       />

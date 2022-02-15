@@ -13,6 +13,8 @@ import ControlMenu from './ControlMenu/ControlMenu';
 import DataView from './DataView';
 import Preview from './Preview';
 import { LoadingSpinner } from '../../generic/LoadingSpinner';
+import { History } from 'history';
+import { VersionDropdown } from './VersionDropdown';
 
 function detailsHeaderItem(key: string, value: string | JSX.Element[]) {
   return (
@@ -190,6 +192,7 @@ interface Props {
   // takes precedence over active item if it was fetched from narrative service
   previousVersion: Doc | null;
   loading: boolean;
+  history: History;
 }
 
 interface State {
@@ -229,6 +232,20 @@ export class NarrativeDetails extends React.Component<Props, State> {
     this.setState({
       detailsHeader: detailsHeaderComponent,
     });
+  }
+
+  renderVersionDropdown() {
+    const { activeItem, previousVersion, category, history } = this.props;
+    const { access_group, obj_id, version } = activeItem;
+    return (
+      <VersionDropdown
+        upa={`${access_group}/${obj_id}/${version}`}
+        version={activeItem.version}
+        selectedVersion={previousVersion?.version ?? activeItem.version}
+        category={category}
+        history={history}
+      />
+    );
   }
 
   render() {
@@ -296,10 +313,9 @@ export class NarrativeDetails extends React.Component<Props, State> {
               </span>
             </a>
             <span className="b f4 gray i ml2">
-              v{displayItem.version}
-              {previousVersion && (
-                <span className="b f4 gray i"> of {activeItem.version}</span>
-              )}
+              {category === 'own'
+                ? this.renderVersionDropdown()
+                : `v${displayItem.version}`}
             </span>
           </div>
           <div className="ml-auto">
