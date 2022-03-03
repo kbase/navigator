@@ -102,13 +102,13 @@ export async function fetchOldVersionDoc(
   ver: number
 ): Promise<Doc> {
   const client = new DynamicServiceClient({
-    moduleName: "NarrativeService",
+    moduleName: 'NarrativeService',
     authToken: Runtime.token(),
     wizardUrl: Runtime.getConfig().service_routes.service_wizard,
-    version: 'dev'
+    version: 'dev',
   });
 
   return client.call('get_narrative_doc', [
-    {narrative_upa: `${id}/${obj}/${ver}`}
+    { narrative_upa: `${id}/${obj}/${ver}` },
   ]);
 }

@@ -96,11 +96,11 @@ class RevertNarrative extends Component<ControlMenuItemProps, ComponentState> {
     const { narrative } = this.props;
 
     const narrativeClient = new DynamicServiceClient({
-      moduleName: "NarrativeService",
+      moduleName: 'NarrativeService',
       authToken: Runtime.token(),
       wizardUrl: Runtime.getConfig().service_routes.service_wizard,
-      version: 'dev'
-    })
+      version: 'dev',
+    });
 
     try {
       const revertResult = await narrativeClient.call(
