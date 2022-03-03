@@ -1,8 +1,6 @@
 /* eslint-disable camelcase */
-import {
-  KBaseServiceClient,
-  KBaseDynamicServiceClient,
-} from '@kbase/narrative-utils';
+import { KBaseServiceClient } from '@kbase/narrative-utils';
+import { DynamicServiceClient } from '../api/serviceWizard';
 import Runtime from '../utils/runtime';
 
 /**
@@ -103,14 +101,14 @@ export async function fetchOldVersionDoc(
   obj: number,
   ver: number
 ): Promise<Doc> {
-  const client = new KBaseDynamicServiceClient({
-    module: 'NarrativeService',
-    version: 'dev',
+  const client = new DynamicServiceClient({
+    moduleName: 'NarrativeService',
     authToken: Runtime.token(),
+    wizardUrl: Runtime.getConfig().service_routes.service_wizard,
+    version: 'dev',
   });
 
-  const response = await client.call('get_narrative_doc', [
+  return client.call('get_narrative_doc', [
     { narrative_upa: `${id}/${obj}/${ver}` },
   ]);
-  return response;
 }

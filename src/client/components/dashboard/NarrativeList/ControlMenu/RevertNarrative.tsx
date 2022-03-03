@@ -4,10 +4,7 @@ import ControlMenuItemProps from './ControlMenuItemProps';
 import DashboardButton from '../../../generic/DashboardButton';
 import { LoadingSpinner } from '../../../generic/LoadingSpinner';
 import Runtime from '../../../../utils/runtime';
-import {
-  KBaseServiceClient,
-  KBaseDynamicServiceClient,
-} from '@kbase/narrative-utils';
+import { DynamicServiceClient } from '../../../../api/serviceWizard';
 import { RouteComponentProps, withRouter } from 'react-router';
 import ControlMenu from './ControlMenu';
 
@@ -97,10 +94,12 @@ class RevertNarrative extends Component<ControlMenuItemProps, ComponentState> {
     });
 
     const { narrative } = this.props;
-    const narrativeClient = new KBaseDynamicServiceClient({
-      module: 'NarrativeService',
-      version: 'dev',
+
+    const narrativeClient = new DynamicServiceClient({
+      moduleName: 'NarrativeService',
       authToken: Runtime.token(),
+      wizardUrl: Runtime.getConfig().service_routes.service_wizard,
+      version: 'dev',
     });
 
     try {
