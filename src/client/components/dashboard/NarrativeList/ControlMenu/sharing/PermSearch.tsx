@@ -93,8 +93,8 @@ export default class PermSearch extends Component<PermSearchProps> {
             container: (base: any) => ({ ...base, flex: 2 }),
           }}
           menuPortalTarget={document.body}
-          onInputChange={this.handleInputChange.bind(this)}
-          onChange={this.handleUserChange.bind}
+          onInputChange={this.handleInputChange}
+          onChange={(e) => this.handleUserChange(e as any[])}
         />
         <Select
           defaultValue={this.permOptions[0]}
